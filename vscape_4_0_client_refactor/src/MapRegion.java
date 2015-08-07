@@ -4,37 +4,37 @@ final class MapRegion {
    private final int[] f;
    private final int[] g;
    private final int[] h;
-   private final int[][][] i;
-   private final byte[][][] j;
-   static int a;
-   private final byte[][][] k;
+   private final int[][][] tileHeights;
+   private final byte[][][] overlays;
+   static int currentPlane;
+   private final byte[][][] shading;
    private final int[][][] l;
-   private final byte[][][] m;
-   private static final int[] n = new int[]{1, 0, -1, 0};
+   private final byte[][][] overlayTypes;
+   private static final int[] COSINE_VERTICES = new int[]{1, 0, -1, 0};
    private final int[][] o;
    private static final int[] p = new int[]{16, 32, 64, 128};
-   private final byte[][][] q;
-   private static final int[] r = new int[]{0, -1, 0, 1};
+   private final byte[][][] underlays;
+   private static final int[] SINE_VERTICES = new int[]{0, -1, 0, 1};
    static int b = 99;
    private final int s;
    private final int t;
-   private final byte[][][] u;
-   private final byte[][][] v;
-   static boolean c = true;
-   private static final int[] w = new int[]{1, 2, 4, 8};
+   private final byte[][][] overlayOrientations;
+   private final byte[][][] tileFlags;
+   static boolean lowMemory = true;
+   private static final int[] anIntArray = new int[]{1, 2, 4, 8};
 
    public MapRegion(byte[][][] var1, int[][][] var2) {
       b = 99;
       this.s = 104;
       this.t = 104;
-      this.i = var2;
-      this.v = var1;
-      this.q = new byte[4][104][104];
-      this.j = new byte[4][104][104];
-      this.m = new byte[4][104][104];
-      this.u = new byte[4][104][104];
+      this.tileHeights = var2;
+      this.tileFlags = var1;
+      this.underlays = new byte[4][104][104];
+      this.overlays = new byte[4][104][104];
+      this.overlayTypes = new byte[4][104][104];
+      this.overlayOrientations = new byte[4][104][104];
       this.l = new int[4][105][105];
-      this.k = new byte[4][105][105];
+      this.shading = new byte[4][105][105];
       this.o = new int[105][105];
       this.d = new int[104];
       this.e = new int[104];
@@ -43,8 +43,8 @@ final class MapRegion {
       this.h = new int[104];
    }
 
-   private static int b(int var0, int var1) {
-      return ((var0 ^= (var0 += var1 * 57) << 13) * (var0 * var0 * 15731 + 789221) + 1376312589 & Integer.MAX_VALUE) >> 19 & 255;
+   private static int perlinNoise(int x, int y) {
+      return ((x ^= (x += y * 57) << 13) * (x * x * 15731 + 789221) + 1376312589 & Integer.MAX_VALUE) >> 19 & 255;
    }
 
    public final void a(CollisionMap[] var1, SceneGraph var2) {
@@ -56,14 +56,14 @@ final class MapRegion {
          for(var3 = 0; var3 < 4; ++var3) {
             for(var4 = 0; var4 < 104; ++var4) {
                for(var5 = 0; var5 < 104; ++var5) {
-                  if((this.v[var3][var4][var5] & 1) == 1) {
+                  if((this.tileFlags[var3][var4][var5] & 1) == 1) {
                      var6 = var3;
-                     if((this.v[1][var4][var5] & 2) == 2) {
+                     if((this.tileFlags[1][var4][var5] & 2) == 2) {
                         var6 = var3 - 1;
                      }
 
                      if(var6 >= 0) {
-                        var1[var6].a(var5, var4);
+                        var1[var6].block(var5, var4);
                      }
                   }
                }
@@ -82,14 +82,14 @@ final class MapRegion {
          int var16;
          int var27;
          for(var3 = 0; var3 < 4; ++var3) {
-            byte[][] var29 = this.k[var3];
+            byte[][] var29 = this.shading[var3];
             var7 = (int)Math.sqrt(5100.0D);
             var8 = var7 * 768 >> 8;
 
             for(var9 = 1; var9 < 103; ++var9) {
                for(var10 = 1; var10 < 103; ++var10) {
-                  var11 = this.i[var3][var10 + 1][var9] - this.i[var3][var10 - 1][var9];
-                  var7 = this.i[var3][var10][var9 + 1] - this.i[var3][var10][var9 - 1];
+                  var11 = this.tileHeights[var3][var10 + 1][var9] - this.tileHeights[var3][var10 - 1][var9];
+                  var7 = this.tileHeights[var3][var10][var9 + 1] - this.tileHeights[var3][var10][var9 - 1];
                   var12 = (int)Math.sqrt((double)(var11 * var11 + 65536 + var7 * var7));
                   var13 = (var11 << 8) / var12;
                   var14 = 65536 / var12;
@@ -110,7 +110,7 @@ final class MapRegion {
 
             for(var9 = -5; var9 < 109; ++var9) {
                for(var10 = 0; var10 < 104; ++var10) {
-                  if((var11 = var9 + 5) >= 0 && var11 < 104 && (var7 = this.q[var3][var11][var10] & 255) > 0) {
+                  if((var11 = var9 + 5) >= 0 && var11 < 104 && (var7 = this.underlays[var3][var11][var10] & 255) > 0) {
                      Floor var31 = Floor.floors[var7 - 1];
                      this.d[var10] += var31.weightedHue;
                      this.e[var10] += var31.saturation;
@@ -119,7 +119,7 @@ final class MapRegion {
                      ++this.h[var10];
                   }
 
-                  if((var7 = var9 - 5) >= 0 && var7 < 104 && (var12 = this.q[var3][var7][var10] & 255) > 0) {
+                  if((var7 = var9 - 5) >= 0 && var7 < 104 && (var12 = this.underlays[var3][var7][var10] & 255) > 0) {
                      Floor var32 = Floor.floors[var12 - 1];
                      this.d[var10] -= var32.weightedHue;
                      this.e[var10] -= var32.saturation;
@@ -153,18 +153,18 @@ final class MapRegion {
                         var13 -= this.h[var27];
                      }
 
-                     if(var14 > 0 && var14 < 103 && (!c || (this.v[0][var9][var14] & 2) != 0 || (this.v[var3][var9][var14] & 16) == 0 && this.c(var14, var3, var9) == a)) {
+                     if(var14 > 0 && var14 < 103 && (!lowMemory || (this.tileFlags[0][var9][var14] & 2) != 0 || (this.tileFlags[var3][var9][var14] & 16) == 0 && this.getCollisionPlane(var14, var3, var9) == currentPlane)) {
                         if(var3 < b) {
                            b = var3;
                         }
 
-                        var5 = this.q[var3][var9][var14] & 255;
-                        var27 = this.j[var3][var9][var14] & 255;
+                        var5 = this.underlays[var3][var9][var14] & 255;
+                        var27 = this.overlays[var3][var9][var14] & 255;
                         if(var5 > 0 || var27 > 0) {
-                           var4 = this.i[var3][var9][var14];
-                           var6 = this.i[var3][var9 + 1][var14];
-                           var16 = this.i[var3][var9 + 1][var14 + 1];
-                           var8 = this.i[var3][var9][var14 + 1];
+                           var4 = this.tileHeights[var3][var9][var14];
+                           var6 = this.tileHeights[var3][var9 + 1][var14];
+                           var16 = this.tileHeights[var3][var9 + 1][var14 + 1];
+                           var8 = this.tileHeights[var3][var9][var14 + 1];
                            var15 = this.o[var9][var14];
                            int var17 = this.o[var9 + 1][var14];
                            int var18 = this.o[var9 + 1][var14 + 1];
@@ -182,7 +182,7 @@ final class MapRegion {
 
                            if(var3 > 0) {
                               boolean var33 = true;
-                              if(var5 == 0 && this.m[var3][var9][var14] != 0) {
+                              if(var5 == 0 && this.overlayTypes[var3][var9][var14] != 0) {
                                  var33 = false;
                               }
 
@@ -197,14 +197,14 @@ final class MapRegion {
 
                            var22 = 0;
                            if(var20 != -1) {
-                              var22 = Rasterizer3D.rgbTable[e(var21, 96)];
+                              var22 = Rasterizer3D.rgbTable[light(var21, 96)];
                            }
 
                            if(var27 == 0) {
-                              var2.a(var3, var9, var14, 0, 0, -1, var4, var6, var16, var8, e(var20, var15), e(var20, var17), e(var20, var18), e(var20, var19), 0, 0, 0, 0, var22, 0);
+                              var2.a(var3, var9, var14, 0, 0, -1, var4, var6, var16, var8, light(var20, var15), light(var20, var17), light(var20, var18), light(var20, var19), 0, 0, 0, 0, var22, 0);
                            } else {
-                              var21 = this.m[var3][var9][var14] + 1;
-                              byte var34 = this.u[var3][var9][var14];
+                              var21 = this.overlayTypes[var3][var9][var14] + 1;
+                              byte var34 = this.overlayOrientations[var3][var9][var14];
                               Floor var30 = Floor.floors[var27 - 1];
                               if(var27 - 1 != 54) {
                                  int var24 = var30.texture;
@@ -217,12 +217,12 @@ final class MapRegion {
                                     var25 = -2;
                                     var24 = -1;
                                  } else if(var30.rgb == 3355443) {
-                                    var5 = Rasterizer3D.rgbTable[c(var30.color, 96)];
+                                    var5 = Rasterizer3D.rgbTable[checkedLight(var30.color, 96)];
                                     var25 = -2;
                                     var24 = -1;
                                  } else {
                                     var25 = b(var30.hue, var30.saturation, var30.luminance);
-                                    var5 = Rasterizer3D.rgbTable[c(var30.color, 96)];
+                                    var5 = Rasterizer3D.rgbTable[checkedLight(var30.color, 96)];
                                  }
 
                                  if(var27 - 1 == 111) {
@@ -234,7 +234,7 @@ final class MapRegion {
                                     var25 = b(25, 146, 24);
                                  }
 
-                                 var2.a(var3, var9, var14, var21, var34, var24, var4, var6, var16, var8, e(var20, var15), e(var20, var17), e(var20, var18), e(var20, var19), c(var25, var15), c(var25, var17), c(var25, var18), c(var25, var19), var22, var5);
+                                 var2.a(var3, var9, var14, var21, var34, var24, var4, var6, var16, var8, light(var20, var15), light(var20, var17), light(var20, var18), light(var20, var19), checkedLight(var25, var15), checkedLight(var25, var17), checkedLight(var25, var18), checkedLight(var25, var19), var22, var5);
                               }
                            }
                         }
@@ -245,7 +245,7 @@ final class MapRegion {
 
             for(var9 = 1; var9 < 103; ++var9) {
                for(var10 = 1; var10 < 103; ++var10) {
-                  var2.a(var3, var10, var9, this.c(var9, var3, var10));
+                  var2.a(var3, var10, var9, this.getCollisionPlane(var9, var3, var10));
                }
             }
          }
@@ -254,7 +254,7 @@ final class MapRegion {
 
          for(var3 = 0; var3 < 104; ++var3) {
             for(var4 = 0; var4 < 104; ++var4) {
-               if((this.v[1][var3][var4] & 2) == 2) {
+               if((this.tileFlags[1][var3][var4] & 2) == 2) {
                   var2.a(var4, var3);
                }
             }
@@ -310,8 +310,8 @@ final class MapRegion {
                         }
 
                         if((var10 + 1 - var9) * (var8 - var7 + 1) >= 8) {
-                           var12 = this.i[var10][var16][var7] - 240;
-                           var13 = this.i[var9][var16][var7];
+                           var12 = this.tileHeights[var10][var16][var7] - 240;
+                           var13 = this.tileHeights[var9][var16][var7];
                            SceneGraph.a(var6, var16 << 7, var13, var16 << 7, (var8 << 7) + 128, var12, var7 << 7, 1);
 
                            for(var14 = var9; var14 <= var10; ++var14) {
@@ -358,8 +358,8 @@ final class MapRegion {
                         }
 
                         if((var10 + 1 - var9) * (var8 - var7 + 1) >= 8) {
-                           var12 = this.i[var10][var7][var28] - 240;
-                           var13 = this.i[var9][var7][var28];
+                           var12 = this.tileHeights[var10][var7][var28] - 240;
+                           var13 = this.tileHeights[var9][var7][var28];
                            SceneGraph.a(var6, var7 << 7, var13, (var8 << 7) + 128, var28 << 7, var12, var28 << 7, 2);
 
                            for(var14 = var9; var14 <= var10; ++var14) {
@@ -406,7 +406,7 @@ final class MapRegion {
                         }
 
                         if((var8 - var7 + 1) * (var10 - var9 + 1) >= 4) {
-                           var11 = this.i[var27][var7][var9];
+                           var11 = this.tileHeights[var27][var7][var9];
                            SceneGraph.a(var6, var7 << 7, var11, (var8 << 7) + 128, (var10 << 7) + 128, var11, var9 << 7, 4);
 
                            for(var7 = var7; var7 <= var8; ++var7) {
@@ -426,13 +426,13 @@ final class MapRegion {
       }
    }
 
-   public static void a(Buffer var0, ResourceProvider var1) {
-      int var2 = -1;
+   public static void decode(Buffer buffer, ResourceProvider provider) {
+      int id = -1;
 
-      int var3;
-      while((var3 = var0.c()) != 0) {
-         ObjectDefinition var10000 = ObjectDefinition.byId(var2 += var3);
-         ResourceProvider var4 = var1;
+      int offset;
+      while((offset = buffer.c()) != 0) {
+         ObjectDefinition var10000 = ObjectDefinition.byId(id += offset);
+         ResourceProvider var4 = provider;
          ObjectDefinition var6 = var10000;
          if(var10000.modelIds != null) {
             for(int var5 = 0; var5 < var6.modelIds.length; ++var5) {
@@ -440,32 +440,32 @@ final class MapRegion {
             }
          }
 
-         while(var0.s() != 0) {
-            var0.readUByte();
+         while(buffer.s() != 0) {
+            buffer.readUByte();
          }
       }
 
    }
 
-   public final void a(int var1, int var2, int var3, int var4) {
-      for(int var5 = var1; var5 <= var1 + var2; ++var5) {
-         for(int var6 = var4; var6 <= var4 + var3; ++var6) {
-            if(var6 >= 0 && var6 < 104 && var5 >= 0 && var5 < 104) {
-               this.k[0][var6][var5] = 127;
-               if(var6 == var4 && var6 > 0) {
-                  this.i[0][var6][var5] = this.i[0][var6 - 1][var5];
+   public final void a(int topLeftRegionY, int dy, int dx, int topLeftRegionX) {
+      for(int y = topLeftRegionY; y <= topLeftRegionY + dy; ++y) {
+         for(int x = topLeftRegionX; x <= topLeftRegionX + dx; ++x) {
+            if(x >= 0 && x < 104 && y >= 0 && y < 104) {
+               this.shading[0][x][y] = 127;
+               if(x == topLeftRegionX && x > 0) {
+                  this.tileHeights[0][x][y] = this.tileHeights[0][x - 1][y];
                }
 
-               if(var6 == var4 + var3 && var6 < 103) {
-                  this.i[0][var6][var5] = this.i[0][var6 + 1][var5];
+               if(x == topLeftRegionX + dx && x < 103) {
+                  this.tileHeights[0][x][y] = this.tileHeights[0][x + 1][y];
                }
 
-               if(var5 == var1 && var5 > 0) {
-                  this.i[0][var6][var5] = this.i[0][var6][var5 - 1];
+               if(y == topLeftRegionY && y > 0) {
+                  this.tileHeights[0][x][y] = this.tileHeights[0][x][y - 1];
                }
 
-               if(var5 == var1 + var2 && var5 < 103) {
-                  this.i[0][var6][var5] = this.i[0][var6][var5 + 1];
+               if(y == topLeftRegionY + dy && y < 103) {
+                  this.tileHeights[0][x][y] = this.tileHeights[0][x][y + 1];
                }
             }
          }
@@ -473,333 +473,333 @@ final class MapRegion {
 
    }
 
-   private void a(int var1, SceneGraph var2, CollisionMap var3, int var4, int var5, int var6, int var7, int var8) {
-      if(c && (this.v[0][var6][var1] & 2) == 0) {
-         if((this.v[var5][var6][var1] & 16) != 0) {
+   private void a(int y, SceneGraph scene, CollisionMap map, int type, int z, int x, int id, int orientation) {
+      if(lowMemory && (this.tileFlags[0][x][y] & 2) == 0) {
+         if((this.tileFlags[z][x][y] & 16) != 0) {
             return;
          }
 
-         if(this.c(var1, var5, var6) != a) {
+         if(this.getCollisionPlane(y, z, x) != currentPlane) {
             return;
          }
       }
 
-      if(var5 < b) {
-         b = var5;
+      if(z < b) {
+         b = z;
       }
 
-      int var9 = this.i[var5][var6][var1];
-      int var10 = this.i[var5][var6 + 1][var1];
-      int var11 = this.i[var5][var6 + 1][var1 + 1];
-      int var12 = this.i[var5][var6][var1 + 1];
-      int var13 = var9 + var10 + var11 + var12 >> 2;
-      ObjectDefinition var14 = ObjectDefinition.byId(var7);
-      int var15 = var6 + (var1 << 7) + (var7 << 14) + 1073741824;
-      if(!var14.interactive) {
-         var15 += Integer.MIN_VALUE;
+      int centre = this.tileHeights[z][x][y];
+      int east = this.tileHeights[z][x + 1][y];
+      int northEast = this.tileHeights[z][x + 1][y + 1];
+      int north = this.tileHeights[z][x][y + 1];
+      int mean = centre + east + northEast + north >> 2;
+      ObjectDefinition definition = ObjectDefinition.byId(id);
+      int key = x + (y << 7) + (id << 14) + 0x40000000;
+      if(!definition.interactive) {
+         key += Integer.MIN_VALUE;
       }
 
-      byte var16 = (byte)((var8 << 6) + var4);
-      Object var17;
-      if(var4 == 22) {
-         if(!c || var14.interactive || var14.obstructsGround) {
-            if(var14.animation == -1 && var14.morphisms == null) {
-               var17 = var14.a(22, var8, var9, var10, var11, var12, -1);
+      byte config = (byte)((orientation << 6) + type);
+      Object object;
+      if(type == 22) {
+         if(!lowMemory || definition.interactive || definition.obstructsGround) {
+            if(definition.animation == -1 && definition.morphisms == null) {
+               object = definition.modelAt(22, orientation, centre, east, northEast, north, -1);
             } else {
-               var17 = new RenderableObject(var7, var8, 22, var10, var11, var9, var12, var14.animation, true);
+               object = new RenderableObject(id, orientation, 22, east, northEast, centre, north, definition.animation, true);
             }
 
-            var2.a(var5, var13, var1, (Renderable)var17, var16, var15, var6);
-            if(var14.solid && var14.interactive && var3 != null) {
-               var3.a(var1, var6);
+            scene.addFloorDecoration(z, mean, y, (Renderable)object, config, key, x);
+            if(definition.solid && definition.interactive && map != null) {
+               map.block(y, x);
             }
 
          }
       } else {
-         int var18;
-         if(var4 != 10 && var4 != 11) {
-            if(var4 >= 12) {
-               if(var14.animation == -1 && var14.morphisms == null) {
-                  var17 = var14.a(var4, var8, var9, var10, var11, var12, -1);
+         int existing;
+         if(type != 10 && type != 11) {
+            if(type >= 12) {
+               if(definition.animation == -1 && definition.morphisms == null) {
+                  object = definition.modelAt(type, orientation, centre, east, northEast, north, -1);
                } else {
-                  var17 = new RenderableObject(var7, var8, var4, var10, var11, var9, var12, var14.animation, true);
+                  object = new RenderableObject(id, orientation, type, east, northEast, centre, north, definition.animation, true);
                }
 
-               var2.a(var15, var16, var13, 1, (Renderable)var17, 1, var5, 0, var1, var6);
-               if(var4 >= 12 && var4 <= 17 && var4 != 13 && var5 > 0) {
-                  this.l[var5][var6][var1] |= 2340;
+               scene.addObject(key, config, mean, 1, (Renderable)object, 1, z, 0, y, x);
+               if(type >= 12 && type <= 17 && type != 13 && z > 0) {
+                  this.l[z][x][y] |= 2340;
                }
 
-               if(var14.solid && var3 != null) {
-                  var3.a(var14.impenetrable, var14.width, var14.length, var6, var1, var8);
+               if(definition.solid && map != null) {
+                  map.flagObject(definition.impenetrable, definition.width, definition.length, x, y, orientation);
                }
 
-            } else if(var4 == 0) {
-               if(var14.animation == -1 && var14.morphisms == null) {
-                  var17 = var14.a(0, var8, var9, var10, var11, var12, -1);
+            } else if(type == 0) {
+               if(definition.animation == -1 && definition.morphisms == null) {
+                  object = definition.modelAt(0, orientation, centre, east, northEast, north, -1);
                } else {
-                  var17 = new RenderableObject(var7, var8, 0, var10, var11, var9, var12, var14.animation, true);
+                  object = new RenderableObject(id, orientation, 0, east, northEast, centre, north, definition.animation, true);
                }
 
-               var2.a(w[var8], (Renderable)var17, var15, var1, var16, var6, (Renderable)null, var13, 0, var5);
-               if(var8 == 0) {
-                  if(var14.castsShadow) {
-                     this.k[var5][var6][var1] = 50;
-                     this.k[var5][var6][var1 + 1] = 50;
+               scene.addWall(anIntArray[orientation], (Renderable)object, key, y, config, x, (Renderable)null, mean, 0, z);
+               if(orientation == 0) {
+                  if(definition.castsShadow) {
+                     this.shading[z][x][y] = 50;
+                     this.shading[z][x][y + 1] = 50;
                   }
 
-                  if(var14.occludes) {
-                     this.l[var5][var6][var1] |= 585;
+                  if(definition.occludes) {
+                     this.l[z][x][y] |= 585;
                   }
-               } else if(var8 == 1) {
-                  if(var14.castsShadow) {
-                     this.k[var5][var6][var1 + 1] = 50;
-                     this.k[var5][var6 + 1][var1 + 1] = 50;
-                  }
-
-                  if(var14.occludes) {
-                     this.l[var5][var6][var1 + 1] |= 1170;
-                  }
-               } else if(var8 == 2) {
-                  if(var14.castsShadow) {
-                     this.k[var5][var6 + 1][var1] = 50;
-                     this.k[var5][var6 + 1][var1 + 1] = 50;
+               } else if(orientation == 1) {
+                  if(definition.castsShadow) {
+                     this.shading[z][x][y + 1] = 50;
+                     this.shading[z][x + 1][y + 1] = 50;
                   }
 
-                  if(var14.occludes) {
-                     this.l[var5][var6 + 1][var1] |= 585;
+                  if(definition.occludes) {
+                     this.l[z][x][y + 1] |= 1170;
                   }
-               } else if(var8 == 3) {
-                  if(var14.castsShadow) {
-                     this.k[var5][var6][var1] = 50;
-                     this.k[var5][var6 + 1][var1] = 50;
+               } else if(orientation == 2) {
+                  if(definition.castsShadow) {
+                     this.shading[z][x + 1][y] = 50;
+                     this.shading[z][x + 1][y + 1] = 50;
                   }
 
-                  if(var14.occludes) {
-                     this.l[var5][var6][var1] |= 1170;
+                  if(definition.occludes) {
+                     this.l[z][x + 1][y] |= 585;
+                  }
+               } else if(orientation == 3) {
+                  if(definition.castsShadow) {
+                     this.shading[z][x][y] = 50;
+                     this.shading[z][x + 1][y] = 50;
+                  }
+
+                  if(definition.occludes) {
+                     this.l[z][x][y] |= 1170;
                   }
                }
 
-               if(var14.solid && var3 != null) {
-                  var3.a(var1, var8, var6, var4, var14.impenetrable);
+               if(definition.solid && map != null) {
+                  map.flagObject(y, orientation, x, type, definition.impenetrable);
                }
 
-               if(var14.decorDisplacement != 16) {
-                  var2.b(var1, var14.decorDisplacement, var6, var5);
+               if(definition.decorDisplacement != 16) {
+                  scene.displaceWallDecor(y, definition.decorDisplacement, x, z);
                }
 
-            } else if(var4 == 1) {
-               if(var14.animation == -1 && var14.morphisms == null) {
-                  var17 = var14.a(1, var8, var9, var10, var11, var12, -1);
+            } else if(type == 1) {
+               if(definition.animation == -1 && definition.morphisms == null) {
+                  object = definition.modelAt(1, orientation, centre, east, northEast, north, -1);
                } else {
-                  var17 = new RenderableObject(var7, var8, 1, var10, var11, var9, var12, var14.animation, true);
+                  object = new RenderableObject(id, orientation, 1, east, northEast, centre, north, definition.animation, true);
                }
 
-               var2.a(p[var8], (Renderable)var17, var15, var1, var16, var6, (Renderable)null, var13, 0, var5);
-               if(var14.castsShadow) {
-                  if(var8 == 0) {
-                     this.k[var5][var6][var1 + 1] = 50;
-                  } else if(var8 == 1) {
-                     this.k[var5][var6 + 1][var1 + 1] = 50;
-                  } else if(var8 == 2) {
-                     this.k[var5][var6 + 1][var1] = 50;
-                  } else if(var8 == 3) {
-                     this.k[var5][var6][var1] = 50;
+               scene.addWall(p[orientation], (Renderable)object, key, y, config, x, (Renderable)null, mean, 0, z);
+               if(definition.castsShadow) {
+                  if(orientation == 0) {
+                     this.shading[z][x][y + 1] = 50;
+                  } else if(orientation == 1) {
+                     this.shading[z][x + 1][y + 1] = 50;
+                  } else if(orientation == 2) {
+                     this.shading[z][x + 1][y] = 50;
+                  } else if(orientation == 3) {
+                     this.shading[z][x][y] = 50;
                   }
                }
 
-               if(var14.solid && var3 != null) {
-                  var3.a(var1, var8, var6, var4, var14.impenetrable);
+               if(definition.solid && map != null) {
+                  map.flagObject(y, orientation, x, type, definition.impenetrable);
                }
 
             } else {
-               int var21;
+               int displacement;
                Object var20;
-               if(var4 == 2) {
-                  var21 = var8 + 1 & 3;
+               if(type == 2) {
+                  displacement = orientation + 1 & 3;
                   Object var22;
-                  if(var14.animation == -1 && var14.morphisms == null) {
-                     var22 = var14.a(2, var8 + 4, var9, var10, var11, var12, -1);
-                     var20 = var14.a(2, var21, var9, var10, var11, var12, -1);
+                  if(definition.animation == -1 && definition.morphisms == null) {
+                     var22 = definition.modelAt(2, orientation + 4, centre, east, northEast, north, -1);
+                     var20 = definition.modelAt(2, displacement, centre, east, northEast, north, -1);
                   } else {
-                     var22 = new RenderableObject(var7, var8 + 4, 2, var10, var11, var9, var12, var14.animation, true);
-                     var20 = new RenderableObject(var7, var21, 2, var10, var11, var9, var12, var14.animation, true);
+                     var22 = new RenderableObject(id, orientation + 4, 2, east, northEast, centre, north, definition.animation, true);
+                     var20 = new RenderableObject(id, displacement, 2, east, northEast, centre, north, definition.animation, true);
                   }
 
-                  var2.a(w[var8], (Renderable)var22, var15, var1, var16, var6, (Renderable)var20, var13, w[var21], var5);
-                  if(var14.occludes) {
-                     if(var8 == 0) {
-                        this.l[var5][var6][var1] |= 585;
-                        this.l[var5][var6][var1 + 1] |= 1170;
-                     } else if(var8 == 1) {
-                        this.l[var5][var6][var1 + 1] |= 1170;
-                        this.l[var5][var6 + 1][var1] |= 585;
-                     } else if(var8 == 2) {
-                        this.l[var5][var6 + 1][var1] |= 585;
-                        this.l[var5][var6][var1] |= 1170;
-                     } else if(var8 == 3) {
-                        this.l[var5][var6][var1] |= 1170;
-                        this.l[var5][var6][var1] |= 585;
+                  scene.addWall(anIntArray[orientation], (Renderable)var22, key, y, config, x, (Renderable)var20, mean, anIntArray[displacement], z);
+                  if(definition.occludes) {
+                     if(orientation == 0) {
+                        this.l[z][x][y] |= 585;
+                        this.l[z][x][y + 1] |= 1170;
+                     } else if(orientation == 1) {
+                        this.l[z][x][y + 1] |= 1170;
+                        this.l[z][x + 1][y] |= 585;
+                     } else if(orientation == 2) {
+                        this.l[z][x + 1][y] |= 585;
+                        this.l[z][x][y] |= 1170;
+                     } else if(orientation == 3) {
+                        this.l[z][x][y] |= 1170;
+                        this.l[z][x][y] |= 585;
                      }
                   }
 
-                  if(var14.solid && var3 != null) {
-                     var3.a(var1, var8, var6, var4, var14.impenetrable);
+                  if(definition.solid && map != null) {
+                     map.flagObject(y, orientation, x, type, definition.impenetrable);
                   }
 
-                  if(var14.decorDisplacement != 16) {
-                     var2.b(var1, var14.decorDisplacement, var6, var5);
+                  if(definition.decorDisplacement != 16) {
+                     scene.displaceWallDecor(y, definition.decorDisplacement, x, z);
                   }
 
-               } else if(var4 == 3) {
-                  if(var14.animation == -1 && var14.morphisms == null) {
-                     var17 = var14.a(3, var8, var9, var10, var11, var12, -1);
+               } else if(type == 3) {
+                  if(definition.animation == -1 && definition.morphisms == null) {
+                     object = definition.modelAt(3, orientation, centre, east, northEast, north, -1);
                   } else {
-                     var17 = new RenderableObject(var7, var8, 3, var10, var11, var9, var12, var14.animation, true);
+                     object = new RenderableObject(id, orientation, 3, east, northEast, centre, north, definition.animation, true);
                   }
 
-                  var2.a(p[var8], (Renderable)var17, var15, var1, var16, var6, (Renderable)null, var13, 0, var5);
-                  if(var14.castsShadow) {
-                     if(var8 == 0) {
-                        this.k[var5][var6][var1 + 1] = 50;
-                     } else if(var8 == 1) {
-                        this.k[var5][var6 + 1][var1 + 1] = 50;
-                     } else if(var8 == 2) {
-                        this.k[var5][var6 + 1][var1] = 50;
-                     } else if(var8 == 3) {
-                        this.k[var5][var6][var1] = 50;
+                  scene.addWall(p[orientation], (Renderable)object, key, y, config, x, (Renderable)null, mean, 0, z);
+                  if(definition.castsShadow) {
+                     if(orientation == 0) {
+                        this.shading[z][x][y + 1] = 50;
+                     } else if(orientation == 1) {
+                        this.shading[z][x + 1][y + 1] = 50;
+                     } else if(orientation == 2) {
+                        this.shading[z][x + 1][y] = 50;
+                     } else if(orientation == 3) {
+                        this.shading[z][x][y] = 50;
                      }
                   }
 
-                  if(var14.solid && var3 != null) {
-                     var3.a(var1, var8, var6, var4, var14.impenetrable);
+                  if(definition.solid && map != null) {
+                     map.flagObject(y, orientation, x, type, definition.impenetrable);
                   }
 
-               } else if(var4 == 9) {
-                  if(var14.animation == -1 && var14.morphisms == null) {
-                     var17 = var14.a(var4, var8, var9, var10, var11, var12, -1);
+               } else if(type == 9) {
+                  if(definition.animation == -1 && definition.morphisms == null) {
+                     object = definition.modelAt(type, orientation, centre, east, northEast, north, -1);
                   } else {
-                     var17 = new RenderableObject(var7, var8, var4, var10, var11, var9, var12, var14.animation, true);
+                     object = new RenderableObject(id, orientation, type, east, northEast, centre, north, definition.animation, true);
                   }
 
-                  var2.a(var15, var16, var13, 1, (Renderable)var17, 1, var5, 0, var1, var6);
-                  if(var14.solid && var3 != null) {
-                     var3.a(var14.impenetrable, var14.width, var14.length, var6, var1, var8);
+                  scene.addObject(key, config, mean, 1, (Renderable)object, 1, z, 0, y, x);
+                  if(definition.solid && map != null) {
+                     map.flagObject(definition.impenetrable, definition.width, definition.length, x, y, orientation);
                   }
 
                } else {
-                  if(var14.contouredGround) {
-                     if(var8 == 1) {
-                        var21 = var12;
-                        var12 = var11;
-                        var11 = var10;
-                        var10 = var9;
-                        var9 = var21;
-                     } else if(var8 == 2) {
-                        var21 = var12;
-                        var12 = var10;
-                        var10 = var21;
-                        var21 = var11;
-                        var11 = var9;
-                        var9 = var21;
-                     } else if(var8 == 3) {
-                        var21 = var12;
-                        var12 = var9;
-                        var9 = var10;
-                        var10 = var11;
-                        var11 = var21;
+                  if(definition.contouredGround) {
+                     if(orientation == 1) {
+                        displacement = north;
+                        north = northEast;
+                        northEast = east;
+                        east = centre;
+                        centre = displacement;
+                     } else if(orientation == 2) {
+                        displacement = north;
+                        north = east;
+                        east = displacement;
+                        displacement = northEast;
+                        northEast = centre;
+                        centre = displacement;
+                     } else if(orientation == 3) {
+                        displacement = north;
+                        north = centre;
+                        centre = east;
+                        east = northEast;
+                        northEast = displacement;
                      }
                   }
 
-                  if(var4 == 4) {
-                     if(var14.animation == -1 && var14.morphisms == null) {
-                        var17 = var14.a(4, 0, var9, var10, var11, var12, -1);
+                  if(type == 4) {
+                     if(definition.animation == -1 && definition.morphisms == null) {
+                        object = definition.modelAt(4, 0, centre, east, northEast, north, -1);
                      } else {
-                        var17 = new RenderableObject(var7, 0, 4, var10, var11, var9, var12, var14.animation, true);
+                        object = new RenderableObject(id, 0, 4, east, northEast, centre, north, definition.animation, true);
                      }
 
-                     var2.a(var15, var1, var8 << 9, var5, 0, var13, (Renderable)var17, var6, var16, 0, w[var8]);
-                  } else if(var4 == 5) {
-                     var21 = 16;
-                     if((var18 = var2.i(var5, var6, var1)) > 0) {
-                        var21 = ObjectDefinition.byId(var18 >> 14 & 32767).decorDisplacement;
+                     scene.addWallDecoration(key, y, orientation << 9, z, 0, mean, (Renderable)object, x, config, 0, anIntArray[orientation]);
+                  } else if(type == 5) {
+                     displacement = 16;
+                     if((existing = scene.getWallKey(z, x, y)) > 0) {
+                        displacement = ObjectDefinition.byId(existing >> 14 & 32767).decorDisplacement;
                      }
 
-                     if(var14.animation == -1 && var14.morphisms == null) {
-                        var20 = var14.a(4, 0, var9, var10, var11, var12, -1);
+                     if(definition.animation == -1 && definition.morphisms == null) {
+                        var20 = definition.modelAt(4, 0, centre, east, northEast, north, -1);
                      } else {
-                        var20 = new RenderableObject(var7, 0, 4, var10, var11, var9, var12, var14.animation, true);
+                        var20 = new RenderableObject(id, 0, 4, east, northEast, centre, north, definition.animation, true);
                      }
 
-                     var2.a(var15, var1, var8 << 9, var5, n[var8] * var21, var13, (Renderable)var20, var6, var16, r[var8] * var21, w[var8]);
-                  } else if(var4 == 6) {
-                     if(var14.animation == -1 && var14.morphisms == null) {
-                        var17 = var14.a(4, 0, var9, var10, var11, var12, -1);
+                     scene.addWallDecoration(key, y, orientation << 9, z, COSINE_VERTICES[orientation] * displacement, mean, (Renderable)var20, x, config, SINE_VERTICES[orientation] * displacement, anIntArray[orientation]);
+                  } else if(type == 6) {
+                     if(definition.animation == -1 && definition.morphisms == null) {
+                        object = definition.modelAt(4, 0, centre, east, northEast, north, -1);
                      } else {
-                        var17 = new RenderableObject(var7, 0, 4, var10, var11, var9, var12, var14.animation, true);
+                        object = new RenderableObject(id, 0, 4, east, northEast, centre, north, definition.animation, true);
                      }
 
-                     var2.a(var15, var1, var8, var5, 0, var13, (Renderable)var17, var6, var16, 0, 256);
-                  } else if(var4 == 7) {
-                     if(var14.animation == -1 && var14.morphisms == null) {
-                        var17 = var14.a(4, 0, var9, var10, var11, var12, -1);
+                     scene.addWallDecoration(key, y, orientation, z, 0, mean, (Renderable)object, x, config, 0, 256);
+                  } else if(type == 7) {
+                     if(definition.animation == -1 && definition.morphisms == null) {
+                        object = definition.modelAt(4, 0, centre, east, northEast, north, -1);
                      } else {
-                        var17 = new RenderableObject(var7, 0, 4, var10, var11, var9, var12, var14.animation, true);
+                        object = new RenderableObject(id, 0, 4, east, northEast, centre, north, definition.animation, true);
                      }
 
-                     var2.a(var15, var1, var8, var5, 0, var13, (Renderable)var17, var6, var16, 0, 512);
+                     scene.addWallDecoration(key, y, orientation, z, 0, mean, (Renderable)object, x, config, 0, 512);
                   } else {
-                     if(var4 == 8) {
-                        if(var14.animation == -1 && var14.morphisms == null) {
-                           var17 = var14.a(4, 0, var9, var10, var11, var12, -1);
+                     if(type == 8) {
+                        if(definition.animation == -1 && definition.morphisms == null) {
+                           object = definition.modelAt(4, 0, centre, east, northEast, north, -1);
                         } else {
-                           var17 = new RenderableObject(var7, 0, 4, var10, var11, var9, var12, var14.animation, true);
+                           object = new RenderableObject(id, 0, 4, east, northEast, centre, north, definition.animation, true);
                         }
 
-                        var2.a(var15, var1, var8, var5, 0, var13, (Renderable)var17, var6, var16, 0, 768);
+                        scene.addWallDecoration(key, y, orientation, z, 0, mean, (Renderable)object, x, config, 0, 768);
                      }
 
                   }
                }
             }
          } else {
-            if(var14.animation == -1 && var14.morphisms == null) {
-               var17 = var14.a(10, var8, var9, var10, var11, var12, -1);
+            if(definition.animation == -1 && definition.morphisms == null) {
+               object = definition.modelAt(10, orientation, centre, east, northEast, north, -1);
             } else {
-               var17 = new RenderableObject(var7, var8, 10, var10, var11, var9, var12, var14.animation, true);
+               object = new RenderableObject(id, orientation, 10, east, northEast, centre, north, definition.animation, true);
             }
 
-            if(var17 != null) {
-               var18 = 0;
-               if(var4 == 11) {
-                  var18 += 256;
+            if(object != null) {
+               existing = 0;
+               if(type == 11) {
+                  existing += 256;
                }
 
-               if(var8 != 1 && var8 != 3) {
-                  var7 = var14.width;
-                  var4 = var14.length;
+               if(orientation != 1 && orientation != 3) {
+                  id = definition.width;
+                  type = definition.length;
                } else {
-                  var7 = var14.length;
-                  var4 = var14.width;
+                  id = definition.length;
+                  type = definition.width;
                }
 
-               if(var2.a(var15, var16, var13, var4, (Renderable)var17, var7, var5, var18, var1, var6) && var14.castsShadow) {
+               if(scene.addObject(key, config, mean, type, (Renderable)object, id, z, existing, y, x) && definition.castsShadow) {
                   Model var19;
-                  if(var17 instanceof Model) {
-                     var19 = (Model)var17;
+                  if(object instanceof Model) {
+                     var19 = (Model)object;
                   } else {
-                     var19 = var14.a(10, var8, var9, var10, var11, var12, -1);
+                     var19 = definition.modelAt(10, orientation, centre, east, northEast, north, -1);
                   }
 
                   if(var19 != null) {
-                     for(var9 = 0; var9 <= var7; ++var9) {
-                        for(var10 = 0; var10 <= var4; ++var10) {
-                           if((var11 = var19.r / 4) > 30) {
-                              var11 = 30;
+                     for(centre = 0; centre <= id; ++centre) {
+                        for(east = 0; east <= type; ++east) {
+                           if((northEast = var19.r / 4) > 30) {
+                              northEast = 30;
                            }
 
-                           if(var11 > this.k[var5][var6 + var9][var1 + var10]) {
-                              this.k[var5][var6 + var9][var1 + var10] = (byte)var11;
+                           if(northEast > this.shading[z][x + centre][y + east]) {
+                              this.shading[z][x + centre][y + east] = (byte)northEast;
                            }
                         }
                      }
@@ -807,8 +807,8 @@ final class MapRegion {
                }
             }
 
-            if(var14.solid && var3 != null) {
-               var3.a(var14.impenetrable, var14.width, var14.length, var6, var1, var8);
+            if(definition.solid && map != null) {
+               map.flagObject(definition.impenetrable, definition.width, definition.length, x, y, orientation);
             }
 
          }
@@ -820,13 +820,13 @@ final class MapRegion {
       var0 &= var2 - 1;
       int var4 = var1 / var2;
       var1 &= var2 - 1;
-      int var5 = d(var3, var4);
-      int var6 = d(var3 + 1, var4);
-      int var7 = d(var3, var4 + 1);
-      var3 = d(var3 + 1, var4 + 1);
-      var4 = b(var5, var6, var0, var2);
-      var0 = b(var7, var3, var0, var2);
-      return b(var4, var0, var1, var2);
+      int var5 = smoothNoise(var3, var4);
+      int var6 = smoothNoise(var3 + 1, var4);
+      int var7 = smoothNoise(var3, var4 + 1);
+      var3 = smoothNoise(var3 + 1, var4 + 1);
+      var4 = interpolate(var5, var6, var0, var2);
+      var0 = interpolate(var7, var3, var0, var2);
+      return interpolate(var4, var0, var1, var2);
    }
 
    private static int b(int var0, int var1, int var2) {
@@ -887,33 +887,33 @@ final class MapRegion {
       }
    }
 
-   public final void a(int var1, int var2, CollisionMap[] var3, int var4, int var5, byte[] var6, int var7, int var8, int var9) {
-      int var11;
-      for(int var10 = 0; var10 < 8; ++var10) {
-         for(var11 = 0; var11 < 8; ++var11) {
-            if(var4 + var10 > 0 && var4 + var10 < 103 && var9 + var11 > 0 && var9 + var11 < 103) {
-               var3[var8].a[var4 + var10][var9 + var11] &= -16777217;
+   public final void a(int var1, int var2, CollisionMap[] maps, int topLeftRegionX, int var5, byte[] var6, int var7, int tileZ, int topLeftRegionY) {
+      int y;
+      for(int x = 0; x < 8; ++x) {
+         for(y = 0; y < 8; ++y) {
+            if(topLeftRegionX + x > 0 && topLeftRegionX + x < 103 && topLeftRegionY + y > 0 && topLeftRegionY + y < 103) {
+               maps[tileZ].adjacencies[topLeftRegionX + x][topLeftRegionY + y] &= -16777217;
             }
          }
       }
 
       Buffer var17 = new Buffer(var6);
 
-      for(var11 = 0; var11 < 4; ++var11) {
+      for(y = 0; y < 4; ++y) {
          for(int var15 = 0; var15 < 64; ++var15) {
             for(int var16 = 0; var16 < 64; ++var16) {
-               if(var11 == var1 && var15 >= var5 && var15 < var5 + 8 && var16 >= var7 && var16 < var7 + 8) {
+               if(y == var1 && var15 >= var5 && var15 < var5 + 8 && var16 >= var7 && var16 < var7 + 8) {
                   int var10002 = var16 & 7;
                   int var12 = var15 & 7;
                   int var14 = var10002;
                   int var13;
-                  int var10001 = var9 + ((var13 = var2 & 3) == 0?var14:(var13 == 1?7 - var12:(var13 == 2?7 - var14:var12)));
+                  int var10001 = topLeftRegionY + ((var13 = var2 & 3) == 0?var14:(var13 == 1?7 - var12:(var13 == 2?7 - var14:var12)));
                   int var10006 = var16 & 7;
                   var12 = var15 & 7;
                   var13 = var10006;
-                  this.a(var10001, 0, var17, var4 + ((var14 = var2 & 3) == 0?var12:(var14 == 1?var13:(var14 == 2?7 - var12:7 - var13))), var8, var2, 0);
+                  this.decodeMapData(var10001, 0, var17, topLeftRegionX + ((var14 = var2 & 3) == 0?var12:(var14 == 1?var13:(var14 == 2?7 - var12:7 - var13))), tileZ, var2, 0);
                } else {
-                  this.a(-1, 0, var17, -1, 0, 0, 0);
+                  this.decodeMapData(-1, 0, var17, -1, 0, 0, 0);
                }
             }
          }
@@ -921,91 +921,91 @@ final class MapRegion {
 
    }
 
-   public final void a(byte[] var1, int var2, int var3, int var4, int var5, CollisionMap[] var6) {
-      int var8;
-      int var9;
+   public final void decodeRegionMapData(byte[] data, int dY, int dX, int regionX, int regionY, CollisionMap[] maps) {
+      int z;
+      int localX;
       for(int var7 = 0; var7 < 4; ++var7) {
-         for(var8 = 0; var8 < 64; ++var8) {
-            for(var9 = 0; var9 < 64; ++var9) {
-               if(var3 + var8 > 0 && var3 + var8 < 103 && var2 + var9 > 0 && var2 + var9 < 103) {
-                  var6[var7].a[var3 + var8][var2 + var9] &= -16777217;
+         for(z = 0; z < 64; ++z) {
+            for(localX = 0; localX < 64; ++localX) {
+               if(dX + z > 0 && dX + z < 103 && dY + localX > 0 && dY + localX < 103) {
+                  maps[var7].adjacencies[dX + z][dY + localX] &= -16777217;
                }
             }
          }
       }
 
-      Buffer var11 = new Buffer(var1);
+      Buffer var11 = new Buffer(data);
 
-      for(var8 = 0; var8 < 4; ++var8) {
-         for(var9 = 0; var9 < 64; ++var9) {
-            for(int var10 = 0; var10 < 64; ++var10) {
-               this.a(var10 + var2, var5, var11, var9 + var3, var8, 0, var4);
+      for(z = 0; z < 4; ++z) {
+         for(localX = 0; localX < 64; ++localX) {
+            for(int localY = 0; localY < 64; ++localY) {
+               this.decodeMapData(localY + dY, regionY, var11, localX + dX, z, 0, regionX);
             }
          }
       }
 
    }
 
-   private void a(int var1, int var2, Buffer var3, int var4, int var5, int var6, int var7) {
+   private void decodeMapData(int y, int regionY, Buffer buffer, int x, int z, int rotation, int regionX) {
       try {
-         int var8;
-         if(var4 >= 0 && var4 < 104 && var1 >= 0 && var1 < 104) {
-            this.v[var5][var4][var1] = 0;
+         int type;
+         if(x >= 0 && x < 104 && y >= 0 && y < 104) {
+            this.tileFlags[z][x][y] = 0;
 
-            while((var8 = var3.readUByte()) != 0) {
-               if(var8 == 1) {
-                  if((var2 = var3.readUByte()) == 1) {
-                     var2 = 0;
+            while((type = buffer.readUByte()) != 0) {
+               if(type == 1) {
+                  if((regionY = buffer.readUByte()) == 1) {
+                     regionY = 0;
                   }
 
-                  if(var5 == 0) {
-                     this.i[0][var4][var1] = -var2 << 3;
+                  if(z == 0) {
+                     this.tileHeights[0][x][y] = -regionY << 3;
                      return;
                   }
 
-                  this.i[var5][var4][var1] = this.i[var5 - 1][var4][var1] - (var2 << 3);
+                  this.tileHeights[z][x][y] = this.tileHeights[z - 1][x][y] - (regionY << 3);
                   return;
                }
 
-               if(var8 <= 49) {
-                  this.j[var5][var4][var1] = var3.readByte();
-                  this.m[var5][var4][var1] = (byte)((var8 - 2) / 4);
-                  this.u[var5][var4][var1] = (byte)(var8 - 2 + var6 & 3);
-               } else if(var8 <= 81) {
-                  this.v[var5][var4][var1] = (byte)(var8 - 49);
+               if(type <= 49) {
+                  this.overlays[z][x][y] = buffer.readByte();
+                  this.overlayTypes[z][x][y] = (byte)((type - 2) / 4);
+                  this.overlayOrientations[z][x][y] = (byte)(type - 2 + rotation & 3);
+               } else if(type <= 81) {
+                  this.tileFlags[z][x][y] = (byte)(type - 49);
                } else {
-                  this.q[var5][var4][var1] = (byte)(var8 - 81);
+                  this.underlays[z][x][y] = (byte)(type - 81);
                }
             }
 
-            if(var5 == 0) {
-               int[] var10000 = this.i[0][var4];
-               int var10001 = var1;
-               int var10002 = var4 + 932731 + var7;
-               var2 += var1 + 556238;
-               var1 = var10002;
-               if((var1 = (int)((double)(a(var10002 + '넵', var2 + 91923, 4) - 128 + (a(var1 + 10294, var2 + '鎽', 2) - 128 >> 1) + (a(var1, var2, 1) - 128 >> 2)) * 0.3D) + 35) < 10) {
-                  var1 = 10;
-               } else if(var1 > 60) {
-                  var1 = 60;
+            if(z == 0) {
+               int[] var10000 = this.tileHeights[0][x];
+               int var10001 = y;
+               int var10002 = x + 932731 + regionX;
+               regionY += y + 556238;
+               y = var10002;
+               if((y = (int)((double)(a(var10002 + '넵', regionY + 91923, 4) - 128 + (a(y + 10294, regionY + '鎽', 2) - 128 >> 1) + (a(y, regionY, 1) - 128 >> 2)) * 0.3D) + 35) < 10) {
+                  y = 10;
+               } else if(y > 60) {
+                  y = 60;
                }
 
-               var10000[var10001] = -var1 << 3;
+               var10000[var10001] = -y << 3;
                return;
             }
 
-            this.i[var5][var4][var1] = this.i[var5 - 1][var4][var1] - 240;
+            this.tileHeights[z][x][y] = this.tileHeights[z - 1][x][y] - 240;
             return;
          }
 
-         while((var8 = var3.readUByte()) != 0) {
-            if(var8 == 1) {
-               var3.readUByte();
+         while((type = buffer.readUByte()) != 0) {
+            if(type == 1) {
+               buffer.readUByte();
                return;
             }
 
-            if(var8 <= 49) {
-               var3.readUByte();
+            if(type <= 49) {
+               buffer.readUByte();
             }
          }
       } catch (Exception var9) {
@@ -1014,55 +1014,55 @@ final class MapRegion {
 
    }
 
-   private int c(int var1, int var2, int var3) {
-      return (this.v[var2][var3][var1] & 8) != 0?0:(var2 > 0 && (this.v[1][var3][var1] & 2) != 0?var2 - 1:var2);
+   private int getCollisionPlane(int y, int z, int x) {
+      return (this.tileFlags[z][x][y] & 8) != 0?0:(z > 0 && (this.tileFlags[1][x][y] & 2) != 0?z - 1:z);
    }
 
-   public final void a(CollisionMap[] var1, SceneGraph var2, int var3, int var4, int var5, int var6, byte[] var7, int var8, int var9, int var10) {
-      Buffer var25 = new Buffer(var7);
-      int var11 = -1;
+   public final void decodeConstructedLandscapes(CollisionMap[] maps, SceneGraph scene, int var3, int var4, int var5, int var6, byte[] var7, int var8, int var9, int var10) {
+      Buffer buffer = new Buffer(var7);
+      int id = -1;
 
-      int var12;
-      while((var12 = var25.c()) != 0) {
-         var11 += var12;
-         var12 = 0;
+      int idOffset;
+      while((idOffset = buffer.c()) != 0) {
+         id += idOffset;
+         idOffset = 0;
 
-         int var13;
-         while((var13 = var25.s()) != 0) {
-            var13 = (var12 += var13 - 1) & 63;
-            int var14 = var12 >> 6 & 63;
-            int var15 = var12 >> 12;
-            int var16;
-            int var17 = (var16 = var25.readUByte()) >> 2;
-            var16 &= 3;
-            if(var15 == var3 && var14 >= var8 && var14 < var8 + 8 && var13 >= var5 && var13 < var5 + 8) {
-               ObjectDefinition var18 = ObjectDefinition.byId(var11);
-               int var10003 = var14 & 7;
-               int var10004 = var13 & 7;
-               int var19 = var18.width;
+         int offset;
+         while((offset = buffer.s()) != 0) {
+            offset = (idOffset += offset - 1) & 63;
+            int y = idOffset >> 6 & 63;
+            int objectPlane = idOffset >> 12;
+            int packed;
+            int type = (packed = buffer.readUByte()) >> 2;
+            packed &= 3;
+            if(objectPlane == var3 && y >= var8 && y < var8 + 8 && offset >= var5 && offset < var5 + 8) {
+               ObjectDefinition definition = ObjectDefinition.byId(id);
+               int var10003 = y & 7;
+               int var10004 = offset & 7;
+               int var19 = definition.width;
                int var20 = var10004;
                int var21 = var10003;
-               int var22 = var18.length;
+               int var22 = definition.length;
                int var23;
                int var24 = var4 + ((var23 = var9 & 3) == 0?var21:(var23 == 1?var20:(var23 == 2?7 - var21 - (var19 - 1):7 - var20 - (var22 - 1))));
-               int var10001 = var13 & 7;
-               var19 = var14 & 7;
-               var20 = var18.width;
-               var22 = var18.length;
+               int var10001 = offset & 7;
+               var19 = y & 7;
+               var20 = definition.width;
+               var22 = definition.length;
                var23 = var10001;
-               var13 = var10 + ((var21 = var9 & 3) == 0?var23:(var21 == 1?7 - var19 - (var20 - 1):(var21 == 2?7 - var23 - (var22 - 1):var19)));
-               if(var24 > 0 && var13 > 0 && var24 < 103 && var13 < 103) {
-                  var14 = var15;
-                  if((this.v[1][var24][var13] & 2) == 2) {
-                     var14 = var15 - 1;
+               offset = var10 + ((var21 = var9 & 3) == 0?var23:(var21 == 1?7 - var19 - (var20 - 1):(var21 == 2?7 - var23 - (var22 - 1):var19)));
+               if(var24 > 0 && offset > 0 && var24 < 103 && offset < 103) {
+                  y = objectPlane;
+                  if((this.tileFlags[1][var24][offset] & 2) == 2) {
+                     y = objectPlane - 1;
                   }
 
                   CollisionMap var26 = null;
-                  if(var14 >= 0) {
-                     var26 = var1[var14];
+                  if(y >= 0) {
+                     var26 = maps[y];
                   }
 
-                  this.a(var13, var2, var26, var17, var6, var24, var11, var16 + var9 & 3);
+                  this.a(offset, scene, var26, type, var6, var24, id, packed + var9 & 3);
                }
             }
          }
@@ -1070,117 +1070,117 @@ final class MapRegion {
 
    }
 
-   private static int b(int var0, int var1, int var2, int var3) {
-      var2 = 65536 - Rasterizer3D.COSINE[(var2 << 10) / var3] >> 1;
-      return (var0 * (65536 - var2) >> 16) + (var1 * var2 >> 16);
+   private static int interpolate(int a, int b, int angle, int frequencyReciprocal) {
+      angle = 65536 - Rasterizer3D.COSINE[(angle << 10) / frequencyReciprocal] >> 1;
+      return (a * (65536 - angle) >> 16) + (b * angle >> 16);
    }
 
-   private static int c(int var0, int var1) {
-      if(var0 == -2) {
+   private static int checkedLight(int color, int light) {
+      if(color == -2) {
          return 12345678;
-      } else if(var0 == -1) {
-         if(var1 < 0) {
-            var1 = 0;
-         } else if(var1 > 127) {
-            var1 = 127;
+      } else if(color == -1) {
+         if(light < 0) {
+            light = 0;
+         } else if(light > 127) {
+            light = 127;
          }
 
-         return var1 = 127 - var1;
+         return light = 127 - light;
       } else {
-         if((var1 = var1 * (var0 & 127) / 128) < 2) {
-            var1 = 2;
-         } else if(var1 > 126) {
-            var1 = 126;
+         if((light = light * (color & 127) / 128) < 2) {
+            light = 2;
+         } else if(light > 126) {
+            light = 126;
          }
 
-         return (var0 & 'ﾀ') + var1;
+         return (color & 'ﾀ') + light;
       }
    }
 
-   private static int d(int var0, int var1) {
-      int var2 = b(var0 - 1, var1 - 1) + b(var0 + 1, var1 - 1) + b(var0 - 1, var1 + 1) + b(var0 + 1, var1 + 1);
-      int var3 = b(var0 - 1, var1) + b(var0 + 1, var1) + b(var0, var1 - 1) + b(var0, var1 + 1);
-      var0 = b(var0, var1);
+   private static int smoothNoise(int var0, int var1) {
+      int var2 = perlinNoise(var0 - 1, var1 - 1) + perlinNoise(var0 + 1, var1 - 1) + perlinNoise(var0 - 1, var1 + 1) + perlinNoise(var0 + 1, var1 + 1);
+      int var3 = perlinNoise(var0 - 1, var1) + perlinNoise(var0 + 1, var1) + perlinNoise(var0, var1 - 1) + perlinNoise(var0, var1 + 1);
+      var0 = perlinNoise(var0, var1);
       return var2 / 16 + var3 / 8 + var0 / 4;
    }
 
-   private static int e(int var0, int var1) {
-      if(var0 == -1) {
+   private static int light(int color, int light) {
+      if(color == -1) {
          return 12345678;
       } else {
-         if((var1 = var1 * (var0 & 127) / 128) < 2) {
-            var1 = 2;
-         } else if(var1 > 126) {
-            var1 = 126;
+         if((light = light * (color & 127) / 128) < 2) {
+            light = 2;
+         } else if(light > 126) {
+            light = 126;
          }
 
-         return (var0 & 'ﾀ') + var1;
+         return (color & 'ﾀ') + light;
       }
    }
 
-   public static void a(SceneGraph var0, int var1, int var2, int var3, int var4, CollisionMap var5, int[][][] var6, int var7, int var8, int var9) {
-      int var10 = var6[var4][var7][var2];
-      int var11 = var6[var4][var7 + 1][var2];
-      int var12 = var6[var4][var7 + 1][var2 + 1];
-      var4 = var6[var4][var7][var2 + 1];
-      int var18 = var10 + var11 + var12 + var4 >> 2;
-      ObjectDefinition var13 = ObjectDefinition.byId(var8);
-      int var14 = var7 + (var2 << 7) + (var8 << 14) + 1073741824;
-      if(!var13.interactive) {
-         var14 += Integer.MIN_VALUE;
+   public static void placeObject(SceneGraph var0, int var1, int y, int var3, int z, CollisionMap var5, int[][][] var6, int x, int id, int var9) {
+      int aY = var6[z][x][y];
+      int bY = var6[z][x + 1][y];
+      int cY = var6[z][x + 1][y + 1];
+      z = var6[z][x][y + 1];
+      int meanY = aY + bY + cY + z >> 2;
+      ObjectDefinition definition = ObjectDefinition.byId(id);
+      int key = x + (y << 7) + (id << 14) + 1073741824;
+      if(!definition.interactive) {
+         key += Integer.MIN_VALUE;
       }
 
-      byte var15 = (byte)((var1 << 6) + var3);
+      byte config = (byte)((var1 << 6) + var3);
       Object var16;
       if(var3 == 22) {
-         if(var13.animation == -1 && var13.morphisms == null) {
-            var16 = var13.a(22, var1, var10, var11, var12, var4, -1);
+         if(definition.animation == -1 && definition.morphisms == null) {
+            var16 = definition.modelAt(22, var1, aY, bY, cY, z, -1);
          } else {
-            var16 = new RenderableObject(var8, var1, 22, var11, var12, var10, var4, var13.animation, true);
+            var16 = new RenderableObject(id, var1, 22, bY, cY, aY, z, definition.animation, true);
          }
 
-         var0.a(var9, var18, var2, (Renderable)var16, var15, var14, var7);
-         if(var13.solid && var13.interactive) {
-            var5.a(var2, var7);
+         var0.addFloorDecoration(var9, meanY, y, (Renderable)var16, config, key, x);
+         if(definition.solid && definition.interactive) {
+            var5.block(y, x);
          }
 
       } else {
          int var17;
          if(var3 != 10 && var3 != 11) {
             if(var3 >= 12) {
-               if(var13.animation == -1 && var13.morphisms == null) {
-                  var16 = var13.a(var3, var1, var10, var11, var12, var4, -1);
+               if(definition.animation == -1 && definition.morphisms == null) {
+                  var16 = definition.modelAt(var3, var1, aY, bY, cY, z, -1);
                } else {
-                  var16 = new RenderableObject(var8, var1, var3, var11, var12, var10, var4, var13.animation, true);
+                  var16 = new RenderableObject(id, var1, var3, bY, cY, aY, z, definition.animation, true);
                }
 
-               var0.a(var14, var15, var18, 1, (Renderable)var16, 1, var9, 0, var2, var7);
-               if(var13.solid) {
-                  var5.a(var13.impenetrable, var13.width, var13.length, var7, var2, var1);
+               var0.addObject(key, config, meanY, 1, (Renderable)var16, 1, var9, 0, y, x);
+               if(definition.solid) {
+                  var5.flagObject(definition.impenetrable, definition.width, definition.length, x, y, var1);
                }
 
             } else if(var3 == 0) {
-               if(var13.animation == -1 && var13.morphisms == null) {
-                  var16 = var13.a(0, var1, var10, var11, var12, var4, -1);
+               if(definition.animation == -1 && definition.morphisms == null) {
+                  var16 = definition.modelAt(0, var1, aY, bY, cY, z, -1);
                } else {
-                  var16 = new RenderableObject(var8, var1, 0, var11, var12, var10, var4, var13.animation, true);
+                  var16 = new RenderableObject(id, var1, 0, bY, cY, aY, z, definition.animation, true);
                }
 
-               var0.a(w[var1], (Renderable)var16, var14, var2, var15, var7, (Renderable)null, var18, 0, var9);
-               if(var13.solid) {
-                  var5.a(var2, var1, var7, var3, var13.impenetrable);
+               var0.addWall(anIntArray[var1], (Renderable)var16, key, y, config, x, (Renderable)null, meanY, 0, var9);
+               if(definition.solid) {
+                  var5.flagObject(y, var1, x, var3, definition.impenetrable);
                }
 
             } else if(var3 == 1) {
-               if(var13.animation == -1 && var13.morphisms == null) {
-                  var16 = var13.a(1, var1, var10, var11, var12, var4, -1);
+               if(definition.animation == -1 && definition.morphisms == null) {
+                  var16 = definition.modelAt(1, var1, aY, bY, cY, z, -1);
                } else {
-                  var16 = new RenderableObject(var8, var1, 1, var11, var12, var10, var4, var13.animation, true);
+                  var16 = new RenderableObject(id, var1, 1, bY, cY, aY, z, definition.animation, true);
                }
 
-               var0.a(p[var1], (Renderable)var16, var14, var2, var15, var7, (Renderable)null, var18, 0, var9);
-               if(var13.solid) {
-                  var5.a(var2, var1, var7, var3, var13.impenetrable);
+               var0.addWall(p[var1], (Renderable)var16, key, y, config, x, (Renderable)null, meanY, 0, var9);
+               if(definition.solid) {
+                  var5.flagObject(y, var1, x, var3, definition.impenetrable);
                }
 
             } else {
@@ -1189,123 +1189,123 @@ final class MapRegion {
                if(var3 == 2) {
                   var20 = var1 + 1 & 3;
                   Object var21;
-                  if(var13.animation == -1 && var13.morphisms == null) {
-                     var21 = var13.a(2, var1 + 4, var10, var11, var12, var4, -1);
-                     var19 = var13.a(2, var20, var10, var11, var12, var4, -1);
+                  if(definition.animation == -1 && definition.morphisms == null) {
+                     var21 = definition.modelAt(2, var1 + 4, aY, bY, cY, z, -1);
+                     var19 = definition.modelAt(2, var20, aY, bY, cY, z, -1);
                   } else {
-                     var21 = new RenderableObject(var8, var1 + 4, 2, var11, var12, var10, var4, var13.animation, true);
-                     var19 = new RenderableObject(var8, var20, 2, var11, var12, var10, var4, var13.animation, true);
+                     var21 = new RenderableObject(id, var1 + 4, 2, bY, cY, aY, z, definition.animation, true);
+                     var19 = new RenderableObject(id, var20, 2, bY, cY, aY, z, definition.animation, true);
                   }
 
-                  var0.a(w[var1], (Renderable)var21, var14, var2, var15, var7, (Renderable)var19, var18, w[var20], var9);
-                  if(var13.solid) {
-                     var5.a(var2, var1, var7, var3, var13.impenetrable);
+                  var0.addWall(anIntArray[var1], (Renderable)var21, key, y, config, x, (Renderable)var19, meanY, anIntArray[var20], var9);
+                  if(definition.solid) {
+                     var5.flagObject(y, var1, x, var3, definition.impenetrable);
                   }
 
                } else if(var3 == 3) {
-                  if(var13.animation == -1 && var13.morphisms == null) {
-                     var16 = var13.a(3, var1, var10, var11, var12, var4, -1);
+                  if(definition.animation == -1 && definition.morphisms == null) {
+                     var16 = definition.modelAt(3, var1, aY, bY, cY, z, -1);
                   } else {
-                     var16 = new RenderableObject(var8, var1, 3, var11, var12, var10, var4, var13.animation, true);
+                     var16 = new RenderableObject(id, var1, 3, bY, cY, aY, z, definition.animation, true);
                   }
 
-                  var0.a(p[var1], (Renderable)var16, var14, var2, var15, var7, (Renderable)null, var18, 0, var9);
-                  if(var13.solid) {
-                     var5.a(var2, var1, var7, var3, var13.impenetrable);
+                  var0.addWall(p[var1], (Renderable)var16, key, y, config, x, (Renderable)null, meanY, 0, var9);
+                  if(definition.solid) {
+                     var5.flagObject(y, var1, x, var3, definition.impenetrable);
                   }
 
                } else if(var3 == 9) {
-                  if(var13.animation == -1 && var13.morphisms == null) {
-                     var16 = var13.a(var3, var1, var10, var11, var12, var4, -1);
+                  if(definition.animation == -1 && definition.morphisms == null) {
+                     var16 = definition.modelAt(var3, var1, aY, bY, cY, z, -1);
                   } else {
-                     var16 = new RenderableObject(var8, var1, var3, var11, var12, var10, var4, var13.animation, true);
+                     var16 = new RenderableObject(id, var1, var3, bY, cY, aY, z, definition.animation, true);
                   }
 
-                  var0.a(var14, var15, var18, 1, (Renderable)var16, 1, var9, 0, var2, var7);
-                  if(var13.solid) {
-                     var5.a(var13.impenetrable, var13.width, var13.length, var7, var2, var1);
+                  var0.addObject(key, config, meanY, 1, (Renderable)var16, 1, var9, 0, y, x);
+                  if(definition.solid) {
+                     var5.flagObject(definition.impenetrable, definition.width, definition.length, x, y, var1);
                   }
 
                } else {
-                  if(var13.contouredGround) {
+                  if(definition.contouredGround) {
                      if(var1 == 1) {
-                        var20 = var4;
-                        var4 = var12;
-                        var12 = var11;
-                        var11 = var10;
-                        var10 = var20;
+                        var20 = z;
+                        z = cY;
+                        cY = bY;
+                        bY = aY;
+                        aY = var20;
                      } else if(var1 == 2) {
-                        var20 = var4;
-                        var4 = var11;
-                        var11 = var20;
-                        var20 = var12;
-                        var12 = var10;
-                        var10 = var20;
+                        var20 = z;
+                        z = bY;
+                        bY = var20;
+                        var20 = cY;
+                        cY = aY;
+                        aY = var20;
                      } else if(var1 == 3) {
-                        var20 = var4;
-                        var4 = var10;
-                        var10 = var11;
-                        var11 = var12;
-                        var12 = var20;
+                        var20 = z;
+                        z = aY;
+                        aY = bY;
+                        bY = cY;
+                        cY = var20;
                      }
                   }
 
                   if(var3 == 4) {
-                     if(var13.animation == -1 && var13.morphisms == null) {
-                        var16 = var13.a(4, 0, var10, var11, var12, var4, -1);
+                     if(definition.animation == -1 && definition.morphisms == null) {
+                        var16 = definition.modelAt(4, 0, aY, bY, cY, z, -1);
                      } else {
-                        var16 = new RenderableObject(var8, 0, 4, var11, var12, var10, var4, var13.animation, true);
+                        var16 = new RenderableObject(id, 0, 4, bY, cY, aY, z, definition.animation, true);
                      }
 
-                     var0.a(var14, var2, var1 << 9, var9, 0, var18, (Renderable)var16, var7, var15, 0, w[var1]);
+                     var0.addWallDecoration(key, y, var1 << 9, var9, 0, meanY, (Renderable)var16, x, config, 0, anIntArray[var1]);
                   } else if(var3 == 5) {
                      var20 = 16;
-                     if((var17 = var0.i(var9, var7, var2)) > 0) {
+                     if((var17 = var0.getWallKey(var9, x, y)) > 0) {
                         var20 = ObjectDefinition.byId(var17 >> 14 & 32767).decorDisplacement;
                      }
 
-                     if(var13.animation == -1 && var13.morphisms == null) {
-                        var19 = var13.a(4, 0, var10, var11, var12, var4, -1);
+                     if(definition.animation == -1 && definition.morphisms == null) {
+                        var19 = definition.modelAt(4, 0, aY, bY, cY, z, -1);
                      } else {
-                        var19 = new RenderableObject(var8, 0, 4, var11, var12, var10, var4, var13.animation, true);
+                        var19 = new RenderableObject(id, 0, 4, bY, cY, aY, z, definition.animation, true);
                      }
 
-                     var0.a(var14, var2, var1 << 9, var9, n[var1] * var20, var18, (Renderable)var19, var7, var15, r[var1] * var20, w[var1]);
+                     var0.addWallDecoration(key, y, var1 << 9, var9, COSINE_VERTICES[var1] * var20, meanY, (Renderable)var19, x, config, SINE_VERTICES[var1] * var20, anIntArray[var1]);
                   } else if(var3 == 6) {
-                     if(var13.animation == -1 && var13.morphisms == null) {
-                        var16 = var13.a(4, 0, var10, var11, var12, var4, -1);
+                     if(definition.animation == -1 && definition.morphisms == null) {
+                        var16 = definition.modelAt(4, 0, aY, bY, cY, z, -1);
                      } else {
-                        var16 = new RenderableObject(var8, 0, 4, var11, var12, var10, var4, var13.animation, true);
+                        var16 = new RenderableObject(id, 0, 4, bY, cY, aY, z, definition.animation, true);
                      }
 
-                     var0.a(var14, var2, var1, var9, 0, var18, (Renderable)var16, var7, var15, 0, 256);
+                     var0.addWallDecoration(key, y, var1, var9, 0, meanY, (Renderable)var16, x, config, 0, 256);
                   } else if(var3 == 7) {
-                     if(var13.animation == -1 && var13.morphisms == null) {
-                        var16 = var13.a(4, 0, var10, var11, var12, var4, -1);
+                     if(definition.animation == -1 && definition.morphisms == null) {
+                        var16 = definition.modelAt(4, 0, aY, bY, cY, z, -1);
                      } else {
-                        var16 = new RenderableObject(var8, 0, 4, var11, var12, var10, var4, var13.animation, true);
+                        var16 = new RenderableObject(id, 0, 4, bY, cY, aY, z, definition.animation, true);
                      }
 
-                     var0.a(var14, var2, var1, var9, 0, var18, (Renderable)var16, var7, var15, 0, 512);
+                     var0.addWallDecoration(key, y, var1, var9, 0, meanY, (Renderable)var16, x, config, 0, 512);
                   } else {
                      if(var3 == 8) {
-                        if(var13.animation == -1 && var13.morphisms == null) {
-                           var16 = var13.a(4, 0, var10, var11, var12, var4, -1);
+                        if(definition.animation == -1 && definition.morphisms == null) {
+                           var16 = definition.modelAt(4, 0, aY, bY, cY, z, -1);
                         } else {
-                           var16 = new RenderableObject(var8, 0, 4, var11, var12, var10, var4, var13.animation, true);
+                           var16 = new RenderableObject(id, 0, 4, bY, cY, aY, z, definition.animation, true);
                         }
 
-                        var0.a(var14, var2, var1, var9, 0, var18, (Renderable)var16, var7, var15, 0, 768);
+                        var0.addWallDecoration(key, y, var1, var9, 0, meanY, (Renderable)var16, x, config, 0, 768);
                      }
 
                   }
                }
             }
          } else {
-            if(var13.animation == -1 && var13.morphisms == null) {
-               var16 = var13.a(10, var1, var10, var11, var12, var4, -1);
+            if(definition.animation == -1 && definition.morphisms == null) {
+               var16 = definition.modelAt(10, var1, aY, bY, cY, z, -1);
             } else {
-               var16 = new RenderableObject(var8, var1, 10, var11, var12, var10, var4, var13.animation, true);
+               var16 = new RenderableObject(id, var1, 10, bY, cY, aY, z, definition.animation, true);
             }
 
             if(var16 != null) {
@@ -1315,51 +1315,51 @@ final class MapRegion {
                }
 
                if(var1 != 1 && var1 != 3) {
-                  var4 = var13.width;
-                  var3 = var13.length;
+                  z = definition.width;
+                  var3 = definition.length;
                } else {
-                  var4 = var13.length;
-                  var3 = var13.width;
+                  z = definition.length;
+                  var3 = definition.width;
                }
 
-               var0.a(var14, var15, var18, var3, (Renderable)var16, var4, var9, var17, var2, var7);
+               var0.addObject(key, config, meanY, var3, (Renderable)var16, z, var9, var17, y, x);
             }
 
-            if(var13.solid) {
-               var5.a(var13.impenetrable, var13.width, var13.length, var7, var2, var1);
+            if(definition.solid) {
+               var5.flagObject(definition.impenetrable, definition.width, definition.length, x, y, var1);
             }
 
          }
       }
    }
 
-   public static boolean a(int var0, byte[] var1, int var2) {
+   public static boolean objectsReady(int y, byte[] data, int x) {
       boolean var3 = true;
-      Buffer var10 = new Buffer(var1);
+      Buffer var10 = new Buffer(data);
       int var4 = -1;
 
-      int var5;
+      int position;
       label62:
-      while((var5 = var10.s()) != 0) {
-         var4 += var5;
-         var5 = 0;
+      while((position = var10.s()) != 0) {
+         var4 += position;
+         position = 0;
          boolean var6 = false;
 
          while(true) {
             while(!var6) {
-               int var7;
-               if((var7 = var10.s()) == 0) {
+               int terminate;
+               if((terminate = var10.s()) == 0) {
                   continue label62;
                }
 
-               var7 = (var5 += var7 - 1) & 63;
-               int var8 = var5 >> 6 & 63;
-               int var9 = var10.readUByte() >> 2;
-               var8 += var0;
-               var7 += var2;
-               if(var8 > 0 && var7 > 0 && var8 < 103 && var7 < 103) {
+               terminate = (position += terminate - 1) & 63;
+               int localY = position >> 6 & 63;
+               int type = var10.readUByte() >> 2;
+               localY += y;
+               terminate += x;
+               if(localY > 0 && terminate > 0 && localY < 103 && terminate < 103) {
                   ObjectDefinition var12 = ObjectDefinition.byId(var4);
-                  if(var9 != 22 || !c || var12.interactive || var12.obstructsGround) {
+                  if(type != 22 || !lowMemory || var12.interactive || var12.obstructsGround) {
                      ObjectDefinition var11 = var12;
                      boolean var10001;
                      if(var12.modelIds == null) {
@@ -1367,8 +1367,8 @@ final class MapRegion {
                      } else {
                         var6 = true;
 
-                        for(var7 = 0; var7 < var11.modelIds.length; ++var7) {
-                           var6 &= Model.b(var11.modelIds[var7] & '\uffff');
+                        for(terminate = 0; terminate < var11.modelIds.length; ++terminate) {
+                           var6 &= Model.b(var11.modelIds[terminate] & '\uffff');
                         }
 
                         var10001 = var6;
@@ -1391,37 +1391,37 @@ final class MapRegion {
       return var3;
    }
 
-   public final void a(int var1, CollisionMap[] var2, int var3, SceneGraph var4, byte[] var5) {
-      Buffer var15 = new Buffer(var5);
-      int var6 = -1;
+   public final void decodeLandscapes(int localX, CollisionMap[] maps, int localY, SceneGraph scene, byte[] data) {
+      Buffer var15 = new Buffer(data);
+      int id = -1;
 
-      int var7;
-      while((var7 = var15.s()) != 0) {
-         var6 += var7;
-         var7 = 0;
+      int idOffset;
+      while((idOffset = var15.s()) != 0) {
+         id += idOffset;
+         idOffset = 0;
 
-         int var8;
-         while((var8 = var15.s()) != 0) {
-            var8 = (var7 += var8 - 1) & 63;
-            int var9 = var7 >> 6 & 63;
-            int var10 = var7 >> 12;
-            int var11;
-            int var12 = (var11 = var15.readUByte()) >> 2;
-            var11 &= 3;
-            var9 += var1;
-            var8 += var3;
-            if(var9 > 0 && var8 > 0 && var9 < 103 && var8 < 103 && var10 >= 0 && var10 < 4) {
-               int var13 = var10;
-               if((this.v[1][var9][var8] & 2) == 2) {
-                  var13 = var10 - 1;
+         int y;
+         while((y = var15.s()) != 0) {
+            y = (idOffset += y - 1) & 63;
+            int x = idOffset >> 6 & 63;
+            int z = idOffset >> 12;
+            int orientation;
+            int type = (orientation = var15.readUByte()) >> 2;
+            orientation &= 3;
+            x += localX;
+            y += localY;
+            if(x > 0 && y > 0 && x < 103 && y < 103 && z >= 0 && z < 4) {
+               int plane = z;
+               if((this.tileFlags[1][x][y] & 2) == 2) {
+                  plane = z - 1;
                }
 
-               CollisionMap var14 = null;
-               if(var13 >= 0) {
-                  var14 = var2[var13];
+               CollisionMap map = null;
+               if(plane >= 0) {
+                  map = maps[plane];
                }
 
-               this.a(var8, var4, var14, var12, var10, var9, var6, var11);
+               this.a(y, scene, map, type, z, x, id, orientation);
             }
          }
       }

@@ -1,11 +1,11 @@
 final class SceneGraph {
    private boolean d = true;
-   public static boolean a = true;
+   public static boolean lowMemory = true;
    private final int e = 4;
    private final int f = 104;
    private final int g = 104;
    private final int[][][] tileHeights;
-   private final SceneTile[][][] i = new SceneTile[4][104][104];
+   private final SceneTile[][][] tiles = new SceneTile[4][104][104];
    private int j;
    private int k;
    private final GameObject[] l = new GameObject[5000];
@@ -84,7 +84,7 @@ final class SceneGraph {
       for(var1 = 0; var1 < 4; ++var1) {
          for(var2 = 0; var2 < 104; ++var2) {
             for(int var3 = 0; var3 < 104; ++var3) {
-               this.i[var1][var2][var3] = null;
+               this.tiles[var1][var2][var3] = null;
             }
          }
       }
@@ -114,8 +114,8 @@ final class SceneGraph {
 
       for(int var2 = 0; var2 < 104; ++var2) {
          for(int var3 = 0; var3 < 104; ++var3) {
-            if(this.i[var1][var2][var3] == null) {
-               this.i[var1][var2][var3] = new SceneTile(var1, var2, var3);
+            if(this.tiles[var1][var2][var3] == null) {
+               this.tiles[var1][var2][var3] = new SceneTile(var1, var2, var3);
             }
          }
       }
@@ -123,11 +123,11 @@ final class SceneGraph {
    }
 
    public final void a(int var1, int var2) {
-      SceneTile var3 = this.i[0][var2][var1];
+      SceneTile var3 = this.tiles[0][var2][var1];
 
       for(int var4 = 0; var4 < 3; ++var4) {
          SceneTile var5;
-         if((var5 = this.i[var4][var2][var1] = this.i[var4 + 1][var2][var1]) != null) {
+         if((var5 = this.tiles[var4][var2][var1] = this.tiles[var4 + 1][var2][var1]) != null) {
             --var5.a;
 
             for(int var6 = 0; var6 < var5.k; ++var6) {
@@ -139,12 +139,12 @@ final class SceneGraph {
          }
       }
 
-      if(this.i[0][var2][var1] == null) {
-         this.i[0][var2][var1] = new SceneTile(0, var2, var1);
+      if(this.tiles[0][var2][var1] == null) {
+         this.tiles[0][var2][var1] = new SceneTile(0, var2, var1);
       }
 
-      this.i[0][var2][var1].w = var3;
-      this.i[3][var2][var1] = null;
+      this.tiles[0][var2][var1].sceneTile = var3;
+      this.tiles[3][var2][var1] = null;
    }
 
    public static void a(int var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7) {
@@ -164,61 +164,61 @@ final class SceneGraph {
    }
 
    public final void a(int var1, int var2, int var3, int var4) {
-      if(this.i[var1][var2][var3] != null) {
-         this.i[var1][var2][var3].o = var4;
+      if(this.tiles[var1][var2][var3] != null) {
+         this.tiles[var1][var2][var3].o = var4;
       }
 
    }
 
-   public final void a(int var1, int var2, int var3, int var4, int var5, int var6, int var7, int var8, int var9, int var10, int var11, int var12, int var13, int var14, int var15, int var16, int var17, int var18, int var19, int var20) {
+   public final void a(int var1, int x, int y, int type, int z, int var6, int var7, int var8, int var9, int var10, int var11, int var12, int var13, int var14, int var15, int var16, int var17, int var18, int var19, int var20) {
       SimpleTile var21;
-      if(var4 == 0) {
+      if(type == 0) {
          var21 = new SimpleTile(var11, var12, var13, var14, -1, var19, false);
 
-         for(var5 = var1; var5 >= 0; --var5) {
-            if(this.i[var5][var2][var3] == null) {
-               this.i[var5][var2][var3] = new SceneTile(var5, var2, var3);
+         for(z = var1; z >= 0; --z) {
+            if(this.tiles[z][x][y] == null) {
+               this.tiles[z][x][y] = new SceneTile(z, x, y);
             }
          }
 
-         this.i[var1][var2][var3].simpleTile = var21;
-      } else if(var4 != 1) {
-         ShapedTile var22 = new ShapedTile(var3, var15, var14, var9, var6, var17, var5, var11, var19, var13, var10, var8, var7, var4, var18, var16, var12, var2, var20);
+         this.tiles[var1][x][y].simpleTile = var21;
+      } else if(type != 1) {
+         ShapedTile var22 = new ShapedTile(y, var15, var14, var9, var6, var17, z, var11, var19, var13, var10, var8, var7, type, var18, var16, var12, x, var20);
 
-         for(var5 = var1; var5 >= 0; --var5) {
-            if(this.i[var5][var2][var3] == null) {
-               this.i[var5][var2][var3] = new SceneTile(var5, var2, var3);
+         for(z = var1; z >= 0; --z) {
+            if(this.tiles[z][x][y] == null) {
+               this.tiles[z][x][y] = new SceneTile(z, x, y);
             }
          }
 
-         this.i[var1][var2][var3].shapedTile = var22;
+         this.tiles[var1][x][y].shapedTile = var22;
       } else {
          var21 = new SimpleTile(var15, var16, var17, var18, var6, var20, var7 == var8 && var7 == var9 && var7 == var10);
 
-         for(var5 = var1; var5 >= 0; --var5) {
-            if(this.i[var5][var2][var3] == null) {
-               this.i[var5][var2][var3] = new SceneTile(var5, var2, var3);
+         for(z = var1; z >= 0; --z) {
+            if(this.tiles[z][x][y] == null) {
+               this.tiles[z][x][y] = new SceneTile(z, x, y);
             }
          }
 
-         this.i[var1][var2][var3].simpleTile = var21;
+         this.tiles[var1][x][y].simpleTile = var21;
       }
    }
 
-   public final void a(int var1, int var2, int var3, Renderable var4, byte var5, int var6, int var7) {
-      if(var4 != null) {
-         GroundDecoration var8;
-         (var8 = new GroundDecoration()).d = var4;
-         var8.b = (var7 << 7) + 64;
-         var8.c = (var3 << 7) + 64;
-         var8.a = var2;
-         var8.e = var6;
-         var8.f = var5;
-         if(this.i[var1][var7][var3] == null) {
-            this.i[var1][var7][var3] = new SceneTile(var1, var7, var3);
+   public final void addFloorDecoration(int z, int renderHeight, int y, Renderable renderable, byte config, int key, int x) {
+      if(renderable != null) {
+         GroundDecoration decoration;
+         (decoration = new GroundDecoration()).renderable = renderable;
+         decoration.x = (x << 7) + 64;
+         decoration.y = (y << 7) + 64;
+         decoration.renderHeight = renderHeight;
+         decoration.key = key;
+         decoration.config = config;
+         if(this.tiles[z][x][y] == null) {
+            this.tiles[z][x][y] = new SceneTile(z, x, y);
          }
 
-         this.i[var1][var7][var3].groundDecoratio = var8;
+         this.tiles[z][x][y].groundDecoration = decoration;
       }
    }
 
@@ -233,7 +233,7 @@ final class SceneGraph {
       var9.f = var5;
       var2 = 0;
       SceneTile var10;
-      if((var10 = this.i[var7][var1][var8]) != null) {
+      if((var10 = this.tiles[var7][var1][var8]) != null) {
          for(var4 = 0; var4 < var10.k; ++var4) {
             int var11;
             if(var10.gameObjects[var4].e instanceof Model && (var11 = ((Model)var10.gameObjects[var4].e).v) > var2) {
@@ -243,65 +243,65 @@ final class SceneGraph {
       }
 
       var9.h = var2;
-      if(this.i[var7][var1][var8] == null) {
-         this.i[var7][var1][var8] = new SceneTile(var7, var1, var8);
+      if(this.tiles[var7][var1][var8] == null) {
+         this.tiles[var7][var1][var8] = new SceneTile(var7, var1, var8);
       }
 
-      this.i[var7][var1][var8].groundItem = var9;
+      this.tiles[var7][var1][var8].groundItem = var9;
    }
 
-   public final void a(int var1, Renderable var2, int var3, int var4, byte var5, int var6, Renderable var7, int var8, int var9, int var10) {
-      if(var2 != null || var7 != null) {
-         Wall var11;
-         (var11 = new Wall()).h = var3;
-         var11.i = var5;
-         var11.b = (var6 << 7) + 64;
-         var11.c = (var4 << 7) + 64;
-         var11.a = var8;
-         var11.f = var2;
-         var11.g = var7;
-         var11.d = var1;
-         var11.e = var9;
+   public final void addWall(int faceUnknown, Renderable renderable1, int key, int y, byte config, int x, Renderable renderable2, int plane, int face, int z) {
+      if(renderable1 != null || renderable2 != null) {
+         Wall wall;
+         (wall = new Wall()).hash = key;
+         wall.config = config;
+         wall.x = (x << 7) + 64;
+         wall.y = (y << 7) + 64;
+         wall.plane = plane;
+         wall.aRenderable1 = renderable1;
+         wall.aRenderable2 = renderable2;
+         wall.faceUnknown = faceUnknown;
+         wall.face = face;
 
-         for(var1 = var10; var1 >= 0; --var1) {
-            if(this.i[var1][var6][var4] == null) {
-               this.i[var1][var6][var4] = new SceneTile(var1, var6, var4);
+         for(faceUnknown = z; faceUnknown >= 0; --faceUnknown) {
+            if(this.tiles[faceUnknown][x][y] == null) {
+               this.tiles[faceUnknown][x][y] = new SceneTile(faceUnknown, x, y);
             }
          }
 
-         this.i[var10][var6][var4].wall = var11;
+         this.tiles[z][x][y].wall = wall;
       }
    }
 
-   public final void a(int var1, int var2, int var3, int var4, int var5, int var6, Renderable var7, int var8, byte var9, int var10, int var11) {
-      if(var7 != null) {
-         WallDecoration var12;
-         (var12 = new WallDecoration()).g = var1;
-         var12.h = var9;
-         var12.b = (var8 << 7) + 64 + var5;
-         var12.c = (var2 << 7) + 64 + var10;
-         var12.a = var6;
-         var12.f = var7;
-         var12.d = var11;
-         var12.e = var3;
+   public final void addWallDecoration(int key, int y, int orientation, int z, int dx, int plane, Renderable renderable, int x, byte config, int dy, int faceUnknown) {
+      if(renderable != null) {
+         WallDecoration wallDecoration;
+         (wallDecoration = new WallDecoration()).hash = key;
+         wallDecoration.config = config;
+         wallDecoration.x = (x << 7) + 64 + dx;
+         wallDecoration.y = (y << 7) + 64 + dy;
+         wallDecoration.plane = plane;
+         wallDecoration.renderable = renderable;
+         wallDecoration.faceUnknown = faceUnknown;
+         wallDecoration.face = orientation;
 
-         for(var1 = var4; var1 >= 0; --var1) {
-            if(this.i[var1][var8][var2] == null) {
-               this.i[var1][var8][var2] = new SceneTile(var1, var8, var2);
+         for(key = z; key >= 0; --key) {
+            if(this.tiles[key][x][y] == null) {
+               this.tiles[key][x][y] = new SceneTile(key, x, y);
             }
          }
 
-         this.i[var4][var8][var2].wallDecoration = var12;
+         this.tiles[z][x][y].wallDecoration = wallDecoration;
       }
    }
 
-   public final boolean a(int var1, byte var2, int var3, int var4, Renderable var5, int var6, int var7, int var8, int var9, int var10) {
-      if(var5 == null) {
+   public final boolean addObject(int key, byte config, int renderHeight, int dy, Renderable renderable, int dx, int z, int yaw, int y, int x) {
+      if(renderable == null) {
          return true;
       } else {
-         int var11 = (var10 << 7) + var6 * 64;
-         int var12 = (var9 << 7) + var4 * 64;
-         return this.addRenderable(var7, var10, var9, var6, var4, var11, var12, var3, var5, var8, false, var1, var2);
+         int centreX = (x << 7) + dx * 64;
+         int centreY = (y << 7) + dy * 64;
+         return this.addRenderable(z, x, y, dx, dy, centreX, centreY, renderHeight, renderable, yaw, false, key, config);
       }
    }
 
@@ -352,7 +352,7 @@ final class SceneGraph {
             }
 
             SceneTile var16;
-            if((var16 = this.i[plane][var14][var15]) != null && var16.k >= 5) {
+            if((var16 = this.tiles[plane][var14][var15]) != null && var16.k >= 5) {
                return false;
             }
          }
@@ -392,13 +392,13 @@ final class SceneGraph {
             }
 
             for(centreY = plane; centreY >= 0; --centreY) {
-               if(this.i[centreY][var15][var19] == null) {
-                  this.i[centreY][var15][var19] = new SceneTile(centreY, var15, var19);
+               if(this.tiles[centreY][var15][var19] == null) {
+                  this.tiles[centreY][var15][var19] = new SceneTile(centreY, var15, var19);
                }
             }
 
             SceneTile var17;
-            (var17 = this.i[plane][var15][var19]).gameObjects[var17.k] = var18;
+            (var17 = this.tiles[plane][var15][var19]).gameObjects[var17.k] = var18;
             var17.objectAttributes[var17.k] = centreX;
             var17.n |= centreX;
             ++var17.k;
@@ -426,7 +426,7 @@ final class SceneGraph {
       for(int var2 = var1.g; var2 <= var1.h; ++var2) {
          for(int var3 = var1.i; var3 <= var1.j; ++var3) {
             SceneTile var4;
-            if((var4 = this.i[var1.a][var2][var3]) != null) {
+            if((var4 = this.tiles[var1.a][var2][var3]) != null) {
                int var5;
                for(var5 = 0; var5 < var4.k; ++var5) {
                   if(var4.gameObjects[var5] == var1) {
@@ -453,15 +453,15 @@ final class SceneGraph {
 
    }
 
-   public final void b(int var1, int var2, int var3, int var4) {
+   public final void displaceWallDecor(int y, int displacement, int x, int z) {
       SceneTile var5;
-      if((var5 = this.i[var4][var3][var1]) != null) {
+      if((var5 = this.tiles[z][x][y]) != null) {
          WallDecoration var6;
          if((var6 = var5.wallDecoration) != null) {
-            var3 = (var3 << 7) + 64;
-            var1 = (var1 << 7) + 64;
-            var6.b = var3 + (var6.b - var3) * var2 / 16;
-            var6.c = var1 + (var6.c - var1) * var2 / 16;
+            x = (x << 7) + 64;
+            y = (y << 7) + 64;
+            var6.x = x + (var6.x - x) * displacement / 16;
+            var6.y = y + (var6.y - y) * displacement / 16;
          }
 
       }
@@ -469,7 +469,7 @@ final class SceneGraph {
 
    public final void a(int var1, int var2, int var3, byte var4) {
       SceneTile var5;
-      if((var5 = this.i[var2][var1][var3]) != null) {
+      if((var5 = this.tiles[var2][var1][var3]) != null) {
          var5.wall = null;
       }
 
@@ -477,7 +477,7 @@ final class SceneGraph {
 
    public final void a(int var1, int var2, int var3) {
       SceneTile var4;
-      if((var4 = this.i[var2][var3][var1]) != null) {
+      if((var4 = this.tiles[var2][var3][var1]) != null) {
          var4.wallDecoration = null;
       }
 
@@ -485,7 +485,7 @@ final class SceneGraph {
 
    public final void b(int var1, int var2, int var3) {
       SceneTile var6;
-      if((var6 = this.i[var1][var2][var3]) != null) {
+      if((var6 = this.tiles[var1][var2][var3]) != null) {
          for(int var4 = 0; var4 < var6.k; ++var4) {
             GameObject var5;
             if(((var5 = var6.gameObjects[var4]).m >> 29 & 3) == 2 && var5.g == var2 && var5.i == var3) {
@@ -499,14 +499,14 @@ final class SceneGraph {
 
    public final void c(int var1, int var2, int var3) {
       SceneTile var4;
-      if((var4 = this.i[var1][var3][var2]) != null) {
-         var4.groundDecoratio = null;
+      if((var4 = this.tiles[var1][var3][var2]) != null) {
+         var4.groundDecoration = null;
       }
    }
 
    public final void d(int var1, int var2, int var3) {
       SceneTile var4;
-      if((var4 = this.i[var1][var2][var3]) != null) {
+      if((var4 = this.tiles[var1][var2][var3]) != null) {
          var4.groundItem = null;
       }
 
@@ -514,17 +514,17 @@ final class SceneGraph {
 
    public final Wall e(int var1, int var2, int var3) {
       SceneTile var4;
-      return (var4 = this.i[var1][var2][var3]) == null?null:var4.wall;
+      return (var4 = this.tiles[var1][var2][var3]) == null?null:var4.wall;
    }
 
    public final WallDecoration f(int var1, int var2, int var3) {
       SceneTile var4;
-      return (var4 = this.i[var3][var1][var2]) == null?null:var4.wallDecoration;
+      return (var4 = this.tiles[var3][var1][var2]) == null?null:var4.wallDecoration;
    }
 
    public final GameObject g(int var1, int var2, int var3) {
       SceneTile var6;
-      if((var6 = this.i[var3][var1][var2]) == null) {
+      if((var6 = this.tiles[var3][var1][var2]) == null) {
          return null;
       } else {
          for(int var4 = 0; var4 < var6.k; ++var4) {
@@ -540,22 +540,22 @@ final class SceneGraph {
 
    public final GroundDecoration h(int var1, int var2, int var3) {
       SceneTile var4;
-      return (var4 = this.i[var3][var2][var1]) != null && var4.groundDecoratio != null?var4.groundDecoratio:null;
+      return (var4 = this.tiles[var3][var2][var1]) != null && var4.groundDecoration != null?var4.groundDecoration:null;
    }
 
-   public final int i(int var1, int var2, int var3) {
+   public final int getWallKey(int var1, int var2, int var3) {
       SceneTile var4;
-      return (var4 = this.i[var1][var2][var3]) != null && var4.wall != null?var4.wall.h:0;
+      return (var4 = this.tiles[var1][var2][var3]) != null && var4.wall != null?var4.wall.hash:0;
    }
 
    public final int j(int var1, int var2, int var3) {
       SceneTile var4;
-      return (var4 = this.i[var1][var2][var3]) != null && var4.wallDecoration != null?var4.wallDecoration.g:0;
+      return (var4 = this.tiles[var1][var2][var3]) != null && var4.wallDecoration != null?var4.wallDecoration.hash:0;
    }
 
    public final int k(int var1, int var2, int var3) {
       SceneTile var6;
-      if((var6 = this.i[var1][var2][var3]) == null) {
+      if((var6 = this.tiles[var1][var2][var3]) == null) {
          return 0;
       } else {
          for(int var4 = 0; var4 < var6.k; ++var4) {
@@ -571,19 +571,19 @@ final class SceneGraph {
 
    public final int l(int var1, int var2, int var3) {
       SceneTile var4;
-      return (var4 = this.i[var1][var2][var3]) != null && var4.groundDecoratio != null?var4.groundDecoratio.e:0;
+      return (var4 = this.tiles[var1][var2][var3]) != null && var4.groundDecoration != null?var4.groundDecoration.key:0;
    }
 
    public final int c(int var1, int var2, int var3, int var4) {
       SceneTile var5;
-      if((var5 = this.i[var1][var2][var3]) == null) {
+      if((var5 = this.tiles[var1][var2][var3]) == null) {
          return -1;
-      } else if(var5.wall != null && var5.wall.h == var4) {
-         return var5.wall.i & 255;
-      } else if(var5.wallDecoration != null && var5.wallDecoration.g == var4) {
-         return var5.wallDecoration.h & 255;
-      } else if(var5.groundDecoratio != null && var5.groundDecoratio.e == var4) {
-         return var5.groundDecoratio.f & 255;
+      } else if(var5.wall != null && var5.wall.hash == var4) {
+         return var5.wall.config & 255;
+      } else if(var5.wallDecoration != null && var5.wallDecoration.hash == var4) {
+         return var5.wallDecoration.config & 255;
+      } else if(var5.groundDecoration != null && var5.groundDecoration.key == var4) {
+         return var5.groundDecoration.config & 255;
       } else {
          for(var2 = 0; var2 < var5.k; ++var2) {
             if(var5.gameObjects[var2].m == var4) {
@@ -603,17 +603,17 @@ final class SceneGraph {
          for(var3 = 0; var3 < 104; ++var3) {
             for(int var4 = 0; var4 < 104; ++var4) {
                SceneTile var5;
-               if((var5 = this.i[var2][var3][var4]) != null) {
+               if((var5 = this.tiles[var2][var3][var4]) != null) {
                   Wall var6 = var5.wall;
-                  if(var5.wall != null && var6.f != null && var6.f.normals != null) {
-                     this.a(var2, 1, 1, var3, var4, (Model)var6.f);
-                     if(var6.g != null && var6.g.normals != null) {
-                        this.a(var2, 1, 1, var3, var4, (Model)var6.g);
-                        this.a((Model)var6.f, (Model)var6.g, 0, 0, 0, false);
-                        ((Model)var6.g).a(80, var1, -50, -10, -50);
+                  if(var5.wall != null && var6.aRenderable1 != null && var6.aRenderable1.normals != null) {
+                     this.a(var2, 1, 1, var3, var4, (Model)var6.aRenderable1);
+                     if(var6.aRenderable2 != null && var6.aRenderable2.normals != null) {
+                        this.a(var2, 1, 1, var3, var4, (Model)var6.aRenderable2);
+                        this.a((Model)var6.aRenderable1, (Model)var6.aRenderable2, 0, 0, 0, false);
+                        ((Model)var6.aRenderable2).a(80, var1, -50, -10, -50);
                      }
 
-                     ((Model)var6.f).a(80, var1, -50, -10, -50);
+                     ((Model)var6.aRenderable1).a(80, var1, -50, -10, -50);
                   }
 
                   for(int var12 = 0; var12 < var5.k; ++var12) {
@@ -624,27 +624,27 @@ final class SceneGraph {
                      }
                   }
 
-                  GroundDecoration var13 = var5.groundDecoratio;
-                  if(var5.groundDecoratio != null && var13.d.normals != null) {
-                     Model var9 = (Model)var13.d;
+                  GroundDecoration var13 = var5.groundDecoration;
+                  if(var5.groundDecoration != null && var13.renderable.normals != null) {
+                     Model var9 = (Model)var13.renderable;
                      SceneTile var11;
-                     if(var3 < 104 && (var11 = this.i[var2][var3 + 1][var4]) != null && var11.groundDecoratio != null && var11.groundDecoratio.d.normals != null) {
-                        this.a(var9, (Model)var11.groundDecoratio.d, 128, 0, 0, true);
+                     if(var3 < 104 && (var11 = this.tiles[var2][var3 + 1][var4]) != null && var11.groundDecoration != null && var11.groundDecoration.renderable.normals != null) {
+                        this.a(var9, (Model)var11.groundDecoration.renderable, 128, 0, 0, true);
                      }
 
-                     if(var4 < 104 && (var11 = this.i[var2][var3][var4 + 1]) != null && var11.groundDecoratio != null && var11.groundDecoratio.d.normals != null) {
-                        this.a(var9, (Model)var11.groundDecoratio.d, 0, 0, 128, true);
+                     if(var4 < 104 && (var11 = this.tiles[var2][var3][var4 + 1]) != null && var11.groundDecoration != null && var11.groundDecoration.renderable.normals != null) {
+                        this.a(var9, (Model)var11.groundDecoration.renderable, 0, 0, 128, true);
                      }
 
-                     if(var3 < 104 && var4 < 104 && (var11 = this.i[var2][var3 + 1][var4 + 1]) != null && var11.groundDecoratio != null && var11.groundDecoratio.d.normals != null) {
-                        this.a(var9, (Model)var11.groundDecoratio.d, 128, 0, 128, true);
+                     if(var3 < 104 && var4 < 104 && (var11 = this.tiles[var2][var3 + 1][var4 + 1]) != null && var11.groundDecoration != null && var11.groundDecoration.renderable.normals != null) {
+                        this.a(var9, (Model)var11.groundDecoration.renderable, 128, 0, 128, true);
                      }
 
-                     if(var3 < 104 && var4 > 0 && (var11 = this.i[var2][var3 + 1][var4 - 1]) != null && var11.groundDecoratio != null && var11.groundDecoratio.d.normals != null) {
-                        this.a(var9, (Model)var11.groundDecoratio.d, 128, 0, -128, true);
+                     if(var3 < 104 && var4 > 0 && (var11 = this.tiles[var2][var3 + 1][var4 - 1]) != null && var11.groundDecoration != null && var11.groundDecoration.renderable.normals != null) {
+                        this.a(var9, (Model)var11.groundDecoration.renderable, 128, 0, -128, true);
                      }
 
-                     ((Model)var13.d).a(80, var1, -50, -10, -50);
+                     ((Model)var13.renderable).a(80, var1, -50, -10, -50);
                   }
                }
             }
@@ -666,15 +666,15 @@ final class SceneGraph {
                if(var13 >= 0 && var13 < 104) {
                   for(int var14 = var10; var14 <= var11; ++var14) {
                      SceneTile var15;
-                     if(var14 >= 0 && var14 < 104 && (!var7 || var13 >= var9 || var14 >= var11 || var14 < var5 && var13 != var4) && (var15 = this.i[var12][var13][var14]) != null) {
+                     if(var14 >= 0 && var14 < 104 && (!var7 || var13 >= var9 || var14 >= var11 || var14 < var5 && var13 != var4) && (var15 = this.tiles[var12][var13][var14]) != null) {
                         int var16 = (this.tileHeights[var12][var13][var14] + this.tileHeights[var12][var13 + 1][var14] + this.tileHeights[var12][var13][var14 + 1] + this.tileHeights[var12][var13 + 1][var14 + 1]) / 4 - (this.tileHeights[var1][var4][var5] + this.tileHeights[var1][var4 + 1][var5] + this.tileHeights[var1][var4][var5 + 1] + this.tileHeights[var1][var4 + 1][var5 + 1]) / 4;
                         Wall var17 = var15.wall;
-                        if(var15.wall != null && var17.f != null && var17.f.normals != null) {
-                           this.a(var6, (Model)var17.f, (var13 - var4 << 7) + (1 - var2 << 6), var16, (var14 - var5 << 7) + (1 - var3 << 6), var7);
+                        if(var15.wall != null && var17.aRenderable1 != null && var17.aRenderable1.normals != null) {
+                           this.a(var6, (Model)var17.aRenderable1, (var13 - var4 << 7) + (1 - var2 << 6), var16, (var14 - var5 << 7) + (1 - var3 << 6), var7);
                         }
 
-                        if(var17 != null && var17.g != null && var17.g.normals != null) {
-                           this.a(var6, (Model)var17.g, (var13 - var4 << 7) + (1 - var2 << 6), var16, (var14 - var5 << 7) + (1 - var3 << 6), var7);
+                        if(var17 != null && var17.aRenderable2 != null && var17.aRenderable2.normals != null) {
+                           this.a(var6, (Model)var17.aRenderable2, (var13 - var4 << 7) + (1 - var2 << 6), var16, (var14 - var5 << 7) + (1 - var3 << 6), var7);
                         }
 
                         for(int var21 = 0; var21 < var15.k; ++var21) {
@@ -749,7 +749,7 @@ final class SceneGraph {
 
    public final void a(int[] var1, int var2, int var3, int var4, int var5) {
       SceneTile var9;
-      if((var9 = this.i[var3][var4][var5]) != null) {
+      if((var9 = this.tiles[var3][var4][var5]) != null) {
          SimpleTile var11 = var9.simpleTile;
          if(var9.simpleTile == null) {
             ShapedTile var10;
@@ -1086,7 +1086,7 @@ final class SceneGraph {
 
       SceneTile[][] var15;
       for(var1 = this.j; var1 < 4; ++var1) {
-         var15 = this.i[var1];
+         var15 = this.tiles[var1];
 
          for(var3 = q; var3 < r; ++var3) {
             for(var6 = s; var6 < t; ++var6) {
@@ -1109,7 +1109,7 @@ final class SceneGraph {
 
       SceneTile var19;
       for(var1 = this.j; var1 < 4; ++var1) {
-         var15 = this.i[var1];
+         var15 = this.tiles[var1];
 
          for(var3 = -25; var3 <= 0; ++var3) {
             var6 = u + var3;
@@ -1148,7 +1148,7 @@ final class SceneGraph {
       }
 
       for(var1 = this.j; var1 < 4; ++var1) {
-         var15 = this.i[var1];
+         var15 = this.tiles[var1];
 
          for(var3 = -25; var3 <= 0; ++var3) {
             var6 = u + var3;
@@ -1230,13 +1230,13 @@ final class SceneGraph {
                                  var4 = var1.positionY;
                                  var5 = var1.a;
                                  var6 = var1.d;
-                                 var7 = this.i[var5];
+                                 var7 = this.tiles[var5];
                                  if(!var1.p) {
                                     break;
                                  }
 
                                  if(var2) {
-                                    if(var5 > 0 && (var8 = this.i[var5 - 1][var3][var4]) != null && var8.q || var3 <= u && var3 > q && (var8 = var7[var3 - 1][var4]) != null && var8.q && (var8.p || (var1.n & 1) == 0) || var3 >= u && var3 < r - 1 && (var8 = var7[var3 + 1][var4]) != null && var8.q && (var8.p || (var1.n & 4) == 0) || var4 <= v && var4 > s && (var8 = var7[var3][var4 - 1]) != null && var8.q && (var8.p || (var1.n & 8) == 0) || var4 >= v && var4 < t - 1 && (var8 = var7[var3][var4 + 1]) != null && var8.q && (var8.p || (var1.n & 2) == 0)) {
+                                    if(var5 > 0 && (var8 = this.tiles[var5 - 1][var3][var4]) != null && var8.q || var3 <= u && var3 > q && (var8 = var7[var3 - 1][var4]) != null && var8.q && (var8.p || (var1.n & 1) == 0) || var3 >= u && var3 < r - 1 && (var8 = var7[var3 + 1][var4]) != null && var8.q && (var8.p || (var1.n & 4) == 0) || var4 <= v && var4 > s && (var8 = var7[var3][var4 - 1]) != null && var8.q && (var8.p || (var1.n & 8) == 0) || var4 >= v && var4 < t - 1 && (var8 = var7[var3][var4 + 1]) != null && var8.q && (var8.p || (var1.n & 2) == 0)) {
                                        continue;
                                     }
                                  } else {
@@ -1244,9 +1244,9 @@ final class SceneGraph {
                                  }
 
                                  var1.p = false;
-                                 if(var1.w != null) {
-                                    var8 = var1.w;
-                                    if(var1.w.simpleTile != null) {
+                                 if(var1.sceneTile != null) {
+                                    var8 = var1.sceneTile;
+                                    if(var1.sceneTile.simpleTile != null) {
                                        if(!this.n(0, var3, var4)) {
                                           this.drawPlainTile(var8.simpleTile, 0, z, A, B, C, var3, var4);
                                        }
@@ -1256,7 +1256,7 @@ final class SceneGraph {
 
                                     var9 = var8.wall;
                                     if(var8.wall != null) {
-                                       var9.f.renderAtPoint(0, z, A, B, C, var9.b - w, var9.a - x, var9.c - y, var9.h);
+                                       var9.aRenderable1.renderAtPoint(0, z, A, B, C, var9.x - w, var9.plane - x, var9.y - y, var9.hash);
                                     }
 
                                     for(var10 = 0; var10 < var8.k; ++var10) {
@@ -1299,16 +1299,16 @@ final class SceneGraph {
                                  }
 
                                  if(var22 != null) {
-                                    if((var22.d & S[var20]) != 0) {
-                                       if(var22.d == 16) {
+                                    if((var22.faceUnknown & S[var20]) != 0) {
+                                       if(var22.faceUnknown == 16) {
                                           var1.s = 3;
                                           var1.t = U[var20];
                                           var1.u = 3 - var1.t;
-                                       } else if(var22.d == 32) {
+                                       } else if(var22.faceUnknown == 32) {
                                           var1.s = 6;
                                           var1.t = V[var20];
                                           var1.u = 6 - var1.t;
-                                       } else if(var22.d == 64) {
+                                       } else if(var22.faceUnknown == 64) {
                                           var1.s = 12;
                                           var1.t = W[var20];
                                           var1.u = 12 - var1.t;
@@ -1321,24 +1321,24 @@ final class SceneGraph {
                                        var1.s = 0;
                                     }
 
-                                    if((var22.d & var10) != 0 && !this.d(var6, var3, var4, var22.d)) {
-                                       var22.f.renderAtPoint(0, z, A, B, C, var22.b - w, var22.a - x, var22.c - y, var22.h);
+                                    if((var22.faceUnknown & var10) != 0 && !this.d(var6, var3, var4, var22.faceUnknown)) {
+                                       var22.aRenderable1.renderAtPoint(0, z, A, B, C, var22.x - w, var22.plane - x, var22.y - y, var22.hash);
                                     }
 
-                                    if((var22.e & var10) != 0 && !this.d(var6, var3, var4, var22.e)) {
-                                       var22.g.renderAtPoint(0, z, A, B, C, var22.b - w, var22.a - x, var22.c - y, var22.h);
+                                    if((var22.face & var10) != 0 && !this.d(var6, var3, var4, var22.face)) {
+                                       var22.aRenderable2.renderAtPoint(0, z, A, B, C, var22.x - w, var22.plane - x, var22.y - y, var22.hash);
                                     }
                                  }
 
-                                 if(var12 != null && !this.e(var6, var3, var4, var12.f.modelHeight)) {
-                                    if((var12.d & var10) != 0) {
-                                       var12.f.renderAtPoint(var12.e, z, A, B, C, var12.b - w, var12.a - x, var12.c - y, var12.g);
-                                    } else if((var12.d & 768) != 0) {
-                                       var13 = var12.b - w;
-                                       var14 = var12.a - x;
-                                       var15 = var12.c - y;
-                                       var16 = var12.e;
-                                       if(var12.e != 1 && var16 != 2) {
+                                 if(var12 != null && !this.e(var6, var3, var4, var12.renderable.modelHeight)) {
+                                    if((var12.faceUnknown & var10) != 0) {
+                                       var12.renderable.renderAtPoint(var12.face, z, A, B, C, var12.x - w, var12.plane - x, var12.y - y, var12.hash);
+                                    } else if((var12.faceUnknown & 768) != 0) {
+                                       var13 = var12.x - w;
+                                       var14 = var12.plane - x;
+                                       var15 = var12.y - y;
+                                       var16 = var12.face;
+                                       if(var12.face != 1 && var16 != 2) {
                                           var17 = var13;
                                        } else {
                                           var17 = -var13;
@@ -1350,24 +1350,24 @@ final class SceneGraph {
                                           var20 = -var15;
                                        }
 
-                                       if((var12.d & 256) != 0 && var20 < var17) {
+                                       if((var12.faceUnknown & 256) != 0 && var20 < var17) {
                                           var10 = var13 + E[var16];
                                           var26 = var15 + F[var16];
-                                          var12.f.renderAtPoint((var16 << 9) + 256, z, A, B, C, var10, var14, var26, var12.g);
+                                          var12.renderable.renderAtPoint((var16 << 9) + 256, z, A, B, C, var10, var14, var26, var12.hash);
                                        }
 
-                                       if((var12.d & 512) != 0 && var20 > var17) {
+                                       if((var12.faceUnknown & 512) != 0 && var20 > var17) {
                                           var10 = var13 + G[var16];
                                           var26 = var15 + H[var16];
-                                          var12.f.renderAtPoint((var16 << 9) + 1280 & 2047, z, A, B, C, var10, var14, var26, var12.g);
+                                          var12.renderable.renderAtPoint((var16 << 9) + 1280 & 2047, z, A, B, C, var10, var14, var26, var12.hash);
                                        }
                                     }
                                  }
 
                                  if(var21) {
-                                    GroundDecoration var27 = var1.groundDecoratio;
-                                    if(var1.groundDecoratio != null) {
-                                       var27.d.renderAtPoint(0, z, A, B, C, var27.b - w, var27.a - x, var27.c - y, var27.e);
+                                    GroundDecoration var27 = var1.groundDecoration;
+                                    if(var1.groundDecoration != null) {
+                                       var27.renderable.renderAtPoint(0, z, A, B, C, var27.x - w, var27.renderHeight - x, var27.y - y, var27.key);
                                     }
 
                                     GroundItem var32 = var1.groundItem;
@@ -1419,8 +1419,8 @@ final class SceneGraph {
 
                                  if(var21) {
                                     var9 = var1.wall;
-                                    if(!this.d(var6, var3, var4, var9.d)) {
-                                       var9.f.renderAtPoint(0, z, A, B, C, var9.b - w, var9.a - x, var9.c - y, var9.h);
+                                    if(!this.d(var6, var3, var4, var9.faceUnknown)) {
+                                       var9.aRenderable1.renderAtPoint(0, z, A, B, C, var9.x - w, var9.plane - x, var9.y - y, var9.hash);
                                     }
 
                                     var1.s = 0;
@@ -1614,15 +1614,15 @@ final class SceneGraph {
 
          if(var1.v != 0) {
             WallDecoration var31 = var1.wallDecoration;
-            if(var1.wallDecoration != null && !this.e(var6, var3, var4, var31.f.modelHeight)) {
-               if((var31.d & var1.v) != 0) {
-                  var31.f.renderAtPoint(var31.e, z, A, B, C, var31.b - w, var31.a - x, var31.c - y, var31.g);
-               } else if((var31.d & 768) != 0) {
-                  var10 = var31.b - w;
-                  var26 = var31.a - x;
-                  var23 = var31.c - y;
-                  var13 = var31.e;
-                  if(var31.e != 1 && var13 != 2) {
+            if(var1.wallDecoration != null && !this.e(var6, var3, var4, var31.renderable.modelHeight)) {
+               if((var31.faceUnknown & var1.v) != 0) {
+                  var31.renderable.renderAtPoint(var31.face, z, A, B, C, var31.x - w, var31.plane - x, var31.y - y, var31.hash);
+               } else if((var31.faceUnknown & 768) != 0) {
+                  var10 = var31.x - w;
+                  var26 = var31.plane - x;
+                  var23 = var31.y - y;
+                  var13 = var31.face;
+                  if(var31.face != 1 && var13 != 2) {
                      var14 = var10;
                   } else {
                      var14 = -var10;
@@ -1634,34 +1634,34 @@ final class SceneGraph {
                      var15 = -var23;
                   }
 
-                  if((var31.d & 256) != 0 && var15 >= var14) {
+                  if((var31.faceUnknown & 256) != 0 && var15 >= var14) {
                      var16 = var10 + E[var13];
                      var17 = var23 + F[var13];
-                     var31.f.renderAtPoint((var13 << 9) + 256, z, A, B, C, var16, var26, var17, var31.g);
+                     var31.renderable.renderAtPoint((var13 << 9) + 256, z, A, B, C, var16, var26, var17, var31.hash);
                   }
 
-                  if((var31.d & 512) != 0 && var15 <= var14) {
+                  if((var31.faceUnknown & 512) != 0 && var15 <= var14) {
                      var16 = var10 + G[var13];
                      var17 = var23 + H[var13];
-                     var31.f.renderAtPoint((var13 << 9) + 1280 & 2047, z, A, B, C, var16, var26, var17, var31.g);
+                     var31.renderable.renderAtPoint((var13 << 9) + 1280 & 2047, z, A, B, C, var16, var26, var17, var31.hash);
                   }
                }
             }
 
             Wall var30 = var1.wall;
             if(var1.wall != null) {
-               if((var30.e & var1.v) != 0 && !this.d(var6, var3, var4, var30.e)) {
-                  var30.g.renderAtPoint(0, z, A, B, C, var30.b - w, var30.a - x, var30.c - y, var30.h);
+               if((var30.face & var1.v) != 0 && !this.d(var6, var3, var4, var30.face)) {
+                  var30.aRenderable2.renderAtPoint(0, z, A, B, C, var30.x - w, var30.plane - x, var30.y - y, var30.hash);
                }
 
-               if((var30.d & var1.v) != 0 && !this.d(var6, var3, var4, var30.d)) {
-                  var30.f.renderAtPoint(0, z, A, B, C, var30.b - w, var30.a - x, var30.c - y, var30.h);
+               if((var30.faceUnknown & var1.v) != 0 && !this.d(var6, var3, var4, var30.faceUnknown)) {
+                  var30.aRenderable1.renderAtPoint(0, z, A, B, C, var30.x - w, var30.plane - x, var30.y - y, var30.hash);
                }
             }
          }
 
          SceneTile var35;
-         if(var5 < 3 && (var35 = this.i[var5 + 1][var3][var4]) != null && var35.q) {
+         if(var5 < 3 && (var35 = this.tiles[var5 + 1][var3][var4]) != null && var35.q) {
             Q.insertBack(var35);
          }
 
@@ -1740,18 +1740,18 @@ final class SceneGraph {
                         c = var8;
                      }
 
-                     if(var1.e == -1) {
+                     if(var1.texture == -1) {
                         if(var1.c != 12345678) {
                            Rasterizer3D.drawShadedTriangle(var21, var23, var6, var20, var22, var5, var1.c, var1.d, var1.b);
                         }
-                     } else if(!a) {
-                        if(var1.f) {
-                           Rasterizer3D.drawTexturedTriangle(var21, var23, var6, var20, var22, var5, var1.c, var1.d, var1.b, var10, var14, var9, var17, var18, var2, var12, var11, var15, var1.e);
+                     } else if(!lowMemory) {
+                        if(var1.flat) {
+                           Rasterizer3D.drawTexturedTriangle(var21, var23, var6, var20, var22, var5, var1.c, var1.d, var1.b, var10, var14, var9, var17, var18, var2, var12, var11, var15, var1.texture);
                         } else {
-                           Rasterizer3D.drawTexturedTriangle(var21, var23, var6, var20, var22, var5, var1.c, var1.d, var1.b, var13, var9, var14, var19, var2, var18, var16, var15, var11, var1.e);
+                           Rasterizer3D.drawTexturedTriangle(var21, var23, var6, var20, var22, var5, var1.c, var1.d, var1.b, var13, var9, var14, var19, var2, var18, var16, var15, var11, var1.texture);
                         }
                      } else {
-                        var13 = Y[var1.e];
+                        var13 = Y[var1.texture];
                         Rasterizer3D.drawShadedTriangle(var21, var23, var6, var20, var22, var5, c(var13, var1.c), c(var13, var1.d), c(var13, var1.b));
                      }
                   }
@@ -1763,18 +1763,18 @@ final class SceneGraph {
                         c = var8;
                      }
 
-                     if(var1.e == -1) {
+                     if(var1.texture == -1) {
                         if(var1.a != 12345678) {
                            Rasterizer3D.drawShadedTriangle(var4, var6, var23, var3, var5, var22, var1.a, var1.b, var1.d);
                            return;
                         }
                      } else {
-                        if(!a) {
-                           Rasterizer3D.drawTexturedTriangle(var4, var6, var23, var3, var5, var22, var1.a, var1.b, var1.d, var10, var14, var9, var17, var18, var2, var12, var11, var15, var1.e);
+                        if(!lowMemory) {
+                           Rasterizer3D.drawTexturedTriangle(var4, var6, var23, var3, var5, var22, var1.a, var1.b, var1.d, var10, var14, var9, var17, var18, var2, var12, var11, var15, var1.texture);
                            return;
                         }
 
-                        var13 = Y[var1.e];
+                        var13 = Y[var1.texture];
                         Rasterizer3D.drawShadedTriangle(var4, var6, var23, var3, var5, var22, c(var13, var1.a), c(var13, var1.b), c(var13, var1.d));
                      }
                   }
@@ -1836,8 +1836,8 @@ final class SceneGraph {
             }
 
             if(var4.j != null && var4.j[var9] != -1) {
-               if(!a) {
-                  if(var4.k) {
+               if(!lowMemory) {
+                  if(var4.flat) {
                      Rasterizer3D.drawTexturedTriangle(var5, var7, var14, var13, var2, var3, var4.d[var9], var4.e[var9], var4.f[var9], ShapedTile.r[0], ShapedTile.r[1], ShapedTile.r[3], ShapedTile.s[0], ShapedTile.s[1], ShapedTile.s[3], ShapedTile.t[0], ShapedTile.t[1], ShapedTile.t[3], var4.j[var9]);
                   } else {
                      Rasterizer3D.drawTexturedTriangle(var5, var7, var14, var13, var2, var3, var4.d[var9], var4.e[var9], var4.f[var9], ShapedTile.r[var10], ShapedTile.r[var11], ShapedTile.r[var12], ShapedTile.s[var10], ShapedTile.s[var11], ShapedTile.s[var12], ShapedTile.t[var10], ShapedTile.t[var11], ShapedTile.t[var12], var4.j[var9]);

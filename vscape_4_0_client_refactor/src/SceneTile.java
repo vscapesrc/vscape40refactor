@@ -7,7 +7,7 @@ public final class SceneTile extends Node {
    public ShapedTile shapedTile;
    public Wall wall;
    public WallDecoration wallDecoration;
-   public GroundDecoration groundDecoratio;
+   public GroundDecoration groundDecoration;
    public GroundItem groundItem;
    int k;
    public final GameObject[] gameObjects = new GameObject[5];
@@ -21,7 +21,7 @@ public final class SceneTile extends Node {
    int t;
    int u;
    int v;
-   public SceneTile w;
+   public SceneTile sceneTile;
 
    public SceneTile(int z, int x, int y) {
       this.d = this.a = z;

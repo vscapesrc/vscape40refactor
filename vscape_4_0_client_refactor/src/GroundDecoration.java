@@ -1,8 +1,8 @@
 public final class GroundDecoration {
-   int a;
-   int b;
-   int c;
-   public Renderable d;
-   public int e;
-   byte f;
+   int renderHeight;
+   int x;
+   int y;
+   public Renderable renderable;
+   public int key;
+   byte config;
 }

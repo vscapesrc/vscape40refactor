@@ -1,11 +1,11 @@
 public final class Wall {
-   int a;
-   int b;
-   int c;
-   int d;
-   int e;
-   public Renderable f;
-   public Renderable g;
-   public int h;
-   byte i;
+   int plane;
+   int x;
+   int y;
+   int faceUnknown;
+   int face;
+   public Renderable aRenderable1;
+   public Renderable aRenderable2;
+   public int hash;
+   byte config;
 }

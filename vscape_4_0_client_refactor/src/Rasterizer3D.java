@@ -1,5 +1,5 @@
 final class Rasterizer3D extends Rasterizer2D {
-   public static boolean a = true;
+   public static boolean lowMemory = true;
    static boolean b;
    private static boolean y;
    public static boolean approximateAlphaBlending = true;
@@ -90,7 +90,7 @@ final class Rasterizer3D extends Rasterizer2D {
    public static void f() {
       if(E == null) {
          D = 20;
-         if(a) {
+         if(lowMemory) {
             E = new int[D][16384];
          } else {
             E = new int[D][65536];
@@ -109,7 +109,7 @@ final class Rasterizer3D extends Rasterizer2D {
       for(int var1 = 0; var1 < 51; ++var1) {
          try {
             u[var1] = new IndexedImage(archive, String.valueOf(var1), 0);
-            if(a && u[var1].g == 128) {
+            if(lowMemory && u[var1].g == 128) {
                u[var1].a();
             } else {
                u[var1].b();
@@ -1504,7 +1504,7 @@ final class Rasterizer3D extends Rasterizer2D {
          F[var18] = var20;
          IndexedImage var29 = u[var18];
          int[] var27 = G[var18];
-         if(a) {
+         if(lowMemory) {
             B[var18] = false;
 
             for(var23 = 0; var23 < 4096; ++var23) {
@@ -2238,7 +2238,7 @@ final class Rasterizer3D extends Rasterizer2D {
          int var21;
          int var20;
          int var22;
-         if(a) {
+         if(lowMemory) {
             var16 = 0;
             var17 = 0;
             var18 = var3 - e;

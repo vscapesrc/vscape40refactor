@@ -2384,7 +2384,7 @@ public class Client extends ScapeApplet {
 					}
 
 					if (var6 != null) {
-						var12.a(var6, var5, var4, this.eq - 6 << 3,
+						var12.decodeRegionMapData(var6, var5, var4, this.eq - 6 << 3,
 								this.er - 6 << 3, this.gQ);
 					}
 				}
@@ -2410,7 +2410,7 @@ public class Client extends ScapeApplet {
 					if ((var13 = this.ha[var3]) != null) {
 						var5 = (this.gR[var3] >> 8 << 6) - this.dO;
 						var14 = ((this.gR[var3] & 255) << 6) - this.dP;
-						var12.a(var5, this.gQ, var14, this.scene, var13);
+						var12.decodeLandscapes(var5, this.gQ, var14, this.scene, var13);
 					}
 				}
 			}
@@ -2450,7 +2450,7 @@ public class Client extends ScapeApplet {
 										for (var10 = 0; var10 < this.gR.length; ++var10) {
 											if (this.gR[var10] == var9
 													&& this.ha[var10] != null) {
-												var12.a(this.gQ, this.scene,
+												var12.decodeConstructedLandscapes(this.gQ, this.scene,
 														var7, var4 << 3,
 														(var14 & 7) << 3, var3,
 														this.ha[var10],
@@ -2622,7 +2622,7 @@ public class Client extends ScapeApplet {
 					var4 = var10;
 					if (var1 != 22 && var1 != 29 && var1 != 34 && var1 != 36
 							&& var1 != 46 && var1 != 47 && var1 != 48) {
-						int[][] var6 = this.gQ[this.cc].a;
+						int[][] var6 = this.gQ[this.cc].adjacencies;
 
 						for (int var7 = 0; var7 < 10; ++var7) {
 							int var8;
@@ -4979,7 +4979,7 @@ public class Client extends ScapeApplet {
 		int var7;
 		int var8;
 		int var9;
-		if ((var6 = this.scene.i(var5, var3, var1)) != 0) {
+		if ((var6 = this.scene.getWallKey(var5, var3, var1)) != 0) {
 			var8 = (var7 = this.scene.c(var5, var3, var1, var6)) >> 6 & 3;
 			var7 &= 31;
 			var2 = var2;
@@ -5234,13 +5234,14 @@ public class Client extends ScapeApplet {
 	}
 
 	public static void main(String[] var0) {
+		boolean lowMemory =  false;
 		try {
 			cK = 10;
 			k = 0;
-			SceneGraph.a = false;
-			Rasterizer3D.a = false;
+			SceneGraph.lowMemory = lowMemory;
+			Rasterizer3D.lowMemory = lowMemory;
 			cN = false;
-			MapRegion.c = false;
+			MapRegion.lowMemory = lowMemory;
 			ObjectDefinition.f = false;
 			playingOnMembersServer = true;
 			SignLink.a(InetAddress.getLocalHost());
@@ -5397,7 +5398,7 @@ public class Client extends ScapeApplet {
 			}
 
 			if (var1.type == 93 && this.resourceProvider.b(var1.file)) {
-				MapRegion.a(new Buffer(var1.data), this.resourceProvider);
+				MapRegion.decode(new Buffer(var1.data), this.resourceProvider);
 			}
 		}
 
@@ -5496,7 +5497,7 @@ public class Client extends ScapeApplet {
 								var7 = 10;
 							}
 
-							var12 &= MapRegion.a(var6, var5, var7);
+							var12 &= MapRegion.objectsReady(var6, var5, var7);
 						}
 					}
 
@@ -5506,7 +5507,7 @@ public class Client extends ScapeApplet {
 						var10000 = -4;
 					} else {
 						var2.dH = 2;
-						MapRegion.a = var2.cc;
+						MapRegion.currentPlane = var2.cc;
 						var2.n();
 						var2.gs.a(121);
 						var10000 = 0;
@@ -9335,7 +9336,7 @@ public class Client extends ScapeApplet {
 		this.hD[0] = var5;
 		boolean var16 = false;
 		int var17 = this.hC.length;
-		int[][] var18 = this.gQ[this.cc].a;
+		int[][] var18 = this.gQ[this.cc].adjacencies;
 
 		int var29;
 		while (var15 != var27) {
@@ -9370,14 +9371,14 @@ public class Client extends ScapeApplet {
 
 									if (var12 == var11
 											&& var13 == var8 + 1
-											&& (var25.a[var12][var13] & 19398944) == 0) {
+											&& (var25.adjacencies[var12][var13] & 19398944) == 0) {
 										var30 = true;
 										break label741;
 									}
 
 									if (var12 == var11
 											&& var13 == var8 - 1
-											&& (var25.a[var12][var13] & 19398914) == 0) {
+											&& (var25.adjacencies[var12][var13] & 19398914) == 0) {
 										var30 = true;
 										break label741;
 									}
@@ -9389,14 +9390,14 @@ public class Client extends ScapeApplet {
 
 									if (var12 == var11 - 1
 											&& var13 == var8
-											&& (var25.a[var12][var13] & 19398920) == 0) {
+											&& (var25.adjacencies[var12][var13] & 19398920) == 0) {
 										var30 = true;
 										break label741;
 									}
 
 									if (var12 == var11 + 1
 											&& var13 == var8
-											&& (var25.a[var12][var13] & 19399040) == 0) {
+											&& (var25.adjacencies[var12][var13] & 19399040) == 0) {
 										var30 = true;
 										break label741;
 									}
@@ -9408,14 +9409,14 @@ public class Client extends ScapeApplet {
 
 									if (var12 == var11
 											&& var13 == var8 + 1
-											&& (var25.a[var12][var13] & 19398944) == 0) {
+											&& (var25.adjacencies[var12][var13] & 19398944) == 0) {
 										var30 = true;
 										break label741;
 									}
 
 									if (var12 == var11
 											&& var13 == var8 - 1
-											&& (var25.a[var12][var13] & 19398914) == 0) {
+											&& (var25.adjacencies[var12][var13] & 19398914) == 0) {
 										var30 = true;
 										break label741;
 									}
@@ -9427,14 +9428,14 @@ public class Client extends ScapeApplet {
 
 									if (var12 == var11 - 1
 											&& var13 == var8
-											&& (var25.a[var12][var13] & 19398920) == 0) {
+											&& (var25.adjacencies[var12][var13] & 19398920) == 0) {
 										var30 = true;
 										break label741;
 									}
 
 									if (var12 == var11 + 1
 											&& var13 == var8
-											&& (var25.a[var12][var13] & 19399040) == 0) {
+											&& (var25.adjacencies[var12][var13] & 19399040) == 0) {
 										var30 = true;
 										break label741;
 									}
@@ -9455,21 +9456,21 @@ public class Client extends ScapeApplet {
 
 									if (var12 == var11 + 1
 											&& var13 == var8
-											&& (var25.a[var12][var13] & 19399040) == 0) {
+											&& (var25.adjacencies[var12][var13] & 19399040) == 0) {
 										var30 = true;
 										break label741;
 									}
 
 									if (var12 == var11
 											&& var13 == var8 - 1
-											&& (var25.a[var12][var13] & 19398914) == 0) {
+											&& (var25.adjacencies[var12][var13] & 19398914) == 0) {
 										var30 = true;
 										break label741;
 									}
 								} else if (var2 == 1) {
 									if (var12 == var11 - 1
 											&& var13 == var8
-											&& (var25.a[var12][var13] & 19398920) == 0) {
+											&& (var25.adjacencies[var12][var13] & 19398920) == 0) {
 										var30 = true;
 										break label741;
 									}
@@ -9486,21 +9487,21 @@ public class Client extends ScapeApplet {
 
 									if (var12 == var11
 											&& var13 == var8 - 1
-											&& (var25.a[var12][var13] & 19398914) == 0) {
+											&& (var25.adjacencies[var12][var13] & 19398914) == 0) {
 										var30 = true;
 										break label741;
 									}
 								} else if (var2 == 2) {
 									if (var12 == var11 - 1
 											&& var13 == var8
-											&& (var25.a[var12][var13] & 19398920) == 0) {
+											&& (var25.adjacencies[var12][var13] & 19398920) == 0) {
 										var30 = true;
 										break label741;
 									}
 
 									if (var12 == var11
 											&& var13 == var8 + 1
-											&& (var25.a[var12][var13] & 19398944) == 0) {
+											&& (var25.adjacencies[var12][var13] & 19398944) == 0) {
 										var30 = true;
 										break label741;
 									}
@@ -9522,14 +9523,14 @@ public class Client extends ScapeApplet {
 
 									if (var12 == var11
 											&& var13 == var8 + 1
-											&& (var25.a[var12][var13] & 19398944) == 0) {
+											&& (var25.adjacencies[var12][var13] & 19398944) == 0) {
 										var30 = true;
 										break label741;
 									}
 
 									if (var12 == var11 + 1
 											&& var13 == var8
-											&& (var25.a[var12][var13] & 19399040) == 0) {
+											&& (var25.adjacencies[var12][var13] & 19399040) == 0) {
 										var30 = true;
 										break label741;
 									}
@@ -9543,25 +9544,25 @@ public class Client extends ScapeApplet {
 
 							if (var20 == 9) {
 								if (var12 == var11 && var13 == var8 + 1
-										&& (var25.a[var12][var13] & 32) == 0) {
+										&& (var25.adjacencies[var12][var13] & 32) == 0) {
 									var30 = true;
 									break label741;
 								}
 
 								if (var12 == var11 && var13 == var8 - 1
-										&& (var25.a[var12][var13] & 2) == 0) {
+										&& (var25.adjacencies[var12][var13] & 2) == 0) {
 									var30 = true;
 									break label741;
 								}
 
 								if (var12 == var11 - 1 && var13 == var8
-										&& (var25.a[var12][var13] & 8) == 0) {
+										&& (var25.adjacencies[var12][var13] & 8) == 0) {
 									var30 = true;
 									break label741;
 								}
 
 								if (var12 == var11 + 1 && var13 == var8
-										&& (var25.a[var12][var13] & 128) == 0) {
+										&& (var25.adjacencies[var12][var13] & 128) == 0) {
 									var30 = true;
 									break label741;
 								}
@@ -9595,52 +9596,52 @@ public class Client extends ScapeApplet {
 								if (var20 == 0) {
 									if (var12 == var11 + 1
 											&& var13 == var8
-											&& (var25.a[var12][var13] & 128) == 0) {
+											&& (var25.adjacencies[var12][var13] & 128) == 0) {
 										var30 = true;
 										break label748;
 									}
 
 									if (var12 == var11 && var13 == var8 - 1
-											&& (var25.a[var12][var13] & 2) == 0) {
+											&& (var25.adjacencies[var12][var13] & 2) == 0) {
 										var30 = true;
 										break label748;
 									}
 								} else if (var20 == 1) {
 									if (var12 == var11 - 1 && var13 == var8
-											&& (var25.a[var12][var13] & 8) == 0) {
+											&& (var25.adjacencies[var12][var13] & 8) == 0) {
 										var30 = true;
 										break label748;
 									}
 
 									if (var12 == var11 && var13 == var8 - 1
-											&& (var25.a[var12][var13] & 2) == 0) {
+											&& (var25.adjacencies[var12][var13] & 2) == 0) {
 										var30 = true;
 										break label748;
 									}
 								} else if (var20 == 2) {
 									if (var12 == var11 - 1 && var13 == var8
-											&& (var25.a[var12][var13] & 8) == 0) {
+											&& (var25.adjacencies[var12][var13] & 8) == 0) {
 										var30 = true;
 										break label748;
 									}
 
 									if (var12 == var11
 											&& var13 == var8 + 1
-											&& (var25.a[var12][var13] & 32) == 0) {
+											&& (var25.adjacencies[var12][var13] & 32) == 0) {
 										var30 = true;
 										break label748;
 									}
 								} else if (var20 == 3) {
 									if (var12 == var11 + 1
 											&& var13 == var8
-											&& (var25.a[var12][var13] & 128) == 0) {
+											&& (var25.adjacencies[var12][var13] & 128) == 0) {
 										var30 = true;
 										break label748;
 									}
 
 									if (var12 == var11
 											&& var13 == var8 + 1
-											&& (var25.a[var12][var13] & 32) == 0) {
+											&& (var25.adjacencies[var12][var13] & 32) == 0) {
 										var30 = true;
 										break label748;
 									}
@@ -9649,25 +9650,25 @@ public class Client extends ScapeApplet {
 
 							if (var21 == 8) {
 								if (var12 == var11 && var13 == var8 + 1
-										&& (var25.a[var12][var13] & 32) == 0) {
+										&& (var25.adjacencies[var12][var13] & 32) == 0) {
 									var30 = true;
 									break label748;
 								}
 
 								if (var12 == var11 && var13 == var8 - 1
-										&& (var25.a[var12][var13] & 2) == 0) {
+										&& (var25.adjacencies[var12][var13] & 2) == 0) {
 									var30 = true;
 									break label748;
 								}
 
 								if (var12 == var11 - 1 && var13 == var8
-										&& (var25.a[var12][var13] & 8) == 0) {
+										&& (var25.adjacencies[var12][var13] & 8) == 0) {
 									var30 = true;
 									break label748;
 								}
 
 								if (var12 == var11 + 1 && var13 == var8
-										&& (var25.a[var12][var13] & 128) == 0) {
+										&& (var25.adjacencies[var12][var13] & 128) == 0) {
 									var30 = true;
 									break label748;
 								}
@@ -9691,14 +9692,14 @@ public class Client extends ScapeApplet {
 				if (var12 >= var11 && var12 <= var19 && var13 >= var8
 						&& var13 <= var21 || var12 == var11 - 1
 						&& var13 >= var8 && var13 <= var21
-						&& (var25.a[var12][var13] & 8) == 0 && (var7 & 8) == 0
+						&& (var25.adjacencies[var12][var13] & 8) == 0 && (var7 & 8) == 0
 						|| var12 == var19 + 1 && var13 >= var8
-						&& var13 <= var21 && (var25.a[var12][var13] & 128) == 0
+						&& var13 <= var21 && (var25.adjacencies[var12][var13] & 128) == 0
 						&& (var7 & 2) == 0 || var13 == var8 - 1
 						&& var12 >= var11 && var12 <= var19
-						&& (var25.a[var12][var13] & 2) == 0 && (var7 & 4) == 0
+						&& (var25.adjacencies[var12][var13] & 2) == 0 && (var7 & 4) == 0
 						|| var13 == var21 + 1 && var12 >= var11
-						&& var12 <= var19 && (var25.a[var12][var13] & 32) == 0
+						&& var12 <= var19 && (var25.adjacencies[var12][var13] & 32) == 0
 						&& (var7 & 1) == 0) {
 					var16 = true;
 					break;
@@ -10220,7 +10221,7 @@ public class Client extends ScapeApplet {
 		int var4 = 0;
 		int var5 = 0;
 		if (var1.f == 0) {
-			var2 = this.scene.i(var1.e, var1.g, var1.h);
+			var2 = this.scene.getWallKey(var1.e, var1.g, var1.h);
 		}
 
 		if (var1.f == 1) {
@@ -14359,16 +14360,16 @@ public class Client extends ScapeApplet {
 							if (var9 == 0
 									&& (var34 = this.scene.e(this.cc, var4,
 											var5)) != null) {
-								var15 = var34.h >> 14 & 32767;
+								var15 = var34.hash >> 14 & 32767;
 								if (var7 == 2) {
-									var34.f = new RenderableObject(var15,
+									var34.aRenderable1 = new RenderableObject(var15,
 											var8 + 4, 2, var11, var12, var10,
 											var13, var3, false);
-									var34.g = new RenderableObject(var15,
+									var34.aRenderable2 = new RenderableObject(var15,
 											var8 + 1 & 3, 2, var11, var12,
 											var10, var13, var3, false);
 								} else {
-									var34.f = new RenderableObject(var15, var8,
+									var34.aRenderable1 = new RenderableObject(var15, var8,
 											var7, var11, var12, var10, var13,
 											var3, false);
 								}
@@ -14378,8 +14379,8 @@ public class Client extends ScapeApplet {
 							if (var9 == 1
 									&& (var37 = this.scene.f(var4, var5,
 											this.cc)) != null) {
-								var37.f = new RenderableObject(
-										var37.g >> 14 & 32767, 0, 4, var11,
+								var37.renderable = new RenderableObject(
+										var37.hash >> 14 & 32767, 0, 4, var11,
 										var12, var10, var13, var3, false);
 							}
 
@@ -14402,8 +14403,8 @@ public class Client extends ScapeApplet {
 							if (var9 == 3
 									&& (var35 = this.scene.h(var5, var4,
 											this.cc)) != null) {
-								var35.d = new RenderableObject(
-										var35.e >> 14 & 32767, var8, 22, var11,
+								var35.renderable = new RenderableObject(
+										var35.key >> 14 & 32767, var8, 22, var11,
 										var12, var10, var13, var3, false);
 							}
 						}
@@ -14439,7 +14440,7 @@ public class Client extends ScapeApplet {
 								int var18 = this.gE[this.cc][var4 + 1][var5 + 1];
 								int var19 = this.gE[this.cc][var4][var5 + 1];
 								Model var26;
-								if ((var26 = var33.a(var11, var12, var16,
+								if ((var26 = var33.modelAt(var11, var12, var16,
 										var17, var18, var19, -1)) != null) {
 									this.a(var3 + 1, -1, 0, var13, var5, 0,
 											this.cc, var4, var8 + 1);
@@ -14587,7 +14588,7 @@ public class Client extends ScapeApplet {
 		if (var5 > 0 && var1 > 0 && var5 <= 102 && var1 <= 102) {
 			int var8 = 0;
 			if (var6 == 0) {
-				var8 = this.scene.i(var2, var5, var1);
+				var8 = this.scene.getWallKey(var2, var5, var1);
 			}
 
 			if (var6 == 1) {
@@ -14641,7 +14642,7 @@ public class Client extends ScapeApplet {
 					if ((var11 = ObjectDefinition.byId(var8)).solid
 							&& var11.interactive) {
 						CollisionMap var12 = this.gQ[var2];
-						var12.a[var5][var1] &= 14680063;
+						var12.adjacencies[var5][var1] &= 14680063;
 					}
 				}
 			}
@@ -14652,7 +14653,7 @@ public class Client extends ScapeApplet {
 					var9 = var2 + 1;
 				}
 
-				MapRegion.a(this.scene, var3, var1, var4, var9, this.gQ[var2],
+				MapRegion.placeObject(this.scene, var3, var1, var4, var9, this.gQ[var2],
 						this.gE, var5, var7, var2);
 			}
 		}

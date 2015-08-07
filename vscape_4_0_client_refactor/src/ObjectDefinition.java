@@ -294,7 +294,7 @@ private void reset() {
 
    }
 
-   public final Model a(int var1, int var2, int var3, int var4, int var5, int var6, int var7) {
+   public final Model modelAt(int var1, int var2, int var3, int var4, int var5, int var6, int var7) {
       int var8;
       Model var10000;
       int var19;

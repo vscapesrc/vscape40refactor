@@ -1,10 +1,10 @@
 public final class WallDecoration {
-   int a;
-   int b;
-   int c;
-   int d;
-   int e;
-   public Renderable f;
-   public int g;
-   byte h;
+   int plane;
+   int x;
+   int y;
+   int faceUnknown;
+   int face;
+   public Renderable renderable;
+   public int hash;
+   byte config;
 }

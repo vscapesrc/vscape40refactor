@@ -10,9 +10,9 @@ final class RenderableObject extends Renderable {
    private Animation l;
    private int m;
    public static Client client;
-   private final int n;
+   private final int id;
    private final int o;
-   private final int p;
+   private final int orientation;
 
    private ObjectDefinition b() {
       int var1 = -1;
@@ -69,22 +69,22 @@ final class RenderableObject extends Renderable {
       if(this.e != null) {
          var3 = this.b();
       } else {
-         var3 = ObjectDefinition.byId(this.n);
+         var3 = ObjectDefinition.byId(this.id);
       }
 
-      return var3 == null?null:var3.a(this.o, this.p, this.h, this.i, this.j, this.k, var1);
+      return var3 == null?null:var3.modelAt(this.o, this.orientation, this.h, this.i, this.j, this.k, var1);
    }
 
-   public RenderableObject(int var1, int var2, int var3, int var4, int var5, int var6, int var7, int var8, boolean var9) {
-      this.n = var1;
+   public RenderableObject(int id, int orientation, int var3, int heightEast, int heightNorthEast, int heightCentre, int heightNorth, int animation, boolean var9) {
+      this.id = id;
       this.o = var3;
-      this.p = var2;
-      this.h = var6;
-      this.i = var4;
-      this.j = var5;
-      this.k = var7;
-      if(var8 != -1) {
-         this.l = Animation.animations[var8];
+      this.orientation = orientation;
+      this.h = heightCentre;
+      this.i = heightEast;
+      this.j = heightNorthEast;
+      this.k = heightNorth;
+      if(animation != -1) {
+         this.l = Animation.animations[animation];
          this.d = 0;
          this.m = Client.x;
          if(var9 && this.l.loopOffset != -1) {
@@ -93,7 +93,7 @@ final class RenderableObject extends Renderable {
          }
       }
 
-      ObjectDefinition var10 = ObjectDefinition.byId(this.n);
+      ObjectDefinition var10 = ObjectDefinition.byId(this.id);
       this.f = var10.morphVarbitIndex;
       this.g = var10.morphVariableIndex;
       this.e = var10.morphisms;
