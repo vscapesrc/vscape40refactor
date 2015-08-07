@@ -64,11 +64,11 @@ public final class Player extends Actor {
                }
 
                if(this.playerModel != null) {
-                  if(Client.x >= this.aw) {
+                  if(Client.tick >= this.aw) {
                      this.playerModel = null;
                   }
 
-                  if(Client.x >= this.av && Client.x < this.aw) {
+                  if(Client.tick >= this.av && Client.tick < this.aw) {
                      Model var5 = this.playerModel;
                      this.playerModel.a(this.az - super.X, this.aA - this.ax, this.aB - super.Y);
                      if(super.k == 512) {
@@ -265,7 +265,7 @@ public final class Player extends Actor {
                   var12 = var7;
                }
 
-               if(var12 >= 256 && var12 < 512 && !IdentityKit.b[var12 - 256].a()) {
+               if(var12 >= 256 && var12 < 512 && !IdentityKit.kits[var12 - 256].bodyLoaded()) {
                   var10 = true;
                }
 
@@ -287,15 +287,15 @@ public final class Player extends Actor {
                      var29 = true;
                   } else {
                      boolean var18 = true;
-                     if(!Model.b(var15)) {
+                     if(!Model.loaded(var15)) {
                         var18 = false;
                      }
 
-                     if(var16 != -1 && !Model.b(var16)) {
+                     if(var16 != -1 && !Model.loaded(var16)) {
                         var18 = false;
                      }
 
-                     if(var17 != -1 && !Model.b(var17)) {
+                     if(var17 != -1 && !Model.loaded(var17)) {
                         var18 = false;
                      }
 
@@ -334,7 +334,7 @@ public final class Player extends Actor {
                }
 
                Model var24;
-               if(var22 >= 256 && var22 < 512 && (var24 = IdentityKit.b[var22 - 256].b()) != null) {
+               if(var22 >= 256 && var22 < 512 && (var24 = IdentityKit.kits[var22 - 256].bodyModel()) != null) {
                   var20[var11++] = var24;
                }
 
@@ -448,7 +448,7 @@ public final class Player extends Actor {
          int var7;
          ItemDefinition var10000;
          for(int var2 = 0; var2 < 12; ++var2) {
-            if((var3 = this.appearance[var2]) >= 256 && var3 < 512 && !IdentityKit.b[var3 - 256].c()) {
+            if((var3 = this.appearance[var2]) >= 256 && var3 < 512 && !IdentityKit.kits[var3 - 256].loaded()) {
                var1 = true;
             }
 
@@ -468,11 +468,11 @@ public final class Player extends Actor {
                   var12 = true;
                } else {
                   boolean var13 = true;
-                  if(!Model.b(var6)) {
+                  if(!Model.loaded(var6)) {
                      var13 = false;
                   }
 
-                  if(var7 != -1 && !Model.b(var7)) {
+                  if(var7 != -1 && !Model.loaded(var7)) {
                      var13 = false;
                   }
 
@@ -495,7 +495,7 @@ public final class Player extends Actor {
             for(int var8 = 0; var8 < 12; ++var8) {
                Model var15;
                if((var14 = this.appearance[var8]) >= 256 && var14 < 512) {
-                  var15 = IdentityKit.b[var14 - 256].d();
+                  var15 = IdentityKit.kits[var14 - 256].headModel();
                   var11[var3++] = var15;
                }
 

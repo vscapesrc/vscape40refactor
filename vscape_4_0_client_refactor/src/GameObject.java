@@ -3,7 +3,7 @@ public final class GameObject {
    int b;
    int c;
    int d;
-   public Renderable e;
+   public Renderable renderable;
    public int f;
    int g;
    int h;
@@ -12,5 +12,5 @@ public final class GameObject {
    int k;
    int l;
    public int m;
-   byte n;
+   byte config;
 }

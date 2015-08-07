@@ -196,7 +196,7 @@ public final class ActorDefinition {
 
          int var2;
          for(var2 = 0; var2 < this.additionalModels.length; ++var2) {
-            if(!Model.b(this.additionalModels[var2])) {
+            if(!Model.loaded(this.additionalModels[var2])) {
                var3 = true;
             }
          }
@@ -235,10 +235,10 @@ public final class ActorDefinition {
          int var2 = (var4 = VarBits.bits[this.varbit]).setting;
          int var3 = var4.low;
          var1 = var4.high;
-         var1 = Client.E[var1 - var3];
-         var1 &= client.m[var2] >> var3;
+         var1 = Client.BIT_MASKS[var1 - var3];
+         var1 &= client.settings[var2] >> var3;
       } else if(this.varp != -1) {
-         var1 = client.m[this.varp];
+         var1 = client.settings[this.varp];
       }
 
       return var1 >= 0 && var1 < this.morphisms.length && this.morphisms[var1] != -1?lookup(this.morphisms[var1]):null;
@@ -293,7 +293,7 @@ public final class ActorDefinition {
          boolean unprepared = false;
 
          for(int var7 = 0; var7 < this.modelIds.length; ++var7) {
-            if(!Model.b(this.modelIds[var7])) {
+            if(!Model.loaded(this.modelIds[var7])) {
                unprepared = true;
             }
          }

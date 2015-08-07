@@ -446,7 +446,7 @@ private void reset() {
          if(this.contouredGround) {
             var2 = (var3 + var4 + var5 + var6) / 4;
 
-            for(var7 = 0; var7 < var15.d; ++var7) {
+            for(var7 = 0; var7 < var15.vertices; ++var7) {
                var8 = var15.e[var7];
                int var20 = var15.g[var7];
                var19 = var3 + (var4 - var3) * (var8 + 64) / 128;
@@ -459,7 +459,7 @@ private void reset() {
             var15.modelHeight = 0;
             var15.s = 0;
 
-            for(var7 = 0; var7 < var17.d; ++var7) {
+            for(var7 = 0; var7 < var17.vertices; ++var7) {
                if(-(var8 = var17.f[var7]) > var17.modelHeight) {
                   var17.modelHeight = -var8;
                }

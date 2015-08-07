@@ -10,11 +10,11 @@ public final class Model extends Renderable {
    private static int[] O;
    private static int[] P;
    private static int[] Q;
-   public int d;
+   public int vertices;
    public int[] e;
    public int[] f;
    public int[] g;
-   public int h;
+   public int faces;
    public int[] i;
    public int[] j;
    public int[] k;
@@ -22,11 +22,11 @@ public final class Model extends Renderable {
    private int[] S;
    private int[] T;
    public int[] l;
-   private int[] U;
-   private int[] V;
+   private int[] facePriorities;
+   private int[] faceAlphas;
    public int[] faceColors;
-   private int W;
-   private int X;
+   private int priority;
+   private int texturedFaces;
    private int[] Y;
    private int[] Z;
    private int[] aa;
@@ -45,7 +45,7 @@ public final class Model extends Renderable {
    public int[][] faceGroups;
    public boolean y;
    VertexNormal[] z;
-   private static ModelHeader[] ad;
+   private static ModelHeader[] modelHeaders;
    private static Provider ae;
    private static boolean[] af;
    private static boolean[] al;
@@ -73,9 +73,9 @@ public final class Model extends Renderable {
    public static int C;
    public static int D;
    public static int[] E;
-   public static int[] F;
-   public static int[] G;
-   private static int[] aF;
+   public static int[] SINE;
+   public static int[] COSINE;
+   private static int[] rgbTable;
    private static int[] aG;
 
    static {
@@ -104,14 +104,14 @@ public final class Model extends Renderable {
       aA = new int[10];
       aB = new int[10];
       E = new int[1000];
-      F = Rasterizer3D.SINE;
-      G = Rasterizer3D.COSINE;
-      aF = Rasterizer3D.rgbTable;
+      SINE = Rasterizer3D.SINE;
+      COSINE = Rasterizer3D.COSINE;
+      rgbTable = Rasterizer3D.rgbTable;
       aG = Rasterizer3D.g;
    }
 
    public static void reset() {
-      ad = null;
+      modelHeaders = null;
       af = null;
       al = null;
       an = null;
@@ -126,9 +126,9 @@ public final class Model extends Renderable {
       aw = null;
       ax = null;
       ay = null;
-      F = null;
-      G = null;
-      aF = null;
+      SINE = null;
+      COSINE = null;
+      rgbTable = null;
       aG = null;
    }
 
@@ -149,7 +149,7 @@ public final class Model extends Renderable {
       int var18;
       Model var156;
       boolean var158;
-      if((var2 = ad[modelId].modelData)[var2.length - 1] == -1 && var2[var2.length - 2] == -1) {
+      if((var2 = modelHeaders[modelId].modelData)[var2.length - 1] == -1 && var2[var2.length - 2] == -1) {
          var156 = this;
          Buffer var159 = new Buffer(var2);
          var6 = new Buffer(var2);
@@ -163,10 +163,10 @@ public final class Model extends Renderable {
          var13 = var159.readUShort();
          var14 = var159.readUByte();
          ModelHeader var161;
-         (var161 = ad[modelId] = new ModelHeader()).modelData = var2;
-         var161.b = var12;
-         var161.c = var13;
-         var161.d = var14;
+         (var161 = modelHeaders[modelId] = new ModelHeader()).modelData = var2;
+         var161.vertices = var12;
+         var161.faceCount = var13;
+         var161.texturedFaceCount = var14;
          var16 = var159.readUByte();
          boolean var162 = ~(1 & var16) == -2;
          if((8 & var16) != 8) {
@@ -183,10 +183,10 @@ public final class Model extends Renderable {
             int var30 = var22.readUShort();
             int var31 = var22.readUByte();
             ModelHeader var32;
-            (var32 = ad[modelId] = new ModelHeader()).modelData = var2;
-            var32.b = var29;
-            var32.c = var30;
-            var32.d = var31;
+            (var32 = modelHeaders[modelId] = new ModelHeader()).modelData = var2;
+            var32.vertices = var29;
+            var32.faceCount = var30;
+            var32.texturedFaceCount = var31;
             int var33 = var22.readUByte();
             boolean var34 = ~(1 & var33) == -2;
             int var35 = var22.readUByte();
@@ -285,8 +285,8 @@ public final class Model extends Renderable {
             int[] var85 = new int[var30];
             this.ab = new int[var29];
             this.l = new int[var30];
-            this.U = new int[var30];
-            this.V = new int[var30];
+            this.facePriorities = new int[var30];
+            this.faceAlphas = new int[var30];
             this.ac = new int[var30];
             if(var39 == 1) {
                this.ab = new int[var29];
@@ -297,11 +297,11 @@ public final class Model extends Renderable {
             }
 
             if(var35 == 255) {
-               this.U = new int[var30];
+               this.facePriorities = new int[var30];
             }
 
             if(var36 == 1) {
-               this.V = new int[var30];
+               this.faceAlphas = new int[var30];
             }
 
             if(var37 == 1) {
@@ -401,13 +401,13 @@ public final class Model extends Renderable {
                }
 
                if(var35 == 255) {
-                  var21.U[var93] = var24.readByte();
+                  var21.facePriorities[var93] = var24.readByte();
                }
 
                if(var36 == 1) {
-                  var21.V[var93] = var25.readByte();
-                  if(var21.V[var93] < 0) {
-                     var21.V[var93] += 256;
+                  var21.faceAlphas[var93] = var25.readByte();
+                  if(var21.faceAlphas[var93] < 0) {
+                     var21.faceAlphas[var93] += 256;
                   }
                }
 
@@ -528,13 +528,13 @@ public final class Model extends Renderable {
 
             if(var35 != 255) {
                for(var97 = 0; var97 < var30; ++var97) {
-                  var21.U[var97] = var35;
+                  var21.facePriorities[var97] = var35;
                }
             }
 
             var21.faceColors = var86;
-            var21.d = var29;
-            var21.h = var30;
+            var21.vertices = var29;
+            var21.faces = var30;
             var21.e = var80;
             var21.f = var81;
             var21.g = var82;
@@ -660,8 +660,8 @@ public final class Model extends Renderable {
             int[] var142 = new int[var13];
             this.ab = new int[var12];
             this.l = new int[var13];
-            this.U = new int[var13];
-            this.V = new int[var13];
+            this.facePriorities = new int[var13];
+            this.faceAlphas = new int[var13];
             this.ac = new int[var13];
             if(var101 == 1) {
                this.ab = new int[var12];
@@ -672,11 +672,11 @@ public final class Model extends Renderable {
             }
 
             if(var3 == 255) {
-               this.U = new int[var13];
+               this.facePriorities = new int[var13];
             }
 
             if(var15 == 1) {
-               this.V = new int[var13];
+               this.faceAlphas = new int[var13];
             }
 
             if(var18 == 1) {
@@ -776,13 +776,13 @@ public final class Model extends Renderable {
                }
 
                if(var3 == 255) {
-                  var156.U[var149] = var7.readByte();
+                  var156.facePriorities[var149] = var7.readByte();
                }
 
                if(var15 == 1) {
-                  var156.V[var149] = var8.readByte();
-                  if(var156.V[var149] < 0) {
-                     var156.V[var149] += 256;
+                  var156.faceAlphas[var149] = var8.readByte();
+                  if(var156.faceAlphas[var149] < 0) {
+                     var156.faceAlphas[var149] += 256;
                   }
                }
 
@@ -939,13 +939,13 @@ public final class Model extends Renderable {
 
             if(var3 != 255) {
                for(var153 = 0; var153 < var13; ++var153) {
-                  var156.U[var153] = var3;
+                  var156.facePriorities[var153] = var3;
                }
             }
 
             var156.faceColors = var163;
-            var156.d = var12;
-            var156.h = var13;
+            var156.vertices = var12;
+            var156.faces = var13;
             var156.e = var137;
             var156.f = var138;
             var156.g = var139;
@@ -958,53 +958,53 @@ public final class Model extends Renderable {
          this.L = true;
          this.y = false;
          ++M;
-         ModelHeader var5 = ad[modelId];
-         this.d = var5.b;
-         this.h = var5.c;
-         this.X = var5.d;
-         this.e = new int[this.d];
-         this.f = new int[this.d];
-         this.g = new int[this.d];
-         this.i = new int[this.h];
-         this.j = new int[this.h];
-         this.k = new int[this.h];
-         this.Y = new int[this.X];
-         this.Z = new int[this.X];
-         this.aa = new int[this.X];
-         if(var5.i >= 0) {
-            this.ab = new int[this.d];
+         ModelHeader var5 = modelHeaders[modelId];
+         this.vertices = var5.vertices;
+         this.faces = var5.faceCount;
+         this.texturedFaces = var5.texturedFaceCount;
+         this.e = new int[this.vertices];
+         this.f = new int[this.vertices];
+         this.g = new int[this.vertices];
+         this.i = new int[this.faces];
+         this.j = new int[this.faces];
+         this.k = new int[this.faces];
+         this.Y = new int[this.texturedFaces];
+         this.Z = new int[this.texturedFaces];
+         this.aa = new int[this.texturedFaces];
+         if(var5.vertexSkinOffset >= 0) {
+            this.ab = new int[this.vertices];
          }
 
-         if(var5.m >= 0) {
-            this.l = new int[this.h];
+         if(var5.texturePointerOffset >= 0) {
+            this.l = new int[this.faces];
          }
 
-         if(var5.n >= 0) {
-            this.U = new int[this.h];
+         if(var5.facePriorityOffset >= 0) {
+            this.facePriorities = new int[this.faces];
          } else {
-            this.W = -var5.n - 1;
+            this.priority = -var5.facePriorityOffset - 1;
          }
 
-         if(var5.o >= 0) {
-            this.V = new int[this.h];
+         if(var5.faceAlphaOffset >= 0) {
+            this.faceAlphas = new int[this.faces];
          }
 
-         if(var5.p >= 0) {
-            this.ac = new int[this.h];
+         if(var5.faceSkinOffset >= 0) {
+            this.ac = new int[this.faces];
          }
 
-         this.faceColors = new int[this.h];
+         this.faceColors = new int[this.faces];
          (var6 = new Buffer(var5.modelData)).position = 0;
-         (var7 = new Buffer(var5.modelData)).position = var5.f;
-         (var8 = new Buffer(var5.modelData)).position = var5.g;
-         (var9 = new Buffer(var5.modelData)).position = var5.h;
-         (var10 = new Buffer(var5.modelData)).position = var5.i;
+         (var7 = new Buffer(var5.modelData)).position = var5.xDataOffset;
+         (var8 = new Buffer(var5.modelData)).position = var5.yDataOffset;
+         (var9 = new Buffer(var5.modelData)).position = var5.zDataOffset;
+         (var10 = new Buffer(var5.modelData)).position = var5.vertexSkinOffset;
          int var11 = 0;
          var12 = 0;
          var13 = 0;
 
          int var17;
-         for(var14 = 0; var14 < var156.d; ++var14) {
+         for(var14 = 0; var14 < var156.vertices; ++var14) {
             var15 = var6.readUByte();
             var16 = 0;
             if((var15 & 1) != 0) {
@@ -1032,24 +1032,24 @@ public final class Model extends Renderable {
             }
          }
 
-         var6.position = var5.l;
-         var7.position = var5.m;
-         var8.position = var5.n;
-         var9.position = var5.o;
-         var10.position = var5.p;
+         var6.position = var5.colorDataOffset;
+         var7.position = var5.texturePointerOffset;
+         var8.position = var5.facePriorityOffset;
+         var9.position = var5.faceAlphaOffset;
+         var10.position = var5.faceSkinOffset;
 
-         for(var14 = 0; var14 < var156.h; ++var14) {
+         for(var14 = 0; var14 < var156.faces; ++var14) {
             var156.faceColors[var14] = var6.readUShort();
             if(var156.l != null) {
                var156.l[var14] = var7.readUByte();
             }
 
-            if(var156.U != null) {
-               var156.U[var14] = var8.readUByte();
+            if(var156.facePriorities != null) {
+               var156.facePriorities[var14] = var8.readUByte();
             }
 
-            if(var156.V != null) {
-               var156.V[var14] = var9.readUByte();
+            if(var156.faceAlphas != null) {
+               var156.faceAlphas[var14] = var9.readUByte();
             }
 
             if(var156.ac != null) {
@@ -1057,14 +1057,14 @@ public final class Model extends Renderable {
             }
          }
 
-         var6.position = var5.j;
-         var7.position = var5.k;
+         var6.position = var5.faceDataOffset;
+         var7.position = var5.faceTypeOffset;
          var14 = 0;
          var15 = 0;
          var16 = 0;
          var17 = 0;
 
-         for(var18 = 0; var18 < var156.h; ++var18) {
+         for(var18 = 0; var18 < var156.faces; ++var18) {
             if((var4 = var7.readUByte()) == 1) {
                var17 = var14 = var6.r() + var17;
                var17 = var15 = var6.r() + var17;
@@ -1101,9 +1101,9 @@ public final class Model extends Renderable {
             }
          }
 
-         var6.position = var5.q;
+         var6.position = var5.uvMapFaceOffset;
 
-         for(var18 = 0; var18 < var156.X; ++var18) {
+         for(var18 = 0; var18 < var156.texturedFaces; ++var18) {
             var156.Y[var18] = var6.readUShort();
             var156.Z[var18] = var6.readUShort();
             var156.aa[var18] = var6.readUShort();
@@ -1114,95 +1114,95 @@ public final class Model extends Renderable {
          var158 = true;
          var156 = this;
 
-         for(var3 = 0; var3 < var156.d; ++var3) {
+         for(var3 = 0; var3 < var156.vertices; ++var3) {
             var156.e[var3] /= 4;
             var156.f[var3] /= 4;
             var156.g[var3] /= 4;
          }
 
-         if(this.U != null) {
-            for(modelId = 0; modelId < this.U.length; ++modelId) {
-               this.U[modelId] = 10;
+         if(this.facePriorities != null) {
+            for(modelId = 0; modelId < this.facePriorities.length; ++modelId) {
+               this.facePriorities[modelId] = 10;
             }
          }
       }
 
    }
 
-   public static void a(byte[] var0, int var1) {
+   public static void load(byte[] data, int id) {
       try {
-         if(var0 == null) {
-            ModelHeader var14;
-            (var14 = ad[var1] = new ModelHeader()).b = 0;
-            var14.c = 0;
-            var14.d = 0;
+         if(data == null) {
+            ModelHeader header;
+            (header = modelHeaders[id] = new ModelHeader()).vertices = 0;
+            header.faceCount = 0;
+            header.texturedFaceCount = 0;
          } else {
-            Buffer var2;
-            (var2 = new Buffer(var0)).position = var0.length - 18;
-            ModelHeader var12;
-            (var12 = ad[var1] = new ModelHeader()).modelData = var0;
-            var12.b = var2.readUShort();
-            var12.c = var2.readUShort();
-            var12.d = var2.readUByte();
-            int var11 = var2.readUByte();
-            int var3 = var2.readUByte();
-            int var4 = var2.readUByte();
-            int var5 = var2.readUByte();
-            int var6 = var2.readUByte();
-            int var7 = var2.readUShort();
-            int var8 = var2.readUShort();
-            var2.readUShort();
-            int var13 = var2.readUShort();
-            var12.e = 0;
-            int var9 = 0 + var12.b;
-            var12.k = var9;
-            var9 += var12.c;
-            var12.n = var9;
-            if(var3 == 255) {
-               var9 += var12.c;
+            Buffer buffer;
+            (buffer = new Buffer(data)).position = data.length - 18;
+            ModelHeader header;
+            (header = modelHeaders[id] = new ModelHeader()).modelData = data;
+            header.vertices = buffer.readUShort();
+            header.faceCount = buffer.readUShort();
+            header.texturedFaceCount = buffer.readUByte();
+            int useTextures = buffer.readUByte();
+            int useFacePriority = buffer.readUByte();
+            int useTransparancy = buffer.readUByte();
+            int useFaceSkinning = buffer.readUByte();
+            int useVertexSkinning = buffer.readUByte();
+            int xDataOffset = buffer.readUShort();
+            int yDataOffset = buffer.readUShort();
+            buffer.readUShort();
+            int faceDataLength = buffer.readUShort();
+            header.vertexDirectionOffset = 0;
+            int offset = 0 + header.vertices;
+            header.faceTypeOffset = offset;
+            offset += header.faceCount;
+            header.facePriorityOffset = offset;
+            if(useFacePriority == 255) {
+               offset += header.faceCount;
             } else {
-               var12.n = -var3 - 1;
+               header.facePriorityOffset = -useFacePriority - 1;
             }
 
-            var12.p = var9;
-            if(var5 == 1) {
-               var9 += var12.c;
+            header.faceSkinOffset = offset;
+            if(useFaceSkinning == 1) {
+               offset += header.faceCount;
             } else {
-               var12.p = -1;
+               header.faceSkinOffset = -1;
             }
 
-            var12.m = var9;
-            if(var11 == 1) {
-               var9 += var12.c;
+            header.texturePointerOffset = offset;
+            if(useTextures == 1) {
+               offset += header.faceCount;
             } else {
-               var12.m = -1;
+               header.texturePointerOffset = -1;
             }
 
-            var12.i = var9;
-            if(var6 == 1) {
-               var9 += var12.b;
+            header.vertexSkinOffset = offset;
+            if(useVertexSkinning == 1) {
+               offset += header.vertices;
             } else {
-               var12.i = -1;
+               header.vertexSkinOffset = -1;
             }
 
-            var12.o = var9;
-            if(var4 == 1) {
-               var9 += var12.c;
+            header.faceAlphaOffset = offset;
+            if(useTransparancy == 1) {
+               offset += header.faceCount;
             } else {
-               var12.o = -1;
+               header.faceAlphaOffset = -1;
             }
 
-            var12.j = var9;
-            var9 += var13;
-            var12.l = var9;
-            var9 += var12.c << 1;
-            var12.q = var9;
-            var9 += var12.d * 6;
-            var12.f = var9;
-            var9 += var7;
-            var12.g = var9;
-            var9 += var8;
-            var12.h = var9;
+            header.faceDataOffset = offset;
+            offset += faceDataLength;
+            header.colorDataOffset = offset;
+            offset += header.faceCount << 1;
+            header.uvMapFaceOffset = offset;
+            offset += header.texturedFaceCount * 6;
+            header.xDataOffset = offset;
+            offset += xDataOffset;
+            header.yDataOffset = offset;
+            offset += yDataOffset;
+            header.zDataOffset = offset;
          }
       } catch (Exception var10) {
          ;
@@ -1210,15 +1210,15 @@ public final class Model extends Renderable {
    }
 
    public static void a(Provider var0) {
-      ad = new ModelHeader[80000];
+      modelHeaders = new ModelHeader[80000];
       H = new boolean[100000];
       ae = var0;
    }
 
    public static Model lookup(int var0) {
-      if(ad == null) {
+      if(modelHeaders == null) {
          return null;
-      } else if(ad[var0] == null) {
+      } else if(modelHeaders[var0] == null) {
          ae.provide(var0);
          return null;
       } else {
@@ -1226,10 +1226,10 @@ public final class Model extends Renderable {
       }
    }
 
-   public static boolean b(int var0) {
-      if(ad == null) {
+   public static boolean loaded(int var0) {
+      if(modelHeaders == null) {
          return false;
-      } else if(ad[var0] == null) {
+      } else if(modelHeaders[var0] == null) {
          ae.provide(var0);
          return false;
       } else {
@@ -1242,129 +1242,129 @@ public final class Model extends Renderable {
       this.y = false;
    }
 
-   public Model(int var1, Model[] var2) {
+   public Model(int modelCount, Model[] models) {
       this.L = true;
       this.y = false;
       ++M;
-      boolean var3 = false;
-      boolean var4 = false;
-      boolean var5 = false;
-      boolean var6 = false;
-      this.d = 0;
-      this.h = 0;
-      this.X = 0;
-      this.W = -1;
+      boolean hasTexturePoints = false;
+      boolean hasFacePriorities = false;
+      boolean hasFaceAlphas = false;
+      boolean hasFaceColors = false;
+      this.vertices = 0;
+      this.faces = 0;
+      this.texturedFaces = 0;
+      this.priority = -1;
 
-      int var7;
-      for(var7 = 0; var7 < var1; ++var7) {
-         Model var8;
-         if((var8 = var2[var7]) != null) {
-            this.d += var8.d;
-            this.h += var8.h;
-            this.X += var8.X;
-            var3 |= var8.l != null;
-            if(var8.U != null) {
-               var4 = true;
+      int index;
+      for(index = 0; index < modelCount; ++index) {
+         Model model;
+         if((model = models[index]) != null) {
+            this.vertices += model.vertices;
+            this.faces += model.faces;
+            this.texturedFaces += model.texturedFaces;
+            hasTexturePoints |= model.l != null;
+            if(model.facePriorities != null) {
+               hasFacePriorities = true;
             } else {
-               if(this.W == -1) {
-                  this.W = var8.W;
+               if(this.priority == -1) {
+                  this.priority = model.priority;
                }
 
-               if(this.W != var8.W) {
-                  var4 = true;
+               if(this.priority != model.priority) {
+                  hasFacePriorities = true;
                }
             }
 
-            var5 |= var8.V != null;
-            var6 |= var8.ac != null;
+            hasFaceAlphas |= model.faceAlphas != null;
+            hasFaceColors |= model.ac != null;
          }
       }
 
-      this.e = new int[this.d];
-      this.f = new int[this.d];
-      this.g = new int[this.d];
-      this.ab = new int[this.d];
-      this.i = new int[this.h];
-      this.j = new int[this.h];
-      this.k = new int[this.h];
-      this.Y = new int[this.X];
-      this.Z = new int[this.X];
-      this.aa = new int[this.X];
-      if(var3) {
-         this.l = new int[this.h];
+      this.e = new int[this.vertices];
+      this.f = new int[this.vertices];
+      this.g = new int[this.vertices];
+      this.ab = new int[this.vertices];
+      this.i = new int[this.faces];
+      this.j = new int[this.faces];
+      this.k = new int[this.faces];
+      this.Y = new int[this.texturedFaces];
+      this.Z = new int[this.texturedFaces];
+      this.aa = new int[this.texturedFaces];
+      if(hasTexturePoints) {
+         this.l = new int[this.faces];
       }
 
-      if(var4) {
-         this.U = new int[this.h];
+      if(hasFacePriorities) {
+         this.facePriorities = new int[this.faces];
       }
 
-      if(var5) {
-         this.V = new int[this.h];
+      if(hasFaceAlphas) {
+         this.faceAlphas = new int[this.faces];
       }
 
-      if(var6) {
-         this.ac = new int[this.h];
+      if(hasFaceColors) {
+         this.ac = new int[this.faces];
       }
 
-      this.faceColors = new int[this.h];
-      this.d = 0;
-      this.h = 0;
-      this.X = 0;
-      var7 = 0;
+      this.faceColors = new int[this.faces];
+      this.vertices = 0;
+      this.faces = 0;
+      this.texturedFaces = 0;
+      index = 0;
 
-      for(int var12 = 0; var12 < var1; ++var12) {
+      for(int var12 = 0; var12 < modelCount; ++var12) {
          Model var9;
-         if((var9 = var2[var12]) != null) {
+         if((var9 = models[var12]) != null) {
             int var10;
-            for(var10 = 0; var10 < var9.h; ++var10) {
-               if(var3) {
+            for(var10 = 0; var10 < var9.faces; ++var10) {
+               if(hasTexturePoints) {
                   if(var9.l == null) {
-                     this.l[this.h] = 0;
+                     this.l[this.faces] = 0;
                   } else {
                      int var11;
                      if(((var11 = var9.l[var10]) & 2) == 2) {
-                        var11 += var7 << 2;
+                        var11 += index << 2;
                      }
 
-                     this.l[this.h] = var11;
+                     this.l[this.faces] = var11;
                   }
                }
 
-               if(var4) {
-                  if(var9.U == null) {
-                     this.U[this.h] = var9.W;
+               if(hasFacePriorities) {
+                  if(var9.facePriorities == null) {
+                     this.facePriorities[this.faces] = var9.priority;
                   } else {
-                     this.U[this.h] = var9.U[var10];
+                     this.facePriorities[this.faces] = var9.facePriorities[var10];
                   }
                }
 
-               if(var5) {
-                  if(var9.V == null) {
-                     this.V[this.h] = 0;
+               if(hasFaceAlphas) {
+                  if(var9.faceAlphas == null) {
+                     this.faceAlphas[this.faces] = 0;
                   } else {
-                     this.V[this.h] = var9.V[var10];
+                     this.faceAlphas[this.faces] = var9.faceAlphas[var10];
                   }
                }
 
-               if(var6 && var9.ac != null) {
-                  this.ac[this.h] = var9.ac[var10];
+               if(hasFaceColors && var9.ac != null) {
+                  this.ac[this.faces] = var9.ac[var10];
                }
 
-               this.faceColors[this.h] = var9.faceColors[var10];
-               this.i[this.h] = this.a(var9, var9.i[var10]);
-               this.j[this.h] = this.a(var9, var9.j[var10]);
-               this.k[this.h] = this.a(var9, var9.k[var10]);
-               ++this.h;
+               this.faceColors[this.faces] = var9.faceColors[var10];
+               this.i[this.faces] = this.a(var9, var9.i[var10]);
+               this.j[this.faces] = this.a(var9, var9.j[var10]);
+               this.k[this.faces] = this.a(var9, var9.k[var10]);
+               ++this.faces;
             }
 
-            for(var10 = 0; var10 < var9.X; ++var10) {
-               this.Y[this.X] = this.a(var9, var9.Y[var10]);
-               this.Z[this.X] = this.a(var9, var9.Z[var10]);
-               this.aa[this.X] = this.a(var9, var9.aa[var10]);
-               ++this.X;
+            for(var10 = 0; var10 < var9.texturedFaces; ++var10) {
+               this.Y[this.texturedFaces] = this.a(var9, var9.Y[var10]);
+               this.Z[this.texturedFaces] = this.a(var9, var9.Z[var10]);
+               this.aa[this.texturedFaces] = this.a(var9, var9.aa[var10]);
+               ++this.texturedFaces;
             }
 
-            var7 += var9.X;
+            index += var9.texturedFaces;
          }
       }
 
@@ -1378,133 +1378,133 @@ public final class Model extends Renderable {
       boolean var3 = false;
       boolean var4 = false;
       boolean var5 = false;
-      this.d = 0;
-      this.h = 0;
-      this.X = 0;
-      this.W = -1;
+      this.vertices = 0;
+      this.faces = 0;
+      this.texturedFaces = 0;
+      this.priority = -1;
 
       int var6;
       for(var6 = 0; var6 < 2; ++var6) {
          Model var7;
          if((var7 = var1[var6]) != null) {
-            this.d += var7.d;
-            this.h += var7.h;
-            this.X += var7.X;
+            this.vertices += var7.vertices;
+            this.faces += var7.faces;
+            this.texturedFaces += var7.texturedFaces;
             var2 |= var7.l != null;
-            if(var7.U != null) {
+            if(var7.facePriorities != null) {
                var3 = true;
             } else {
-               if(this.W == -1) {
-                  this.W = var7.W;
+               if(this.priority == -1) {
+                  this.priority = var7.priority;
                }
 
-               if(this.W != var7.W) {
+               if(this.priority != var7.priority) {
                   var3 = true;
                }
             }
 
-            var4 |= var7.V != null;
+            var4 |= var7.faceAlphas != null;
             var5 |= var7.faceColors != null;
          }
       }
 
-      this.e = new int[this.d];
-      this.f = new int[this.d];
-      this.g = new int[this.d];
-      this.i = new int[this.h];
-      this.j = new int[this.h];
-      this.k = new int[this.h];
-      this.R = new int[this.h];
-      this.S = new int[this.h];
-      this.T = new int[this.h];
-      this.Y = new int[this.X];
-      this.Z = new int[this.X];
-      this.aa = new int[this.X];
+      this.e = new int[this.vertices];
+      this.f = new int[this.vertices];
+      this.g = new int[this.vertices];
+      this.i = new int[this.faces];
+      this.j = new int[this.faces];
+      this.k = new int[this.faces];
+      this.R = new int[this.faces];
+      this.S = new int[this.faces];
+      this.T = new int[this.faces];
+      this.Y = new int[this.texturedFaces];
+      this.Z = new int[this.texturedFaces];
+      this.aa = new int[this.texturedFaces];
       if(var2) {
-         this.l = new int[this.h];
+         this.l = new int[this.faces];
       }
 
       if(var3) {
-         this.U = new int[this.h];
+         this.facePriorities = new int[this.faces];
       }
 
       if(var4) {
-         this.V = new int[this.h];
+         this.faceAlphas = new int[this.faces];
       }
 
       if(var5) {
-         this.faceColors = new int[this.h];
+         this.faceColors = new int[this.faces];
       }
 
-      this.d = 0;
-      this.h = 0;
-      this.X = 0;
+      this.vertices = 0;
+      this.faces = 0;
+      this.texturedFaces = 0;
       var6 = 0;
 
       for(int var12 = 0; var12 < 2; ++var12) {
          Model var8;
          if((var8 = var1[var12]) != null) {
-            int var9 = this.d;
+            int var9 = this.vertices;
 
             int var10;
-            for(var10 = 0; var10 < var8.d; ++var10) {
-               this.e[this.d] = var8.e[var10];
-               this.f[this.d] = var8.f[var10];
-               this.g[this.d] = var8.g[var10];
-               ++this.d;
+            for(var10 = 0; var10 < var8.vertices; ++var10) {
+               this.e[this.vertices] = var8.e[var10];
+               this.f[this.vertices] = var8.f[var10];
+               this.g[this.vertices] = var8.g[var10];
+               ++this.vertices;
             }
 
-            for(var10 = 0; var10 < var8.h; ++var10) {
-               this.i[this.h] = var8.i[var10] + var9;
-               this.j[this.h] = var8.j[var10] + var9;
-               this.k[this.h] = var8.k[var10] + var9;
-               this.R[this.h] = var8.R[var10];
-               this.S[this.h] = var8.S[var10];
-               this.T[this.h] = var8.T[var10];
+            for(var10 = 0; var10 < var8.faces; ++var10) {
+               this.i[this.faces] = var8.i[var10] + var9;
+               this.j[this.faces] = var8.j[var10] + var9;
+               this.k[this.faces] = var8.k[var10] + var9;
+               this.R[this.faces] = var8.R[var10];
+               this.S[this.faces] = var8.S[var10];
+               this.T[this.faces] = var8.T[var10];
                if(var2) {
                   if(var8.l == null) {
-                     this.l[this.h] = 0;
+                     this.l[this.faces] = 0;
                   } else {
                      int var11;
                      if(((var11 = var8.l[var10]) & 2) == 2) {
                         var11 += var6 << 2;
                      }
 
-                     this.l[this.h] = var11;
+                     this.l[this.faces] = var11;
                   }
                }
 
                if(var3) {
-                  if(var8.U == null) {
-                     this.U[this.h] = var8.W;
+                  if(var8.facePriorities == null) {
+                     this.facePriorities[this.faces] = var8.priority;
                   } else {
-                     this.U[this.h] = var8.U[var10];
+                     this.facePriorities[this.faces] = var8.facePriorities[var10];
                   }
                }
 
                if(var4) {
-                  if(var8.V == null) {
-                     this.V[this.h] = 0;
+                  if(var8.faceAlphas == null) {
+                     this.faceAlphas[this.faces] = 0;
                   } else {
-                     this.V[this.h] = var8.V[var10];
+                     this.faceAlphas[this.faces] = var8.faceAlphas[var10];
                   }
                }
 
                if(var5 && var8.faceColors != null) {
-                  this.faceColors[this.h] = var8.faceColors[var10];
+                  this.faceColors[this.faces] = var8.faceColors[var10];
                }
 
-               ++this.h;
+               ++this.faces;
             }
 
-            for(var10 = 0; var10 < var8.X; ++var10) {
-               this.Y[this.X] = var8.Y[var10] + var9;
-               this.Z[this.X] = var8.Z[var10] + var9;
-               this.aa[this.X] = var8.aa[var10] + var9;
-               ++this.X;
+            for(var10 = 0; var10 < var8.texturedFaces; ++var10) {
+               this.Y[this.texturedFaces] = var8.Y[var10] + var9;
+               this.Z[this.texturedFaces] = var8.Z[var10] + var9;
+               this.aa[this.texturedFaces] = var8.aa[var10] + var9;
+               ++this.texturedFaces;
             }
 
-            var6 += var8.X;
+            var6 += var8.texturedFaces;
          }
       }
 
@@ -1515,20 +1515,20 @@ public final class Model extends Renderable {
       this.L = true;
       this.y = false;
       ++M;
-      this.d = var4.d;
-      this.h = var4.h;
-      this.X = var4.X;
+      this.vertices = var4.vertices;
+      this.faces = var4.faces;
+      this.texturedFaces = var4.texturedFaces;
       int var5;
       if(var3) {
          this.e = var4.e;
          this.f = var4.f;
          this.g = var4.g;
       } else {
-         this.e = new int[this.d];
-         this.f = new int[this.d];
-         this.g = new int[this.d];
+         this.e = new int[this.vertices];
+         this.f = new int[this.vertices];
+         this.g = new int[this.vertices];
 
-         for(var5 = 0; var5 < this.d; ++var5) {
+         for(var5 = 0; var5 < this.vertices; ++var5) {
             this.e[var5] = var4.e[var5];
             this.f[var5] = var4.f[var5];
             this.g[var5] = var4.g[var5];
@@ -1538,24 +1538,24 @@ public final class Model extends Renderable {
       if(var1) {
          this.faceColors = var4.faceColors;
       } else {
-         this.faceColors = new int[this.h];
+         this.faceColors = new int[this.faces];
 
-         for(var5 = 0; var5 < this.h; ++var5) {
+         for(var5 = 0; var5 < this.faces; ++var5) {
             this.faceColors[var5] = var4.faceColors[var5];
          }
       }
 
       if(var2) {
-         this.V = var4.V;
+         this.faceAlphas = var4.faceAlphas;
       } else {
-         this.V = new int[this.h];
-         if(var4.V == null) {
-            for(var5 = 0; var5 < this.h; ++var5) {
-               this.V[var5] = 0;
+         this.faceAlphas = new int[this.faces];
+         if(var4.faceAlphas == null) {
+            for(var5 = 0; var5 < this.faces; ++var5) {
+               this.faceAlphas[var5] = 0;
             }
          } else {
-            for(var5 = 0; var5 < this.h; ++var5) {
-               this.V[var5] = var4.V[var5];
+            for(var5 = 0; var5 < this.faces; ++var5) {
+               this.faceAlphas[var5] = var4.faceAlphas[var5];
             }
          }
       }
@@ -1566,8 +1566,8 @@ public final class Model extends Renderable {
       this.i = var4.i;
       this.j = var4.j;
       this.k = var4.k;
-      this.U = var4.U;
-      this.W = var4.W;
+      this.facePriorities = var4.facePriorities;
+      this.priority = var4.priority;
       this.Y = var4.Y;
       this.Z = var4.Z;
       this.aa = var4.aa;
@@ -1577,14 +1577,14 @@ public final class Model extends Renderable {
       this.L = true;
       this.y = false;
       ++M;
-      this.d = var3.d;
-      this.h = var3.h;
-      this.X = var3.X;
+      this.vertices = var3.vertices;
+      this.faces = var3.faces;
+      this.texturedFaces = var3.texturedFaces;
       int var5;
       if(var1) {
-         this.f = new int[this.d];
+         this.f = new int[this.vertices];
 
-         for(var5 = 0; var5 < this.d; ++var5) {
+         for(var5 = 0; var5 < this.vertices; ++var5) {
             this.f[var5] = var3.f[var5];
          }
       } else {
@@ -1592,30 +1592,30 @@ public final class Model extends Renderable {
       }
 
       if(var2) {
-         this.R = new int[this.h];
-         this.S = new int[this.h];
-         this.T = new int[this.h];
+         this.R = new int[this.faces];
+         this.S = new int[this.faces];
+         this.T = new int[this.faces];
 
-         for(var5 = 0; var5 < this.h; ++var5) {
+         for(var5 = 0; var5 < this.faces; ++var5) {
             this.R[var5] = var3.R[var5];
             this.S[var5] = var3.S[var5];
             this.T[var5] = var3.T[var5];
          }
 
-         this.l = new int[this.h];
+         this.l = new int[this.faces];
          if(var3.l == null) {
-            for(var5 = 0; var5 < this.h; ++var5) {
+            for(var5 = 0; var5 < this.faces; ++var5) {
                this.l[var5] = 0;
             }
          } else {
-            for(var5 = 0; var5 < this.h; ++var5) {
+            for(var5 = 0; var5 < this.faces; ++var5) {
                this.l[var5] = var3.l[var5];
             }
          }
 
-         super.normals = new VertexNormal[this.d];
+         super.normals = new VertexNormal[this.vertices];
 
-         for(var5 = 0; var5 < this.d; ++var5) {
+         for(var5 = 0; var5 < this.vertices; ++var5) {
             VertexNormal var6 = super.normals[var5] = new VertexNormal();
             VertexNormal var4 = var3.normals[var5];
             var6.x = var4.x;
@@ -1635,9 +1635,9 @@ public final class Model extends Renderable {
       this.e = var3.e;
       this.g = var3.g;
       this.faceColors = var3.faceColors;
-      this.V = var3.V;
-      this.U = var3.U;
-      this.W = var3.W;
+      this.faceAlphas = var3.faceAlphas;
+      this.facePriorities = var3.facePriorities;
+      this.priority = var3.priority;
       this.i = var3.i;
       this.j = var3.j;
       this.k = var3.k;
@@ -1655,13 +1655,13 @@ public final class Model extends Renderable {
    }
 
    public final void a(Model var1, boolean var2) {
-      this.d = var1.d;
-      this.h = var1.h;
-      this.X = var1.X;
-      if(N.length < this.d) {
-         N = new int[this.d + 10000];
-         O = new int[this.d + 10000];
-         P = new int[this.d + 10000];
+      this.vertices = var1.vertices;
+      this.faces = var1.faces;
+      this.texturedFaces = var1.texturedFaces;
+      if(N.length < this.vertices) {
+         N = new int[this.vertices + 10000];
+         O = new int[this.vertices + 10000];
+         P = new int[this.vertices + 10000];
       }
 
       this.e = N;
@@ -1669,35 +1669,35 @@ public final class Model extends Renderable {
       this.g = P;
 
       int var3;
-      for(var3 = 0; var3 < this.d; ++var3) {
+      for(var3 = 0; var3 < this.vertices; ++var3) {
          this.e[var3] = var1.e[var3];
          this.f[var3] = var1.f[var3];
          this.g[var3] = var1.g[var3];
       }
 
       if(var2) {
-         this.V = var1.V;
+         this.faceAlphas = var1.faceAlphas;
       } else {
-         if(Q.length < this.h) {
-            Q = new int[this.h + 100];
+         if(Q.length < this.faces) {
+            Q = new int[this.faces + 100];
          }
 
-         this.V = Q;
-         if(var1.V == null) {
-            for(var3 = 0; var3 < this.h; ++var3) {
-               this.V[var3] = 0;
+         this.faceAlphas = Q;
+         if(var1.faceAlphas == null) {
+            for(var3 = 0; var3 < this.faces; ++var3) {
+               this.faceAlphas[var3] = 0;
             }
          } else {
-            for(var3 = 0; var3 < this.h; ++var3) {
-               this.V[var3] = var1.V[var3];
+            for(var3 = 0; var3 < this.faces; ++var3) {
+               this.faceAlphas[var3] = var1.faceAlphas[var3];
             }
          }
       }
 
       this.l = var1.l;
       this.faceColors = var1.faceColors;
-      this.U = var1.U;
-      this.W = var1.W;
+      this.facePriorities = var1.facePriorities;
+      this.priority = var1.priority;
       this.faceGroups = var1.faceGroups;
       this.vertexGroups = var1.vertexGroups;
       this.i = var1.i;
@@ -1717,7 +1717,7 @@ public final class Model extends Renderable {
       int var5 = var1.f[var2];
       int var6 = var1.g[var2];
 
-      for(int var7 = 0; var7 < this.d; ++var7) {
+      for(int var7 = 0; var7 < this.vertices; ++var7) {
          if(var4 == this.e[var7] && var5 == this.f[var7] && var6 == this.g[var7]) {
             var3 = var7;
             break;
@@ -1725,14 +1725,14 @@ public final class Model extends Renderable {
       }
 
       if(var3 == -1) {
-         this.e[this.d] = var4;
-         this.f[this.d] = var5;
-         this.g[this.d] = var6;
+         this.e[this.vertices] = var4;
+         this.f[this.vertices] = var5;
+         this.g[this.vertices] = var6;
          if(var1.ab != null) {
-            this.ab[this.d] = var1.ab[var2];
+            this.ab[this.vertices] = var1.ab[var2];
          }
 
-         var3 = this.d++;
+         var3 = this.vertices++;
       }
 
       return var3;
@@ -1743,7 +1743,7 @@ public final class Model extends Renderable {
       this.r = 0;
       this.s = 0;
 
-      for(int var1 = 0; var1 < this.d; ++var1) {
+      for(int var1 = 0; var1 < this.vertices; ++var1) {
          int var2 = this.e[var1];
          int var3 = this.f[var1];
          int var4 = this.g[var1];
@@ -1774,7 +1774,7 @@ public final class Model extends Renderable {
          var1 = new int[256];
          var2 = 0;
 
-         for(var3 = 0; var3 < this.d; ++var3) {
+         for(var3 = 0; var3 < this.vertices; ++var3) {
             var4 = this.ab[var3];
             ++var1[var4];
             if(var4 > var2) {
@@ -1789,7 +1789,7 @@ public final class Model extends Renderable {
             var1[var3] = 0;
          }
 
-         for(var3 = 0; var3 < this.d; this.vertexGroups[var4][var1[var4]++] = var3++) {
+         for(var3 = 0; var3 < this.vertices; this.vertexGroups[var4][var1[var4]++] = var3++) {
             var4 = this.ab[var3];
          }
 
@@ -1800,7 +1800,7 @@ public final class Model extends Renderable {
          var1 = new int[256];
          var2 = 0;
 
-         for(var3 = 0; var3 < this.h; ++var3) {
+         for(var3 = 0; var3 < this.faces; ++var3) {
             var4 = this.ac[var3];
             ++var1[var4];
             if(var4 > var2) {
@@ -1815,7 +1815,7 @@ public final class Model extends Renderable {
             var1[var3] = 0;
          }
 
-         for(var3 = 0; var3 < this.h; this.faceGroups[var4][var1[var4]++] = var3++) {
+         for(var3 = 0; var3 < this.faces; this.faceGroups[var4][var1[var4]++] = var3++) {
             var4 = this.ac[var3];
          }
 
@@ -1966,24 +1966,24 @@ public final class Model extends Renderable {
                      int var13;
                      int var14;
                      if((var12 = (var5 & 255) << 3) != 0) {
-                        var13 = F[var12];
-                        var12 = G[var12];
+                        var13 = SINE[var12];
+                        var12 = COSINE[var12];
                         var14 = this.f[var10] * var13 + this.e[var10] * var12 >> 16;
                         this.f[var10] = this.f[var10] * var12 - this.e[var10] * var13 >> 16;
                         this.e[var10] = var14;
                      }
 
                      if(var11 != 0) {
-                        var13 = F[var11];
-                        var12 = G[var11];
+                        var13 = SINE[var11];
+                        var12 = COSINE[var11];
                         var14 = this.f[var10] * var12 - this.g[var10] * var13 >> 16;
                         this.g[var10] = this.f[var10] * var13 + this.g[var10] * var12 >> 16;
                         this.f[var10] = var14;
                      }
 
                      if(var7 != 0) {
-                        var13 = F[var7];
-                        var12 = G[var7];
+                        var13 = SINE[var7];
+                        var12 = COSINE[var7];
                         var14 = this.g[var10] * var13 + this.e[var10] * var12 >> 16;
                         this.g[var10] = this.g[var10] * var12 - this.e[var10] * var13 >> 16;
                         this.e[var10] = var14;
@@ -2017,20 +2017,20 @@ public final class Model extends Renderable {
             }
 
          } else {
-            if(var1 == 5 && this.faceGroups != null && this.V != null) {
+            if(var1 == 5 && this.faceGroups != null && this.faceAlphas != null) {
                for(var1 = 0; var1 < var6; ++var1) {
                   if((var7 = var2[var1]) < this.faceGroups.length) {
                      var8 = this.faceGroups[var7];
 
                      for(var9 = 0; var9 < var8.length; ++var9) {
                         var10 = var8[var9];
-                        this.V[var10] += var3 << 3;
-                        if(this.V[var10] < 0) {
-                           this.V[var10] = 0;
+                        this.faceAlphas[var10] += var3 << 3;
+                        if(this.faceAlphas[var10] < 0) {
+                           this.faceAlphas[var10] = 0;
                         }
 
-                        if(this.V[var10] > 255) {
-                           this.V[var10] = 255;
+                        if(this.faceAlphas[var10] > 255) {
+                           this.faceAlphas[var10] = 255;
                         }
                      }
                   }
@@ -2042,7 +2042,7 @@ public final class Model extends Renderable {
    }
 
    public final void e() {
-      for(int var1 = 0; var1 < this.d; ++var1) {
+      for(int var1 = 0; var1 < this.vertices; ++var1) {
          int var2 = this.e[var1];
          this.e[var1] = this.g[var1];
          this.g[var1] = -var2;
@@ -2051,7 +2051,7 @@ public final class Model extends Renderable {
    }
 
    public final void a(int var1, int var2, int var3) {
-      for(int var4 = 0; var4 < this.d; ++var4) {
+      for(int var4 = 0; var4 < this.vertices; ++var4) {
          this.e[var4] += var1;
          this.f[var4] += var2;
          this.g[var4] += var3;
@@ -2060,7 +2060,7 @@ public final class Model extends Renderable {
    }
 
    public final void recolor(int var1, int var2) {
-      for(int var3 = 0; var3 < this.h; ++var3) {
+      for(int var3 = 0; var3 < this.faces; ++var3) {
          if(this.faceColors[var3] == var1) {
             this.faceColors[var3] = var2;
          }
@@ -2070,11 +2070,11 @@ public final class Model extends Renderable {
 
    public final void f() {
       int var1;
-      for(var1 = 0; var1 < this.d; ++var1) {
+      for(var1 = 0; var1 < this.vertices; ++var1) {
          this.g[var1] = -this.g[var1];
       }
 
-      for(var1 = 0; var1 < this.h; ++var1) {
+      for(var1 = 0; var1 < this.faces; ++var1) {
          int var2 = this.i[var1];
          this.i[var1] = this.k[var1];
          this.k[var1] = var2;
@@ -2083,7 +2083,7 @@ public final class Model extends Renderable {
    }
 
    public final void scale(int var1, int var2, int var3) {
-      for(int var4 = 0; var4 < this.d; ++var4) {
+      for(int var4 = 0; var4 < this.vertices; ++var4) {
          this.e[var4] = this.e[var4] * var1 / 128;
          this.f[var4] = this.f[var4] * var3 / 128;
          this.g[var4] = this.g[var4] * var2 / 128;
@@ -2095,23 +2095,23 @@ public final class Model extends Renderable {
       int var7 = (int)Math.sqrt((double)(var3 * var3 + var4 * var4 + var5 * var5));
       var2 = var2 * var7 >> 8;
       if(this.R == null) {
-         this.R = new int[this.h];
-         this.S = new int[this.h];
-         this.T = new int[this.h];
+         this.R = new int[this.faces];
+         this.S = new int[this.faces];
+         this.T = new int[this.faces];
       }
 
       if(super.normals == null) {
-         super.normals = new VertexNormal[this.d];
+         super.normals = new VertexNormal[this.vertices];
 
-         for(var7 = 0; var7 < this.d; ++var7) {
+         for(var7 = 0; var7 < this.vertices; ++var7) {
             super.normals[var7] = new VertexNormal();
          }
       }
 
       VertexNormal var20;
-      for(var7 = 0; var7 < this.h; ++var7) {
-         if(this.faceColors != null && this.V != null && (this.faceColors[var7] == '\uffff' || this.faceColors[var7] == 16705)) {
-            this.V[var7] = 255;
+      for(var7 = 0; var7 < this.faces; ++var7) {
+         if(this.faceColors != null && this.faceAlphas != null && (this.faceColors[var7] == '\uffff' || this.faceColors[var7] == 16705)) {
+            this.faceAlphas[var7] = 255;
          }
 
          int var8 = this.i[var7];
@@ -2163,9 +2163,9 @@ public final class Model extends Renderable {
       if(var6) {
          this.a(var1, var2, var3, var4, var5);
       } else {
-         this.z = new VertexNormal[this.d];
+         this.z = new VertexNormal[this.vertices];
 
-         for(var7 = 0; var7 < this.d; ++var7) {
+         for(var7 = 0; var7 < this.vertices; ++var7) {
             var20 = super.normals[var7];
             VertexNormal var21;
             (var21 = this.z[var7] = new VertexNormal()).x = var20.x;
@@ -2188,7 +2188,7 @@ public final class Model extends Renderable {
          this.p = -99999;
          this.q = 99999;
 
-         for(var2 = 0; var2 < var19.d; ++var2) {
+         for(var2 = 0; var2 < var19.vertices; ++var2) {
             var3 = var19.e[var2];
             var4 = var19.f[var2];
             var5 = var19.g[var2];
@@ -2229,7 +2229,7 @@ public final class Model extends Renderable {
 
    public final void a(int var1, int var2, int var3, int var4, int var5) {
       int var6;
-      for(var6 = 0; var6 < this.h; ++var6) {
+      for(var6 = 0; var6 < this.faces; ++var6) {
          int var7 = this.i[var6];
          int var8 = this.j[var6];
          int var9 = this.k[var6];
@@ -2265,7 +2265,7 @@ public final class Model extends Renderable {
       this.ab = null;
       this.ac = null;
       if(this.l != null) {
-         for(var6 = 0; var6 < this.h; ++var6) {
+         for(var6 = 0; var6 < this.faces; ++var6) {
             if((this.l[var6] & 2) == 2) {
                return;
             }
@@ -2300,15 +2300,15 @@ public final class Model extends Renderable {
    public final void render(int var1, int var2, int var3, int var4, int var5, int var6) {
       int var7 = Rasterizer3D.e;
       int var8 = Rasterizer3D.f;
-      int var9 = F[var1];
-      int var10 = G[var1];
-      int var11 = F[var2];
-      int var12 = G[var2];
-      int var13 = F[var3];
-      var3 = G[var3];
+      int var9 = SINE[var1];
+      int var10 = COSINE[var1];
+      int var11 = SINE[var2];
+      int var12 = COSINE[var2];
+      int var13 = SINE[var3];
+      var3 = COSINE[var3];
       int var14 = var5 * var13 + var6 * var3 >> 16;
 
-      for(int var15 = 0; var15 < this.d; ++var15) {
+      for(int var15 = 0; var15 < this.vertices; ++var15) {
          int var16 = this.e[var15];
          int var17 = this.f[var15];
          int var18 = this.g[var15];
@@ -2333,7 +2333,7 @@ public final class Model extends Renderable {
          ao[var15] = var18 - var14;
          am[var15] = var7 + (var16 << 9) / var18;
          an[var15] = var8 + (var19 << 9) / var18;
-         if(this.X > 0) {
+         if(this.texturedFaces > 0) {
             ap[var15] = var16;
             aq[var15] = var19;
             ar[var15] = var18;
@@ -2408,11 +2408,11 @@ public final class Model extends Renderable {
                      var13 = 0;
                      var14 = 0;
                      if(var1 != 0) {
-                        var13 = F[var1];
-                        var14 = G[var1];
+                        var13 = SINE[var1];
+                        var14 = COSINE[var1];
                      }
 
-                     for(var15 = 0; var15 < this.d; ++var15) {
+                     for(var15 = 0; var15 < this.vertices; ++var15) {
                         var16 = this.e[var15];
                         var17 = this.f[var15];
                         var18 = this.g[var15];
@@ -2439,7 +2439,7 @@ public final class Model extends Renderable {
                            var20 = true;
                         }
 
-                        if(var20 || this.X > 0) {
+                        if(var20 || this.texturedFaces > 0) {
                            ap[var15] = var16;
                            aq[var15] = var21;
                            ar[var15] = var18;
@@ -2472,7 +2472,7 @@ public final class Model extends Renderable {
       int var10;
       int var17;
       int var18;
-      for(var4 = 0; var4 < this.h; ++var4) {
+      for(var4 = 0; var4 < this.faces; ++var4) {
          if(this.l == null || this.l[var4] != -1) {
             var5 = this.i[var4];
             var6 = this.j[var4];
@@ -2515,7 +2515,7 @@ public final class Model extends Renderable {
       }
 
       int[] var22;
-      if(this.U == null) {
+      if(this.facePriorities == null) {
          for(var4 = this.t - 1; var4 >= 0; --var4) {
             if((var5 = as[var4]) > 0) {
                var22 = at[var4];
@@ -2538,7 +2538,7 @@ public final class Model extends Renderable {
 
                for(var7 = 0; var7 < var5; ++var7) {
                   var8 = var22[var7];
-                  var9 = this.U[var8];
+                  var9 = this.facePriorities[var8];
                   var10 = au[var9]++;
                   av[var9][var10] = var8;
                   if(var9 < 10) {
@@ -2671,10 +2671,10 @@ public final class Model extends Renderable {
          var3 = this.j[modelID];
          var4 = this.k[modelID];
          Rasterizer3D.b = af[modelID];
-         if(this.V == null) {
+         if(this.faceAlphas == null) {
             Rasterizer3D.d = 0;
          } else {
-            Rasterizer3D.d = this.V[modelID];
+            Rasterizer3D.d = this.faceAlphas[modelID];
          }
 
          if(this.l == null) {
@@ -2686,7 +2686,7 @@ public final class Model extends Renderable {
          if(var5 == 0) {
             Rasterizer3D.drawShadedTriangle(an[var2], an[var3], an[var4], am[var2], am[var3], am[var4], this.R[modelID], this.S[modelID], this.T[modelID]);
          } else if(var5 == 1) {
-            Rasterizer3D.drawFlatTriangle(an[var2], an[var3], an[var4], am[var2], am[var3], am[var4], aF[this.R[modelID]]);
+            Rasterizer3D.drawFlatTriangle(an[var2], an[var3], an[var4], am[var2], am[var3], am[var4], rgbTable[this.R[modelID]]);
          } else if(var5 == 2) {
             var5 = this.l[modelID] >> 2;
             var6 = this.Y[var5];
@@ -2811,7 +2811,7 @@ public final class Model extends Renderable {
                   if(var6 == 0) {
                      Rasterizer3D.drawShadedTriangle(var15, var3, var4, var12, var13, var14, aB[0], aB[1], aB[2]);
                   } else if(var6 == 1) {
-                     Rasterizer3D.drawFlatTriangle(var15, var3, var4, var12, var13, var14, aF[this.R[modelID]]);
+                     Rasterizer3D.drawFlatTriangle(var15, var3, var4, var12, var13, var14, rgbTable[this.R[modelID]]);
                   } else if(var6 == 2) {
                      var6 = this.l[modelID] >> 2;
                      var7 = this.Y[var6];
@@ -2845,7 +2845,7 @@ public final class Model extends Renderable {
                   }
 
                   if(var6 == 1) {
-                     var6 = aF[this.R[modelID]];
+                     var6 = rgbTable[this.R[modelID]];
                      Rasterizer3D.drawFlatTriangle(var15, var3, var4, var12, var13, var14, var6);
                      Rasterizer3D.drawFlatTriangle(var15, var4, aA[3], var12, var14, az[3], var6);
                      return;

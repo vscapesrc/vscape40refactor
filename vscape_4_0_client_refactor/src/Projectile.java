@@ -70,10 +70,10 @@ final class Projectile extends Renderable {
 
          int var3 = this.z;
          Model var7 = var1;
-         int var4 = Model.F[var3];
-         var3 = Model.G[var3];
+         int var4 = Model.SINE[var3];
+         var3 = Model.COSINE[var3];
 
-         for(int var5 = 0; var5 < var7.d; ++var5) {
+         for(int var5 = 0; var5 < var7.vertices; ++var5) {
             int var6 = var7.f[var5] * var3 - var7.g[var5] * var4 >> 16;
             var7.g[var5] = var7.f[var5] * var4 + var7.g[var5] * var3 >> 16;
             var7.f[var5] = var6;

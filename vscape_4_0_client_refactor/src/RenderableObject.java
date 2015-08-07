@@ -1,101 +1,101 @@
 final class RenderableObject extends Renderable {
-   private int d;
-   private final int[] e;
-   private final int f;
-   private final int g;
-   private final int h;
-   private final int i;
-   private final int j;
-   private final int k;
-   private Animation l;
-   private int m;
+   private int currentFrameId;
+   private final int[] morphisms;
+   private final int morphVarbitIndex;
+   private final int morphVariableIndex;
+   private final int centre;
+   private final int heightEast;
+   private final int heightNorthEast;
+   private final int heightNorth;
+   private Animation animation;
+   private int currentFrameDuration;
    public static Client client;
    private final int id;
-   private final int o;
+   private final int type;
    private final int orientation;
 
-   private ObjectDefinition b() {
-      int var1 = -1;
-      if(this.f != -1) {
+   private ObjectDefinition morph() {
+      int state = -1;
+      if(this.morphVarbitIndex != -1) {
          try {
-            VarBits var2;
-            int var3 = (var2 = VarBits.bits[this.f]).setting;
-            int var4 = var2.low;
-            int var6 = var2.high;
-            var6 = Client.E[var6 - var4];
-            var1 = client.m[var3] >> var4 & var6;
+            VarBits bits;
+            int var = (bits = VarBits.bits[this.morphVarbitIndex]).setting;
+            int low = bits.low;
+            int high = bits.high;
+            high = Client.BIT_MASKS[high - low];
+            state = client.settings[var] >> low & high;
          } catch (Exception var5) {
             ;
          }
-      } else if(this.g != -1) {
-         var1 = client.m[this.g];
+      } else if(this.morphVariableIndex != -1) {
+         state = client.settings[this.morphVariableIndex];
       }
 
-      return var1 >= 0 && var1 < this.e.length && this.e[var1] != -1?ObjectDefinition.byId(this.e[var1]):null;
+      return state >= 0 && state < this.morphisms.length && this.morphisms[state] != -1?ObjectDefinition.byId(this.morphisms[state]):null;
    }
 
    public final Model getRotatedModel() {
       int var1 = -1;
-      if(this.l != null) {
+      if(this.animation != null) {
          int var2;
-         if((var2 = Client.x - this.m) > 100 && this.l.loopOffset > 0) {
+         if((var2 = Client.tick - this.currentFrameDuration) > 100 && this.animation.loopOffset > 0) {
             var2 = 100;
          }
 
          label40: {
             do {
                do {
-                  if(var2 <= this.l.duration(this.d)) {
+                  if(var2 <= this.animation.duration(this.currentFrameId)) {
                      break label40;
                   }
 
-                  var2 -= this.l.duration(this.d);
-                  ++this.d;
-               } while(this.d < this.l.frameCount);
+                  var2 -= this.animation.duration(this.currentFrameId);
+                  ++this.currentFrameId;
+               } while(this.currentFrameId < this.animation.frameCount);
 
-               this.d -= this.l.loopOffset;
-            } while(this.d >= 0 && this.d < this.l.frameCount);
+               this.currentFrameId -= this.animation.loopOffset;
+            } while(this.currentFrameId >= 0 && this.currentFrameId < this.animation.frameCount);
 
-            this.l = null;
+            this.animation = null;
          }
 
-         this.m = Client.x - var2;
-         if(this.l != null) {
-            var1 = this.l.primaryFrames[this.d];
+         this.currentFrameDuration = Client.tick - var2;
+         if(this.animation != null) {
+            var1 = this.animation.primaryFrames[this.currentFrameId];
          }
       }
 
       ObjectDefinition var3;
-      if(this.e != null) {
-         var3 = this.b();
+      if(this.morphisms != null) {
+         var3 = this.morph();
       } else {
          var3 = ObjectDefinition.byId(this.id);
       }
 
-      return var3 == null?null:var3.modelAt(this.o, this.orientation, this.h, this.i, this.j, this.k, var1);
+      return var3 == null?null:var3.modelAt(this.type, this.orientation, this.centre, this.heightEast, this.heightNorthEast, this.heightNorth, var1);
    }
 
-   public RenderableObject(int id, int orientation, int var3, int heightEast, int heightNorthEast, int heightCentre, int heightNorth, int animation, boolean var9) {
+   public RenderableObject(int id, int orientation, int type, int heightEast, int heightNorthEast, int heightCentre, int heightNorth, int animationiD, boolean randomFrame) {
       this.id = id;
-      this.o = var3;
+      this.type = type;
       this.orientation = orientation;
-      this.h = heightCentre;
-      this.i = heightEast;
-      this.j = heightNorthEast;
-      this.k = heightNorth;
-      if(animation != -1) {
-         this.l = Animation.animations[animation];
-         this.d = 0;
-         this.m = Client.x;
-         if(var9 && this.l.loopOffset != -1) {
-            this.d = (int)(Math.random() * (double)this.l.frameCount);
-            this.m -= (int)(Math.random() * (double)this.l.duration(this.d));
+      this.centre = heightCentre;
+      this.heightEast = heightEast;
+      this.heightNorthEast = heightNorthEast;
+      this.heightNorth = heightNorth;
+      if(animationiD != -1) {
+         this.animation = Animation.animations[animationiD];
+         this.currentFrameId = 0;
+         this.currentFrameDuration = Client.tick;
+         if(randomFrame && this.animation.loopOffset != -1) {
+            this.currentFrameId = (int)(Math.random() * (double)this.animation.frameCount);
+            this.currentFrameDuration -= (int)(Math.random() * (double)this.animation.duration(this.currentFrameId));
          }
       }
 
-      ObjectDefinition var10 = ObjectDefinition.byId(this.id);
-      this.f = var10.morphVarbitIndex;
-      this.g = var10.morphVariableIndex;
-      this.e = var10.morphisms;
+      ObjectDefinition definition = ObjectDefinition.byId(this.id);
+      this.morphVarbitIndex = definition.morphVarbitIndex;
+      this.morphVariableIndex = definition.morphVariableIndex;
+      this.morphisms = definition.morphisms;
    }
 }

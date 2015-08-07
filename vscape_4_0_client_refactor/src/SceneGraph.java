@@ -236,7 +236,7 @@ final class SceneGraph {
       if((var10 = this.tiles[var7][var1][var8]) != null) {
          for(var4 = 0; var4 < var10.k; ++var4) {
             int var11;
-            if(var10.gameObjects[var4].e instanceof Model && (var11 = ((Model)var10.gameObjects[var4].e).v) > var2) {
+            if(var10.gameObjects[var4].renderable instanceof Model && (var11 = ((Model)var10.gameObjects[var4].renderable).v) > var2) {
                var2 = var11;
             }
          }
@@ -360,12 +360,12 @@ final class SceneGraph {
 
       GameObject var18;
       (var18 = new GameObject()).m = key;
-      var18.n = config;
+      var18.config = config;
       var18.a = plane;
       var18.c = centreX;
       var18.d = centreY;
       var18.b = renderHeight;
-      var18.e = renderable;
+      var18.renderable = renderable;
       var18.f = yaw;
       var18.g = minX;
       var18.i = minY;
@@ -587,7 +587,7 @@ final class SceneGraph {
       } else {
          for(var2 = 0; var2 < var5.k; ++var2) {
             if(var5.gameObjects[var2].m == var4) {
-               return var5.gameObjects[var2].n & 255;
+               return var5.gameObjects[var2].config & 255;
             }
          }
 
@@ -618,9 +618,9 @@ final class SceneGraph {
 
                   for(int var12 = 0; var12 < var5.k; ++var12) {
                      GameObject var7;
-                     if((var7 = var5.gameObjects[var12]) != null && var7.e != null && var7.e.normals != null) {
-                        this.a(var2, var7.h - var7.g + 1, var7.j - var7.i + 1, var3, var4, (Model)var7.e);
-                        ((Model)var7.e).a(80, var1, -50, -10, -50);
+                     if((var7 = var5.gameObjects[var12]) != null && var7.renderable != null && var7.renderable.normals != null) {
+                        this.a(var2, var7.h - var7.g + 1, var7.j - var7.i + 1, var3, var4, (Model)var7.renderable);
+                        ((Model)var7.renderable).a(80, var1, -50, -10, -50);
                      }
                   }
 
@@ -679,10 +679,10 @@ final class SceneGraph {
 
                         for(int var21 = 0; var21 < var15.k; ++var21) {
                            GameObject var18;
-                           if((var18 = var15.gameObjects[var21]) != null && var18.e != null && var18.e.normals != null) {
+                           if((var18 = var15.gameObjects[var21]) != null && var18.renderable != null && var18.renderable.normals != null) {
                               int var19 = var18.h - var18.g + 1;
                               int var20 = var18.j - var18.i + 1;
-                              this.a(var6, (Model)var18.e, (var18.g - var4 << 7) + (var19 - var2 << 6), var16, (var18.i - var5 << 7) + (var20 - var3 << 6), var7);
+                              this.a(var6, (Model)var18.renderable, (var18.g - var4 << 7) + (var19 - var2 << 6), var16, (var18.i - var5 << 7) + (var20 - var3 << 6), var7);
                            }
                         }
                      }
@@ -701,10 +701,10 @@ final class SceneGraph {
       ++this.ab;
       int var7 = 0;
       int[] var8 = var2.e;
-      int var9 = var2.d;
+      int var9 = var2.vertices;
 
       int var10;
-      for(var10 = 0; var10 < var1.d; ++var10) {
+      for(var10 = 0; var10 < var1.vertices; ++var10) {
          VertexNormal var11 = var1.normals[var10];
          VertexNormal var12;
          int var13;
@@ -732,13 +732,13 @@ final class SceneGraph {
       }
 
       if(var7 >= 3 && var6) {
-         for(var10 = 0; var10 < var1.h; ++var10) {
+         for(var10 = 0; var10 < var1.faces; ++var10) {
             if(this.Z[var1.i[var10]] == this.ab && this.Z[var1.j[var10]] == this.ab && this.Z[var1.k[var10]] == this.ab) {
                var1.l[var10] = -1;
             }
          }
 
-         for(var10 = 0; var10 < var2.h; ++var10) {
+         for(var10 = 0; var10 < var2.faces; ++var10) {
             if(this.aa[var2.i[var10]] == this.ab && this.aa[var2.j[var10]] == this.ab && this.aa[var2.k[var10]] == this.ab) {
                var2.l[var10] = -1;
             }
@@ -824,10 +824,10 @@ final class SceneGraph {
       int var8;
       for(var1 = 128; var1 <= 384; var1 += 32) {
          for(var2 = 0; var2 < 2048; var2 += 64) {
-            z = Model.F[var1];
-            A = Model.G[var1];
-            B = Model.F[var2];
-            C = Model.G[var2];
+            z = Model.SINE[var1];
+            A = Model.COSINE[var1];
+            B = Model.SINE[var2];
+            C = Model.COSINE[var2];
             var3 = (var1 - 128) / 32;
             var5 = var2 / 64;
 
@@ -925,10 +925,10 @@ final class SceneGraph {
       }
 
       ++p;
-      z = Model.F[var6];
-      A = Model.G[var6];
-      B = Model.F[var3];
-      C = Model.G[var3];
+      z = Model.SINE[var6];
+      A = Model.COSINE[var6];
+      B = Model.SINE[var3];
+      C = Model.COSINE[var3];
       af = ae[(var6 - 128) / 32][var3 / 64];
       w = var1;
       x = var4;
@@ -1261,7 +1261,7 @@ final class SceneGraph {
 
                                     for(var10 = 0; var10 < var8.k; ++var10) {
                                        if((var11 = var8.gameObjects[var10]) != null) {
-                                          var11.e.renderAtPoint(var11.f, z, A, B, C, var11.c - w, var11.b - x, var11.d - y, var11.m);
+                                          var11.renderable.renderAtPoint(var11.f, z, A, B, C, var11.c - w, var11.b - x, var11.d - y, var11.m);
                                        }
                                     }
                                  }
@@ -1517,7 +1517,7 @@ final class SceneGraph {
                                     boolean var10000;
                                     label723: {
                                        (var28 = D[var26]).l = p;
-                                       var16 = var28.e.modelHeight;
+                                       var16 = var28.renderable.modelHeight;
                                        var15 = var28.j;
                                        var14 = var28.i;
                                        var13 = var28.h;
@@ -1565,7 +1565,7 @@ final class SceneGraph {
                                     }
 
                                     if(!var10000) {
-                                       var28.e.renderAtPoint(var28.f, z, A, B, C, var28.c - w, var28.b - x, var28.d - y, var28.m);
+                                       var28.renderable.renderAtPoint(var28.f, z, A, B, C, var28.c - w, var28.b - x, var28.d - y, var28.m);
                                     }
 
                                     for(var13 = var28.g; var13 <= var28.h; ++var13) {

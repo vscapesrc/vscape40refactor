@@ -1,8 +1,8 @@
 final class MapRegion {
-   private final int[] d;
-   private final int[] e;
-   private final int[] f;
-   private final int[] g;
+   private final int[] hues;
+   private final int[] saturations;
+   private final int[] luminances;
+   private final int[] chromas;
    private final int[] h;
    private final int[][][] tileHeights;
    private final byte[][][] overlays;
@@ -15,20 +15,20 @@ final class MapRegion {
    private static final int[] p = new int[]{16, 32, 64, 128};
    private final byte[][][] underlays;
    private static final int[] SINE_VERTICES = new int[]{0, -1, 0, 1};
-   static int b = 99;
-   private final int s;
-   private final int t;
+   static int maximumPlane = 99;
+   private final int width;
+   private final int length;
    private final byte[][][] overlayOrientations;
    private final byte[][][] tileFlags;
    static boolean lowMemory = true;
    private static final int[] anIntArray = new int[]{1, 2, 4, 8};
 
-   public MapRegion(byte[][][] var1, int[][][] var2) {
-      b = 99;
-      this.s = 104;
-      this.t = 104;
-      this.tileHeights = var2;
-      this.tileFlags = var1;
+   public MapRegion(byte[][][] flags, int[][][] tileHeights) {
+      maximumPlane = 99;
+      this.width = 104;
+      this.length = 104;
+      this.tileHeights = tileHeights;
+      this.tileFlags = flags;
       this.underlays = new byte[4][104][104];
       this.overlays = new byte[4][104][104];
       this.overlayTypes = new byte[4][104][104];
@@ -36,10 +36,10 @@ final class MapRegion {
       this.l = new int[4][105][105];
       this.shading = new byte[4][105][105];
       this.o = new int[105][105];
-      this.d = new int[104];
-      this.e = new int[104];
-      this.f = new int[104];
-      this.g = new int[104];
+      this.hues = new int[104];
+      this.saturations = new int[104];
+      this.luminances = new int[104];
+      this.chromas = new int[104];
       this.h = new int[104];
    }
 
@@ -47,30 +47,30 @@ final class MapRegion {
       return ((x ^= (x += y * 57) << 13) * (x * x * 15731 + 789221) + 1376312589 & Integer.MAX_VALUE) >> 19 & 255;
    }
 
-   public final void a(CollisionMap[] var1, SceneGraph var2) {
+   public final void a(CollisionMap[] maps, SceneGraph scene) {
       try {
-         int var3;
-         int var4;
-         int var5;
-         int var6;
-         for(var3 = 0; var3 < 4; ++var3) {
-            for(var4 = 0; var4 < 104; ++var4) {
-               for(var5 = 0; var5 < 104; ++var5) {
-                  if((this.tileFlags[var3][var4][var5] & 1) == 1) {
-                     var6 = var3;
-                     if((this.tileFlags[1][var4][var5] & 2) == 2) {
-                        var6 = var3 - 1;
+         int z;
+         int x;
+         int y;
+         int plane;
+         for(z = 0; z < 4; ++z) {
+            for(x = 0; x < 104; ++x) {
+               for(y = 0; y < 104; ++y) {
+                  if((this.tileFlags[z][x][y] & 1) == 1) {
+                     plane = z;
+                     if((this.tileFlags[1][x][y] & 2) == 2) {
+                        plane = z - 1;
                      }
 
-                     if(var6 >= 0) {
-                        var1[var6].block(var5, var4);
+                     if(plane >= 0) {
+                        maps[plane].block(y, x);
                      }
                   }
                }
             }
          }
 
-         int var7;
+         int id;
          int var8;
          int var9;
          int var10;
@@ -81,50 +81,50 @@ final class MapRegion {
          int var15;
          int var16;
          int var27;
-         for(var3 = 0; var3 < 4; ++var3) {
-            byte[][] var29 = this.shading[var3];
-            var7 = (int)Math.sqrt(5100.0D);
-            var8 = var7 * 768 >> 8;
+         for(z = 0; z < 4; ++z) {
+            byte[][] var29 = this.shading[z];
+            id = (int)Math.sqrt(5100.0D);
+            var8 = id * 768 >> 8;
 
             for(var9 = 1; var9 < 103; ++var9) {
                for(var10 = 1; var10 < 103; ++var10) {
-                  var11 = this.tileHeights[var3][var10 + 1][var9] - this.tileHeights[var3][var10 - 1][var9];
-                  var7 = this.tileHeights[var3][var10][var9 + 1] - this.tileHeights[var3][var10][var9 - 1];
-                  var12 = (int)Math.sqrt((double)(var11 * var11 + 65536 + var7 * var7));
+                  var11 = this.tileHeights[z][var10 + 1][var9] - this.tileHeights[z][var10 - 1][var9];
+                  id = this.tileHeights[z][var10][var9 + 1] - this.tileHeights[z][var10][var9 - 1];
+                  var12 = (int)Math.sqrt((double)(var11 * var11 + 65536 + id * id));
                   var13 = (var11 << 8) / var12;
                   var14 = 65536 / var12;
-                  var15 = (var7 << 8) / var12;
+                  var15 = (id << 8) / var12;
                   var27 = 96 + (var13 * -50 + var14 * -10 + var15 * -50) / var8;
-                  var5 = (var29[var10 - 1][var9] >> 2) + (var29[var10 + 1][var9] >> 3) + (var29[var10][var9 - 1] >> 2) + (var29[var10][var9 + 1] >> 3) + (var29[var10][var9] >> 1);
-                  this.o[var10][var9] = var27 - var5;
+                  y = (var29[var10 - 1][var9] >> 2) + (var29[var10 + 1][var9] >> 3) + (var29[var10][var9 - 1] >> 2) + (var29[var10][var9 + 1] >> 3) + (var29[var10][var9] >> 1);
+                  this.o[var10][var9] = var27 - y;
                }
             }
 
             for(var9 = 0; var9 < 104; ++var9) {
-               this.d[var9] = 0;
-               this.e[var9] = 0;
-               this.f[var9] = 0;
-               this.g[var9] = 0;
+               this.hues[var9] = 0;
+               this.saturations[var9] = 0;
+               this.luminances[var9] = 0;
+               this.chromas[var9] = 0;
                this.h[var9] = 0;
             }
 
             for(var9 = -5; var9 < 109; ++var9) {
                for(var10 = 0; var10 < 104; ++var10) {
-                  if((var11 = var9 + 5) >= 0 && var11 < 104 && (var7 = this.underlays[var3][var11][var10] & 255) > 0) {
-                     Floor var31 = Floor.floors[var7 - 1];
-                     this.d[var10] += var31.weightedHue;
-                     this.e[var10] += var31.saturation;
-                     this.f[var10] += var31.luminance;
-                     this.g[var10] += var31.chroma;
+                  if((var11 = var9 + 5) >= 0 && var11 < 104 && (id = this.underlays[z][var11][var10] & 255) > 0) {
+                     Floor floor = Floor.floors[id - 1];
+                     this.hues[var10] += floor.weightedHue;
+                     this.saturations[var10] += floor.saturation;
+                     this.luminances[var10] += floor.luminance;
+                     this.chromas[var10] += floor.chroma;
                      ++this.h[var10];
                   }
 
-                  if((var7 = var9 - 5) >= 0 && var7 < 104 && (var12 = this.underlays[var3][var7][var10] & 255) > 0) {
+                  if((id = var9 - 5) >= 0 && id < 104 && (var12 = this.underlays[z][id][var10] & 255) > 0) {
                      Floor var32 = Floor.floors[var12 - 1];
-                     this.d[var10] -= var32.weightedHue;
-                     this.e[var10] -= var32.saturation;
-                     this.f[var10] -= var32.luminance;
-                     this.g[var10] -= var32.chroma;
+                     this.hues[var10] -= var32.weightedHue;
+                     this.saturations[var10] -= var32.saturation;
+                     this.luminances[var10] -= var32.luminance;
+                     this.chromas[var10] -= var32.chroma;
                      --this.h[var10];
                   }
                }
@@ -132,39 +132,39 @@ final class MapRegion {
                if(var9 > 0 && var9 < 103) {
                   var10 = 0;
                   var11 = 0;
-                  var7 = 0;
+                  id = 0;
                   var12 = 0;
                   var13 = 0;
 
                   for(var14 = -5; var14 < 109; ++var14) {
                      if((var15 = var14 + 5) >= 0 && var15 < 104) {
-                        var10 += this.d[var15];
-                        var11 += this.e[var15];
-                        var7 += this.f[var15];
-                        var12 += this.g[var15];
+                        var10 += this.hues[var15];
+                        var11 += this.saturations[var15];
+                        id += this.luminances[var15];
+                        var12 += this.chromas[var15];
                         var13 += this.h[var15];
                      }
 
                      if((var27 = var14 - 5) >= 0 && var27 < 104) {
-                        var10 -= this.d[var27];
-                        var11 -= this.e[var27];
-                        var7 -= this.f[var27];
-                        var12 -= this.g[var27];
+                        var10 -= this.hues[var27];
+                        var11 -= this.saturations[var27];
+                        id -= this.luminances[var27];
+                        var12 -= this.chromas[var27];
                         var13 -= this.h[var27];
                      }
 
-                     if(var14 > 0 && var14 < 103 && (!lowMemory || (this.tileFlags[0][var9][var14] & 2) != 0 || (this.tileFlags[var3][var9][var14] & 16) == 0 && this.getCollisionPlane(var14, var3, var9) == currentPlane)) {
-                        if(var3 < b) {
-                           b = var3;
+                     if(var14 > 0 && var14 < 103 && (!lowMemory || (this.tileFlags[0][var9][var14] & 2) != 0 || (this.tileFlags[z][var9][var14] & 16) == 0 && this.getCollisionPlane(var14, z, var9) == currentPlane)) {
+                        if(z < maximumPlane) {
+                           maximumPlane = z;
                         }
 
-                        var5 = this.underlays[var3][var9][var14] & 255;
-                        var27 = this.overlays[var3][var9][var14] & 255;
-                        if(var5 > 0 || var27 > 0) {
-                           var4 = this.tileHeights[var3][var9][var14];
-                           var6 = this.tileHeights[var3][var9 + 1][var14];
-                           var16 = this.tileHeights[var3][var9 + 1][var14 + 1];
-                           var8 = this.tileHeights[var3][var9][var14 + 1];
+                        y = this.underlays[z][var9][var14] & 255;
+                        var27 = this.overlays[z][var9][var14] & 255;
+                        if(y > 0 || var27 > 0) {
+                           x = this.tileHeights[z][var9][var14];
+                           plane = this.tileHeights[z][var9 + 1][var14];
+                           var16 = this.tileHeights[z][var9 + 1][var14 + 1];
+                           var8 = this.tileHeights[z][var9][var14 + 1];
                            var15 = this.o[var9][var14];
                            int var17 = this.o[var9 + 1][var14];
                            int var18 = this.o[var9 + 1][var14 + 1];
@@ -172,17 +172,17 @@ final class MapRegion {
                            int var20 = -1;
                            int var21 = -1;
                            int var22;
-                           if(var5 > 0) {
+                           if(y > 0) {
                               var22 = (var10 << 8) / var12;
                               var21 = var11 / var13;
-                              int var23 = var7 / var13;
-                              var20 = b(var22, var21, var23);
-                              var21 = b(var22, var21, var23);
+                              int var23 = id / var13;
+                              var20 = encode(var22, var21, var23);
+                              var21 = encode(var22, var21, var23);
                            }
 
-                           if(var3 > 0) {
+                           if(z > 0) {
                               boolean var33 = true;
-                              if(var5 == 0 && this.overlayTypes[var3][var9][var14] != 0) {
+                              if(y == 0 && this.overlayTypes[z][var9][var14] != 0) {
                                  var33 = false;
                               }
 
@@ -190,8 +190,8 @@ final class MapRegion {
                                  var33 = false;
                               }
 
-                              if(var33 && var4 == var6 && var4 == var16 && var4 == var8) {
-                                 this.l[var3][var9][var14] |= 2340;
+                              if(var33 && x == plane && x == var16 && x == var8) {
+                                 this.l[z][var9][var14] |= 2340;
                               }
                            }
 
@@ -201,40 +201,40 @@ final class MapRegion {
                            }
 
                            if(var27 == 0) {
-                              var2.a(var3, var9, var14, 0, 0, -1, var4, var6, var16, var8, light(var20, var15), light(var20, var17), light(var20, var18), light(var20, var19), 0, 0, 0, 0, var22, 0);
+                              scene.a(z, var9, var14, 0, 0, -1, x, plane, var16, var8, light(var20, var15), light(var20, var17), light(var20, var18), light(var20, var19), 0, 0, 0, 0, var22, 0);
                            } else {
-                              var21 = this.overlayTypes[var3][var9][var14] + 1;
-                              byte var34 = this.overlayOrientations[var3][var9][var14];
+                              var21 = this.overlayTypes[z][var9][var14] + 1;
+                              byte var34 = this.overlayOrientations[z][var9][var14];
                               Floor var30 = Floor.floors[var27 - 1];
                               if(var27 - 1 != 54) {
                                  int var24 = var30.texture;
                                  int var25;
                                  if(var30.texture >= 0) {
-                                    var5 = Rasterizer3D.a(var24);
+                                    y = Rasterizer3D.a(var24);
                                     var25 = -1;
                                  } else if(var30.rgb == 16711935) {
-                                    var5 = 0;
+                                    y = 0;
                                     var25 = -2;
                                     var24 = -1;
                                  } else if(var30.rgb == 3355443) {
-                                    var5 = Rasterizer3D.rgbTable[checkedLight(var30.color, 96)];
+                                    y = Rasterizer3D.rgbTable[checkedLight(var30.color, 96)];
                                     var25 = -2;
                                     var24 = -1;
                                  } else {
-                                    var25 = b(var30.hue, var30.saturation, var30.luminance);
-                                    var5 = Rasterizer3D.rgbTable[checkedLight(var30.color, 96)];
+                                    var25 = encode(var30.hue, var30.saturation, var30.luminance);
+                                    y = Rasterizer3D.rgbTable[checkedLight(var30.color, 96)];
                                  }
 
                                  if(var27 - 1 == 111) {
-                                    var5 = Rasterizer3D.a(1);
+                                    y = Rasterizer3D.a(1);
                                     var25 = -1;
                                     var24 = 1;
                                  } else if(var25 == 6363) {
-                                    var5 = 4733729;
-                                    var25 = b(25, 146, 24);
+                                    y = 4733729;
+                                    var25 = encode(25, 146, 24);
                                  }
 
-                                 var2.a(var3, var9, var14, var21, var34, var24, var4, var6, var16, var8, light(var20, var15), light(var20, var17), light(var20, var18), light(var20, var19), checkedLight(var25, var15), checkedLight(var25, var17), checkedLight(var25, var18), checkedLight(var25, var19), var22, var5);
+                                 scene.a(z, var9, var14, var21, var34, var24, x, plane, var16, var8, light(var20, var15), light(var20, var17), light(var20, var18), light(var20, var19), checkedLight(var25, var15), checkedLight(var25, var17), checkedLight(var25, var18), checkedLight(var25, var19), var22, y);
                               }
                            }
                         }
@@ -245,52 +245,52 @@ final class MapRegion {
 
             for(var9 = 1; var9 < 103; ++var9) {
                for(var10 = 1; var10 < 103; ++var10) {
-                  var2.a(var3, var10, var9, this.getCollisionPlane(var9, var3, var10));
+                  scene.a(z, var10, var9, this.getCollisionPlane(var9, z, var10));
                }
             }
          }
 
-         var2.m(-10, -50, -50);
+         scene.m(-10, -50, -50);
 
-         for(var3 = 0; var3 < 104; ++var3) {
-            for(var4 = 0; var4 < 104; ++var4) {
-               if((this.tileFlags[1][var3][var4] & 2) == 2) {
-                  var2.a(var4, var3);
+         for(z = 0; z < 104; ++z) {
+            for(x = 0; x < 104; ++x) {
+               if((this.tileFlags[1][z][x] & 2) == 2) {
+                  scene.a(x, z);
                }
             }
          }
 
-         var3 = 1;
-         var4 = 2;
-         var5 = 4;
+         z = 1;
+         x = 2;
+         y = 4;
 
-         for(var6 = 0; var6 < 4; ++var6) {
-            if(var6 > 0) {
-               var3 <<= 3;
-               var4 <<= 3;
-               var5 <<= 3;
+         for(plane = 0; plane < 4; ++plane) {
+            if(plane > 0) {
+               z <<= 3;
+               x <<= 3;
+               y <<= 3;
             }
 
-            for(var27 = 0; var27 <= var6; ++var27) {
+            for(var27 = 0; var27 <= plane; ++var27) {
                for(int var28 = 0; var28 <= 104; ++var28) {
                   for(var16 = 0; var16 <= 104; ++var16) {
-                     if((this.l[var27][var16][var28] & var3) != 0) {
-                        var7 = var28;
+                     if((this.l[var27][var16][var28] & z) != 0) {
+                        id = var28;
                         var8 = var28;
                         var9 = var27;
 
-                        for(var10 = var27; var7 > 0 && (this.l[var27][var16][var7 - 1] & var3) != 0; --var7) {
+                        for(var10 = var27; id > 0 && (this.l[var27][var16][id - 1] & z) != 0; --id) {
                            ;
                         }
 
-                        while(var8 < 104 && (this.l[var27][var16][var8 + 1] & var3) != 0) {
+                        while(var8 < 104 && (this.l[var27][var16][var8 + 1] & z) != 0) {
                            ++var8;
                         }
 
                         label310:
                         while(var9 > 0) {
-                           for(var11 = var7; var11 <= var8; ++var11) {
-                              if((this.l[var9 - 1][var16][var11] & var3) == 0) {
+                           for(var11 = id; var11 <= var8; ++var11) {
+                              if((this.l[var9 - 1][var16][var11] & z) == 0) {
                                  break label310;
                               }
                            }
@@ -299,9 +299,9 @@ final class MapRegion {
                         }
 
                         label299:
-                        while(var10 < var6) {
-                           for(var11 = var7; var11 <= var8; ++var11) {
-                              if((this.l[var10 + 1][var16][var11] & var3) == 0) {
+                        while(var10 < plane) {
+                           for(var11 = id; var11 <= var8; ++var11) {
+                              if((this.l[var10 + 1][var16][var11] & z) == 0) {
                                  break label299;
                               }
                            }
@@ -309,36 +309,36 @@ final class MapRegion {
                            ++var10;
                         }
 
-                        if((var10 + 1 - var9) * (var8 - var7 + 1) >= 8) {
-                           var12 = this.tileHeights[var10][var16][var7] - 240;
-                           var13 = this.tileHeights[var9][var16][var7];
-                           SceneGraph.a(var6, var16 << 7, var13, var16 << 7, (var8 << 7) + 128, var12, var7 << 7, 1);
+                        if((var10 + 1 - var9) * (var8 - id + 1) >= 8) {
+                           var12 = this.tileHeights[var10][var16][id] - 240;
+                           var13 = this.tileHeights[var9][var16][id];
+                           SceneGraph.a(plane, var16 << 7, var13, var16 << 7, (var8 << 7) + 128, var12, id << 7, 1);
 
                            for(var14 = var9; var14 <= var10; ++var14) {
-                              for(var15 = var7; var15 <= var8; ++var15) {
-                                 this.l[var14][var16][var15] &= ~var3;
+                              for(var15 = id; var15 <= var8; ++var15) {
+                                 this.l[var14][var16][var15] &= ~z;
                               }
                            }
                         }
                      }
 
-                     if((this.l[var27][var16][var28] & var4) != 0) {
-                        var7 = var16;
+                     if((this.l[var27][var16][var28] & x) != 0) {
+                        id = var16;
                         var8 = var16;
                         var9 = var27;
 
-                        for(var10 = var27; var7 > 0 && (this.l[var27][var7 - 1][var28] & var4) != 0; --var7) {
+                        for(var10 = var27; id > 0 && (this.l[var27][id - 1][var28] & x) != 0; --id) {
                            ;
                         }
 
-                        while(var8 < 104 && (this.l[var27][var8 + 1][var28] & var4) != 0) {
+                        while(var8 < 104 && (this.l[var27][var8 + 1][var28] & x) != 0) {
                            ++var8;
                         }
 
                         label363:
                         while(var9 > 0) {
-                           for(var11 = var7; var11 <= var8; ++var11) {
-                              if((this.l[var9 - 1][var11][var28] & var4) == 0) {
+                           for(var11 = id; var11 <= var8; ++var11) {
+                              if((this.l[var9 - 1][var11][var28] & x) == 0) {
                                  break label363;
                               }
                            }
@@ -347,9 +347,9 @@ final class MapRegion {
                         }
 
                         label352:
-                        while(var10 < var6) {
-                           for(var11 = var7; var11 <= var8; ++var11) {
-                              if((this.l[var10 + 1][var11][var28] & var4) == 0) {
+                        while(var10 < plane) {
+                           for(var11 = id; var11 <= var8; ++var11) {
+                              if((this.l[var10 + 1][var11][var28] & x) == 0) {
                                  break label352;
                               }
                            }
@@ -357,47 +357,47 @@ final class MapRegion {
                            ++var10;
                         }
 
-                        if((var10 + 1 - var9) * (var8 - var7 + 1) >= 8) {
-                           var12 = this.tileHeights[var10][var7][var28] - 240;
-                           var13 = this.tileHeights[var9][var7][var28];
-                           SceneGraph.a(var6, var7 << 7, var13, (var8 << 7) + 128, var28 << 7, var12, var28 << 7, 2);
+                        if((var10 + 1 - var9) * (var8 - id + 1) >= 8) {
+                           var12 = this.tileHeights[var10][id][var28] - 240;
+                           var13 = this.tileHeights[var9][id][var28];
+                           SceneGraph.a(plane, id << 7, var13, (var8 << 7) + 128, var28 << 7, var12, var28 << 7, 2);
 
                            for(var14 = var9; var14 <= var10; ++var14) {
-                              for(var15 = var7; var15 <= var8; ++var15) {
-                                 this.l[var14][var15][var28] &= ~var4;
+                              for(var15 = id; var15 <= var8; ++var15) {
+                                 this.l[var14][var15][var28] &= ~x;
                               }
                            }
                         }
                      }
 
-                     if((this.l[var27][var16][var28] & var5) != 0) {
-                        var7 = var16;
+                     if((this.l[var27][var16][var28] & y) != 0) {
+                        id = var16;
                         var8 = var16;
                         var9 = var28;
 
-                        for(var10 = var28; var9 > 0 && (this.l[var27][var16][var9 - 1] & var5) != 0; --var9) {
+                        for(var10 = var28; var9 > 0 && (this.l[var27][var16][var9 - 1] & y) != 0; --var9) {
                            ;
                         }
 
-                        while(var10 < 104 && (this.l[var27][var16][var10 + 1] & var5) != 0) {
+                        while(var10 < 104 && (this.l[var27][var16][var10 + 1] & y) != 0) {
                            ++var10;
                         }
 
                         label416:
-                        while(var7 > 0) {
+                        while(id > 0) {
                            for(var11 = var9; var11 <= var10; ++var11) {
-                              if((this.l[var27][var7 - 1][var11] & var5) == 0) {
+                              if((this.l[var27][id - 1][var11] & y) == 0) {
                                  break label416;
                               }
                            }
 
-                           --var7;
+                           --id;
                         }
 
                         label405:
                         while(var8 < 104) {
                            for(var11 = var9; var11 <= var10; ++var11) {
-                              if((this.l[var27][var8 + 1][var11] & var5) == 0) {
+                              if((this.l[var27][var8 + 1][var11] & y) == 0) {
                                  break label405;
                               }
                            }
@@ -405,13 +405,13 @@ final class MapRegion {
                            ++var8;
                         }
 
-                        if((var8 - var7 + 1) * (var10 - var9 + 1) >= 4) {
-                           var11 = this.tileHeights[var27][var7][var9];
-                           SceneGraph.a(var6, var7 << 7, var11, (var8 << 7) + 128, (var10 << 7) + 128, var11, var9 << 7, 4);
+                        if((var8 - id + 1) * (var10 - var9 + 1) >= 4) {
+                           var11 = this.tileHeights[var27][id][var9];
+                           SceneGraph.a(plane, id << 7, var11, (var8 << 7) + 128, (var10 << 7) + 128, var11, var9 << 7, 4);
 
-                           for(var7 = var7; var7 <= var8; ++var7) {
+                           for(id = id; id <= var8; ++id) {
                               for(var12 = var9; var12 <= var10; ++var12) {
-                                 this.l[var27][var7][var12] &= ~var5;
+                                 this.l[var27][id][var12] &= ~y;
                               }
                            }
                         }
@@ -484,8 +484,8 @@ final class MapRegion {
          }
       }
 
-      if(z < b) {
-         b = z;
+      if(z < maximumPlane) {
+         maximumPlane = z;
       }
 
       int centre = this.tileHeights[z][x][y];
@@ -815,71 +815,71 @@ final class MapRegion {
       }
    }
 
-   private static int a(int var0, int var1, int var2) {
-      int var3 = var0 / var2;
-      var0 &= var2 - 1;
-      int var4 = var1 / var2;
-      var1 &= var2 - 1;
+   private static int interpolatedNoise(int x, int y, int frequencyReciprocal) {
+      int var3 = x / frequencyReciprocal;
+      x &= frequencyReciprocal - 1;
+      int var4 = y / frequencyReciprocal;
+      y &= frequencyReciprocal - 1;
       int var5 = smoothNoise(var3, var4);
       int var6 = smoothNoise(var3 + 1, var4);
       int var7 = smoothNoise(var3, var4 + 1);
       var3 = smoothNoise(var3 + 1, var4 + 1);
-      var4 = interpolate(var5, var6, var0, var2);
-      var0 = interpolate(var7, var3, var0, var2);
-      return interpolate(var4, var0, var1, var2);
+      var4 = interpolate(var5, var6, x, frequencyReciprocal);
+      x = interpolate(var7, var3, x, frequencyReciprocal);
+      return interpolate(var4, x, y, frequencyReciprocal);
    }
 
-   private static int b(int var0, int var1, int var2) {
-      if(var2 > 179) {
-         var1 /= 2;
+   private static int encode(int hue, int saturation, int luminance) {
+      if(luminance > 179) {
+         saturation /= 2;
       }
 
-      if(var2 > 192) {
-         var1 /= 2;
+      if(luminance > 192) {
+         saturation /= 2;
       }
 
-      if(var2 > 217) {
-         var1 /= 2;
+      if(luminance > 217) {
+         saturation /= 2;
       }
 
-      if(var2 > 243) {
-         var1 /= 2;
+      if(luminance > 243) {
+         saturation /= 2;
       }
 
-      return (var0 / 4 << 10) + (var1 / 32 << 7) + var2 / 2;
+      return (hue / 4 << 10) + (saturation / 32 << 7) + luminance / 2;
    }
 
-   public static boolean a(int var0, int var1) {
-      ObjectDefinition var3 = ObjectDefinition.byId(var0);
-      if(var1 == 11) {
-         var1 = 10;
+   public static boolean modelReady(int id, int type) {
+      ObjectDefinition var3 = ObjectDefinition.byId(id);
+      if(type == 11) {
+         type = 10;
       }
 
-      if(var1 >= 5 && var1 <= 8) {
-         var1 = 4;
+      if(type >= 5 && type <= 8) {
+         type = 4;
       }
 
       ObjectDefinition var10000 = var3;
-      var1 = var1;
+      type = type;
       var3 = var3;
       if(var10000.modelTypes == null) {
          if(var3.modelIds == null) {
             return true;
-         } else if(var1 != 10) {
+         } else if(type != 10) {
             return true;
          } else {
             boolean var4 = true;
 
-            for(var1 = 0; var1 < var3.modelIds.length; ++var1) {
-               var4 &= Model.b(var3.modelIds[var1] & '\uffff');
+            for(type = 0; type < var3.modelIds.length; ++type) {
+               var4 &= Model.loaded(var3.modelIds[type] & '\uffff');
             }
 
             return var4;
          }
       } else {
          for(int var2 = 0; var2 < var3.modelTypes.length; ++var2) {
-            if(var3.modelTypes[var2] == var1) {
-               return Model.b(var3.modelIds[var2] & '\uffff');
+            if(var3.modelTypes[var2] == type) {
+               return Model.loaded(var3.modelIds[var2] & '\uffff');
             }
          }
 
@@ -887,7 +887,7 @@ final class MapRegion {
       }
    }
 
-   public final void a(int var1, int var2, CollisionMap[] maps, int topLeftRegionX, int var5, byte[] var6, int var7, int tileZ, int topLeftRegionY) {
+   public final void decodeConstructedMapData(int var1, int var2, CollisionMap[] maps, int topLeftRegionX, int var5, byte[] var6, int var7, int tileZ, int topLeftRegionY) {
       int y;
       for(int x = 0; x < 8; ++x) {
          for(y = 0; y < 8; ++y) {
@@ -984,7 +984,7 @@ final class MapRegion {
                int var10002 = x + 932731 + regionX;
                regionY += y + 556238;
                y = var10002;
-               if((y = (int)((double)(a(var10002 + '넵', regionY + 91923, 4) - 128 + (a(y + 10294, regionY + '鎽', 2) - 128 >> 1) + (a(y, regionY, 1) - 128 >> 2)) * 0.3D) + 35) < 10) {
+               if((y = (int)((double)(interpolatedNoise(var10002 + '넵', regionY + 91923, 4) - 128 + (interpolatedNoise(y + 10294, regionY + '鎽', 2) - 128 >> 1) + (interpolatedNoise(y, regionY, 1) - 128 >> 2)) * 0.3D) + 35) < 10) {
                   y = 10;
                } else if(y > 60) {
                   y = 60;
@@ -1368,7 +1368,7 @@ final class MapRegion {
                         var6 = true;
 
                         for(terminate = 0; terminate < var11.modelIds.length; ++terminate) {
-                           var6 &= Model.b(var11.modelIds[terminate] & '\uffff');
+                           var6 &= Model.loaded(var11.modelIds[terminate] & '\uffff');
                         }
 
                         var10001 = var6;
