@@ -18,225 +18,225 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public final class VScapeCacheUpdater {
-   private Client a;
-   private String b = "https://dl.dropboxusercontent.com/u/31306161/vscape/cacheVersion.dat";
-   private String c = "https://dl.dropboxusercontent.com/u/31306161/vscape/vscape2.zip";
-   private int d = 0;
-   private String e = SignLink.getLocalCacheDirectory() + this.d();
+	private Client a;
+	private String b = "https://dl.dropboxusercontent.com/u/31306161/vscape/cacheVersion.dat";
+	private String c = "https://dl.dropboxusercontent.com/u/31306161/vscape/vscape2.zip";
+	private int d = 0;
+	private String e = SignLink.getLocalCacheDirectory() + this.d();
 
-   public VScapeCacheUpdater(Client var1) {
-      this.a = var1;
-   }
+	public VScapeCacheUpdater(Client var1) {
+		this.a = var1;
+	}
 
-   private int b() throws MalformedURLException, IOException {
-      BufferedReader var1 = new BufferedReader(new InputStreamReader((new URL(this.b)).openStream()));
+	private int b() throws MalformedURLException, IOException {
+		BufferedReader var1 = new BufferedReader(new InputStreamReader((new URL(this.b)).openStream()));
 
-      try {
-         String var2;
-         if((var2 = var1.readLine()) != null) {
-            var1.close();
-            return Integer.parseInt(var2);
-         } else {
-            var1.close();
-            return 0;
-         }
-      } catch (IOException var3) {
-         System.out.println("problem reading remote cache version");
-         var1.close();
-         return 0;
-      }
-   }
+		try {
+			String var2;
+			if ((var2 = var1.readLine()) != null) {
+				var1.close();
+				return Integer.parseInt(var2);
+			} else {
+				var1.close();
+				return 0;
+			}
+		} catch (IOException var3) {
+			System.out.println("problem reading remote cache version");
+			var1.close();
+			return 0;
+		}
+	}
 
-   private int c() throws IOException {
-      File var1 = new File(SignLink.getLocalCacheDirectory() + "cacheVersion.dat");
-      BufferedReader var2 = new BufferedReader(new FileReader(var1));
-      if(!var1.exists()) {
-         var2.close();
-         return 0;
-      } else {
-         try {
-            String var4;
-            if((var4 = var2.readLine()) != null) {
-               var2.close();
-               return Integer.parseInt(var4);
-            } else {
-               var2.close();
-               return 0;
-            }
-         } catch (IOException var3) {
-            var2.close();
-            return 0;
-         }
-      }
-   }
+	private int c() throws IOException {
+		File var1 = new File(SignLink.getLocalCacheDirectory() + "cacheVersion.dat");
+		BufferedReader var2 = new BufferedReader(new FileReader(var1));
+		if (!var1.exists()) {
+			var2.close();
+			return 0;
+		} else {
+			try {
+				String var4;
+				if ((var4 = var2.readLine()) != null) {
+					var2.close();
+					return Integer.parseInt(var4);
+				} else {
+					var2.close();
+					return 0;
+				}
+			} catch (IOException var3) {
+				var2.close();
+				return 0;
+			}
+		}
+	}
 
-   public final VScapeCacheUpdater update() throws Throwable {
-      try {
-         File var1 = new File(SignLink.getLocalCacheDirectory() + "cacheVersion.dat");
-         int var2 = this.b();
-         BufferedWriter var4;
-         if(!var1.exists()) {
-            this.a(this.c, this.d());
-            this.e();
-            this.d = this.b();
-            (var4 = new BufferedWriter(new FileWriter(var1))).write(String.valueOf(this.d));
-            var4.flush();
-            var4.close();
-         } else {
-            this.d = this.c();
-            if(var2 == this.d) {
-               return null;
-            }
+	public final VScapeCacheUpdater update() throws Throwable {
+		try {
+			File var1 = new File(SignLink.getLocalCacheDirectory() + "cacheVersion.dat");
+			int var2 = this.b();
+			BufferedWriter var4;
+			if (!var1.exists()) {
+				this.a(this.c, this.d());
+				this.e();
+				this.d = this.b();
+				(var4 = new BufferedWriter(new FileWriter(var1))).write(String.valueOf(this.d));
+				var4.flush();
+				var4.close();
+			} else {
+				this.d = this.c();
+				if (var2 == this.d) {
+					return null;
+				}
 
-            this.a(this.c, this.d());
-            this.e();
-            this.d = this.b();
-            (var4 = new BufferedWriter(new FileWriter(var1))).write(String.valueOf(this.d));
-            var4.flush();
-            var4.close();
-         }
-      } catch (Exception var3) {
-         var3.printStackTrace();
-      }
+				this.a(this.c, this.d());
+				this.e();
+				this.d = this.b();
+				(var4 = new BufferedWriter(new FileWriter(var1))).write(String.valueOf(this.d));
+				var4.flush();
+				var4.close();
+			}
+		} catch (Exception var3) {
+			var3.printStackTrace();
+		}
 
-      return null;
-   }
+		return null;
+	}
 
-   private void a(String var1, String var2) throws Throwable {
-      BufferedOutputStream var3 = null;
-      InputStream var4 = null;
-      int var5 = 0;
-      boolean var16 = false;
+	private void a(String var1, String var2) throws Throwable {
+		BufferedOutputStream var3 = null;
+		InputStream var4 = null;
+		int var5 = 0;
+		boolean var16 = false;
 
-      label124: {
-         try {
-            var16 = true;
-            URL var22 = new URL(var1);
-            var3 = new BufferedOutputStream(new FileOutputStream(SignLink.getLocalCacheDirectory() + var2));
-            URLConnection var23;
-            var4 = (var23 = var22.openConnection()).getInputStream();
-            byte[] var25 = new byte[1024];
-            long var6 = 0L;
-            int var8 = var23.getContentLength();
+		label124: {
+			try {
+				var16 = true;
+				URL var22 = new URL(var1);
+				var3 = new BufferedOutputStream(new FileOutputStream(SignLink.getLocalCacheDirectory() + var2));
+				URLConnection var23;
+				var4 = (var23 = var22.openConnection()).getInputStream();
+				byte[] var25 = new byte[1024];
+				long var6 = 0L;
+				int var8 = var23.getContentLength();
 
-            int var24;
-            while((var24 = var4.read(var25)) != -1) {
-               var3.write(var25, 0, var24);
-               if((var24 = (int)((double)(var6 += (long)var24) / (double)var8 * 100.0D)) > var5) {
-                  String var9 = "Downloading Cache " + var24 + "%";
-                  this.a.statusText(var24, var9);
-                  System.out.println(var9);
-                  var5 = var24;
-               }
-            }
+				int var24;
+				while ((var24 = var4.read(var25)) != -1) {
+					var3.write(var25, 0, var24);
+					if ((var24 = (int) ((double) (var6 += (long) var24) / (double) var8 * 100.0D)) > var5) {
+						String var9 = "Downloading Cache " + var24 + "%";
+						this.a.statusText(var24, var9);
+						System.out.println(var9);
+						var5 = var24;
+					}
+				}
 
-            String var10 = "Finished downloading " + this.d() + "!";
-            this.a.statusText(35, (String)var10);
-            System.out.println(var10);
-            var16 = false;
-            break label124;
-         } catch (Exception var20) {
-            var20.printStackTrace();
-            var16 = false;
-         } finally {
-            if(var16) {
-               try {
-                  if(var4 != null) {
-                     var4.close();
-                  }
+				String var10 = "Finished downloading " + this.d() + "!";
+				this.a.statusText(35, (String) var10);
+				System.out.println(var10);
+				var16 = false;
+				break label124;
+			} catch (Exception var20) {
+				var20.printStackTrace();
+				var16 = false;
+			} finally {
+				if (var16) {
+					try {
+						if (var4 != null) {
+							var4.close();
+						}
 
-                  if(var3 != null) {
-                     var3.close();
-                  }
-               } catch (IOException var17) {
-                  ;
-               }
+						if (var3 != null) {
+							var3.close();
+						}
+					} catch (IOException var17) {
+						;
+					}
 
-            }
-         }
+				}
+			}
 
-         try {
-            if(var4 != null) {
-               var4.close();
-            }
+			try {
+				if (var4 != null) {
+					var4.close();
+				}
 
-            if(var3 != null) {
-               var3.close();
-               return;
-            }
+				if (var3 != null) {
+					var3.close();
+					return;
+				}
 
-            return;
-         } catch (IOException var18) {
-            return;
-         }
-      }
+				return;
+			} catch (IOException var18) {
+				return;
+			}
+		}
 
-      try {
-         if(var4 != null) {
-            var4.close();
-         }
+		try {
+			if (var4 != null) {
+				var4.close();
+			}
 
-         var3.close();
-      } catch (IOException var19) {
-         ;
-      }
-   }
+			var3.close();
+		} catch (IOException var19) {
+			;
+		}
+	}
 
-   private String d() {
-      int var2;
-      if((var2 = this.c.lastIndexOf(47)) >= 0 && var2 < this.c.length() - 1) {
-         return this.c.substring(var2 + 1);
-      } else {
-         System.err.println("error retreiving archivaed name.");
-         return "";
-      }
-   }
+	private String d() {
+		int var2;
+		if ((var2 = this.c.lastIndexOf(47)) >= 0 && var2 < this.c.length() - 1) {
+			return this.c.substring(var2 + 1);
+		} else {
+			System.err.println("error retreiving archivaed name.");
+			return "";
+		}
+	}
 
-   private void e() {
-      try {
-         BufferedInputStream var1 = new BufferedInputStream(new FileInputStream(this.e));
-         ZipInputStream var5 = new ZipInputStream(var1);
+	private void e() {
+		try {
+			BufferedInputStream var1 = new BufferedInputStream(new FileInputStream(this.e));
+			ZipInputStream var5 = new ZipInputStream(var1);
 
-         ZipEntry var2;
-         while((var2 = var5.getNextEntry()) != null) {
-            if(var2.isDirectory()) {
-               (new File(SignLink.getLocalCacheDirectory() + var2.getName())).mkdir();
-            } else {
-               if(var2.getName().equals(this.e)) {
-                  a(var5, this.e);
-                  break;
-               }
+			ZipEntry var2;
+			while ((var2 = var5.getNextEntry()) != null) {
+				if (var2.isDirectory()) {
+					(new File(SignLink.getLocalCacheDirectory() + var2.getName())).mkdir();
+				} else {
+					if (var2.getName().equals(this.e)) {
+						a(var5, this.e);
+						break;
+					}
 
-               a(var5, SignLink.getLocalCacheDirectory() + var2.getName());
-            }
-         }
+					a(var5, SignLink.getLocalCacheDirectory() + var2.getName());
+				}
+			}
 
-         var5.close();
-         File var6;
-         String var7 = (var6 = new File(this.e)).getName();
-         if(!var6.exists()) {
-            throw new IllegalArgumentException("Cache Delete: no such file or directory: " + var7);
-         } else if(!var6.canWrite()) {
-            throw new IllegalArgumentException("Cache Delete: write protected: " + var7);
-         } else if(var6.isDirectory() && var6.list().length > 0) {
-            throw new IllegalArgumentException("Cache Delete: directory not empty: " + var7);
-         } else if(!var6.delete()) {
-            throw new IllegalArgumentException("Cache Delete: deletion failed");
-         }
-      } catch (Exception var4) {
-         var4.printStackTrace();
-      }
-   }
+			var5.close();
+			File var6;
+			String var7 = (var6 = new File(this.e)).getName();
+			if (!var6.exists()) {
+				throw new IllegalArgumentException("Cache Delete: no such file or directory: " + var7);
+			} else if (!var6.canWrite()) {
+				throw new IllegalArgumentException("Cache Delete: write protected: " + var7);
+			} else if (var6.isDirectory() && var6.list().length > 0) {
+				throw new IllegalArgumentException("Cache Delete: directory not empty: " + var7);
+			} else if (!var6.delete()) {
+				throw new IllegalArgumentException("Cache Delete: deletion failed");
+			}
+		} catch (Exception var4) {
+			var4.printStackTrace();
+		}
+	}
 
-   private static void a(ZipInputStream var0, String var1) throws IOException {
-      FileOutputStream var4 = new FileOutputStream(var1);
-      byte[] var2 = new byte[1024];
+	private static void a(ZipInputStream var0, String var1) throws IOException {
+		FileOutputStream var4 = new FileOutputStream(var1);
+		byte[] var2 = new byte[1024];
 
-      int var3;
-      while((var3 = var0.read(var2)) != -1) {
-         var4.write(var2, 0, var3);
-      }
+		int var3;
+		while ((var3 = var0.read(var2)) != -1) {
+			var4.write(var2, 0, var3);
+		}
 
-      var4.close();
-   }
+		var4.close();
+	}
 }

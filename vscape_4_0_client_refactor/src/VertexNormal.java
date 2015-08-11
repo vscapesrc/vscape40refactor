@@ -1,6 +1,6 @@
 final class VertexNormal {
-   int x;
-   int y;
-   int z;
-   int faces;
+	int x;
+	int y;
+	int z;
+	int faces;
 }
