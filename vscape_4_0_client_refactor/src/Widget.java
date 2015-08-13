@@ -105,9 +105,9 @@ public final class Widget {
 				int var8;
 				if (buffer.position >= buffer.buf.length) {
 					Widget var14 = widgets[904];
-					addSpriteWidget(24149, 1, "Options/SPRITE", "Fixed");
-					addSpriteWidget(24150, 2, "Options/SPRITE", "Resizable");
-					addSpriteWidget(24151, 3, "Options/SPRITE", "Fullscreen");
+					createSpriteWidget(24149, 1, "Options/SPRITE", "Fixed");
+					createSpriteWidget(24150, 2, "Options/SPRITE", "Resizable");
+					createSpriteWidget(24151, 3, "Options/SPRITE", "Fullscreen");
 					var14.assignChild(39, 24149, 10, 8);
 					var14.assignChild(40, 24150, 70, 8);
 					var14.assignChild(41, 24151, 130, 8);
@@ -115,43 +115,43 @@ public final class Widget {
 					var14.hover = "Toggle roofs";
 					var14 = container(5292);
 					allocateChildren(28, (Widget) var14);
-					a(5293, "bank", 0);
+					spriteGroupWidget(5293, "bank", 0);
 					var14.assignChild(0, 5293, 13, 13);
-					a(5384, "bank", 1, 17, 17, "Close Window", 0, 5380, 3);
-					a(5380, "bank", 2, 17, 17, 5379);
+					spriteGroupWidgetWithTypes(5384, "bank", 1, 17, 17, "Close Window", 0, 5380, 3);
+					containerWidget(5380, "bank", 2, 17, 17, 5379);
 					var14.assignChild(1, 5384, 476, 16);
 					var14.assignChild(2, 5380, 476, 16);
-					a(8131, 5292, "bank", 5, "bank", 6, 35, 25, "Swap/Insert", 1, 4, 304);
+					spriteTextWidget(8131, 5292, "bank", 5, "bank", 6, 35, 25, "Swap/Insert", 1, 4, 304);
 					var14.assignChild(3, 8131, 25, 285);
-					a(5386, 5292, "bank", 7, "bank", 8, 35, 25, "Withdraw Mode", 1, 4, 115);
+					spriteTextWidget(5386, 5292, "bank", 7, "bank", 8, 35, 25, "Withdraw Mode", 1, 4, 115);
 					var14.assignChild(4, 5386, 65, 285);
-					a(50000/* '썐' */, "bank", 9, 35, 25, "Deposit All", 0, 50001/* '썑' */, 1);
-					a(50001/* '썑' */, "bank", 10, 35, 25, 49999/* '썏' */);
+					spriteGroupWidgetWithTypes(50000/* '썐' */, "bank", 9, 35, 25, "Deposit All", 0, 50001/* '썑' */, 1);
+					containerWidget(50001/* '썑' */, "bank", 10, 35, 25, 49999/* '썏' */);
 					var14.assignChild(5, 50000/* '썐' */, 455, 285);
 					var14.assignChild(6, 50001/* '썑' */, 455, 285);
 					var14.assignChild(7, 5383, 170, 15);
 					var14.assignChild(8, 5385, -4, 74);
-					a(50002/* '썒' */, "bank", 11, "Click here to view the full contents of your bank");
+					createSpriteWidgetFromGroup(50002/* '썒' */, "bank", 11, "Click here to view the full contents of your bank");
 					var14.assignChild(9, 50002/* '썒' */, 22, 36);
-					a(50003/* '썓' */, "bank", 15, "Drag an item here to create a new tab");
+					createSpriteWidgetFromGroup(50003/* '썓' */, "bank", 15, "Drag an item here to create a new tab");
 					var14.assignChild(10, 50003/* '썓' */, 70, 36);
-					a(50004/* '썔' */, "bank", 15, "Drag an item here to create a new tab");
+					createSpriteWidgetFromGroup(50004/* '썔' */, "bank", 15, "Drag an item here to create a new tab");
 					var14.assignChild(11, 50004/* '썔' */, 118, 36);
-					a(50005/* '썕' */, "bank", 15, "Drag an item here to create a new tab");
+					createSpriteWidgetFromGroup(50005/* '썕' */, "bank", 15, "Drag an item here to create a new tab");
 					var14.assignChild(12, 50005/* '썕' */, 166, 36);
-					a(50006/* '썖' */, "bank", 15, "Drag an item here to create a new tab");
+					createSpriteWidgetFromGroup(50006/* '썖' */, "bank", 15, "Drag an item here to create a new tab");
 					var14.assignChild(13, 50006/* '썖' */, 214, 36);
-					a(50007/* '썗' */, "bank", 15, "Drag an item here to create a new tab");
+					createSpriteWidgetFromGroup(50007/* '썗' */, "bank", 15, "Drag an item here to create a new tab");
 					var14.assignChild(14, 50007/* '썗' */, 262, 36);
-					a(50008/* '썘' */, "bank", 15, "Drag an item here to create a new tab");
+					createSpriteWidgetFromGroup(50008/* '썘' */, "bank", 15, "Drag an item here to create a new tab");
 					var14.assignChild(15, 50008/* '썘' */, 310, 36);
-					a(50009/* '썙' */, "bank", 15, "Drag an item here to create a new tab");
+					createSpriteWidgetFromGroup(50009/* '썙' */, "bank", 15, "Drag an item here to create a new tab");
 					var14.assignChild(16, 50009/* '썙' */, 358, 36);
-					a(50010/* '썚' */, "bank", 15, "Drag an item here to create a new tab");
+					createSpriteWidgetFromGroup(50010/* '썚' */, "bank", 15, "Drag an item here to create a new tab");
 					var14.assignChild(17, 50010/* '썚' */, 406, 36);
-					a(50011/* '썛' */, "0", fonts, 0, 11834970, true, false);
+					textWidget(50011/* '썛' */, "0", fonts, 0, 11834970, true, false);
 					var14.assignChild(18, 50011/* '썛' */, 473, 42);
-					a(50012/* '썜' */, "352", fonts, 0, 11834970, true, false);
+					textWidget(50012/* '썜' */, "352", fonts, 0, 11834970, true, false);
 					var14.assignChild(19, 50012/* '썜' */, 473, 57);
 					d(50013/* '썝' */);
 					var14.assignChild(20, 50013/* '썝' */, 77, 39);
@@ -169,9 +169,9 @@ public final class Widget {
 					var14.assignChild(26, 50019/* '썣' */, 365, 39);
 					d(50020/* '썤' */);
 					var14.assignChild(27, 50020/* '썤' */, 413, 39);
-					a(50021/* '썥' */, "0", 16750623, false, true, 52, fonts, 1);
-					a(50022/* '썦' */, "0", 16750623, false, true, 52, fonts, 1);
-					a(50023/* '썧' */, "0", 16750623, false, true, 52, fonts, 1);
+					fixedTextWidget(50021/* '썥' */, "0", 16750623, false, true, 52, fonts, 1);
+					fixedTextWidget(50022/* '썦' */, "0", 16750623, false, true, 52, fonts, 1);
+					fixedTextWidget(50023/* '썧' */, "0", 16750623, false, true, 52, fonts, 1);
 					(var14 = widgets[5385]).height = 206;
 					var14.width = 480;
 					(var14 = widgets[5382]).width = 10;
@@ -187,7 +187,7 @@ public final class Widget {
 					int[] var18 = (var24 = widgets[3917]).children;
 					int[] var19 = var24.childX;
 					int[] var23 = var24.childY;
-					var24.c(var24.children.length + 21);
+					var24.allocateChildren(var24.children.length + 21);
 
 					for (var8 = 0; var8 < var18.length; ++var8) {
 						var24.assignChild(var8, var18[var8], var19[var8], var23[var8]);
@@ -219,31 +219,31 @@ public final class Widget {
 					RSFont[] var13 = fonts;
 					var14 = container(25000);
 					allocateChildren(8, (Widget) var14);
-					a(25001, "Clan Chat", fonts, 1, 16751360, true, true);
-					a(25002, "Talking in: Not in chat", fonts, 0, 16751360, true, true);
-					a(25003, "Owner: None", fonts, 0, 16751360, true, true);
-					a(25004, "clanchat", 4);
+					textWidget(25001, "Clan Chat", fonts, 1, 16751360, true, true);
+					textWidget(25002, "Talking in: Not in chat", fonts, 0, 16751360, true, true);
+					textWidget(25003, "Owner: None", fonts, 0, 16751360, true, true);
+					spriteGroupWidget(25004, "clanchat", 4);
 					Widget var17 = container(25005);
 					allocateChildren(3, (Widget) var17);
-					a(25006, "clanchat", 5, 72, 32, "Join Chat", 550, 25007, 1);
-					a(25007, "clanchat", 6, 72, 32, 25008);
-					a(25009, "Join Chat", fonts, 0, 16751360, true, true);
+					spriteGroupWidgetWithTypes(25006, "clanchat", 5, 72, 32, "Join Chat", 550, 25007, 1);
+					containerWidget(25007, "clanchat", 6, 72, 32, 25008);
+					textWidget(25009, "Join Chat", fonts, 0, 16751360, true, true);
 					var17.a(0, 25006, 0, 0);
 					var17.a(1, 25007, 0, 0);
 					var17.a(2, 25009, 36, 11);
 					var24 = container(25010);
 					allocateChildren(3, (Widget) var24);
-					a(25011, "clanchat", 5, 72, 32, "Clan Setup", -1, 25012, 5);
-					a(25012, "clanchat", 6, 72, 32, 25013);
-					a(25014, "Clan Setup", fonts, 0, 16751360, true, true);
+					spriteGroupWidgetWithTypes(25011, "clanchat", 5, 72, 32, "Clan Setup", -1, 25012, 5);
+					containerWidget(25012, "clanchat", 6, 72, 32, 25013);
+					textWidget(25014, "Clan Setup", fonts, 0, 16751360, true, true);
 					var24.a(0, 25011, 0, 0);
 					var24.a(1, 25012, 0, 0);
 					var24.a(2, 25014, 36, 11);
 					var5 = container(25015);
 					allocateChildren(3, (Widget) var5);
-					a(25016, "clanchat", 5, 72, 32, "Leave Chat", -1, 25017, 1);
-					a(25017, "clanchat", 6, 72, 32, 25018);
-					a(25019, "Leave Chat", fonts, 0, 16751360, true, true);
+					spriteGroupWidgetWithTypes(25016, "clanchat", 5, 72, 32, "Leave Chat", -1, 25017, 1);
+					containerWidget(25017, "clanchat", 6, 72, 32, 25018);
+					textWidget(25019, "Leave Chat", fonts, 0, 16751360, true, true);
 					var5.a(0, 25016, 0, 0);
 					var5.a(1, 25017, 0, 0);
 					var5.a(2, 25019, 36, 11);
@@ -258,10 +258,10 @@ public final class Widget {
 					var14.a(7, 25020, 0, 62);
 					Widget var20;
 					(var20 = container(25020)).contentType = 20000;
-					var20.c(200);
+					var20.allocateChildren(200);
 
 					for (var7 = 0; var7 < 100; ++var7) {
-						a(var8 = var7 + 25021, "clanchat", 0);
+						spriteGroupWidget(var8 = var7 + 25021, "clanchat", 0);
 					}
 
 					for (var7 = 0; var7 < 100; ++var7) {
@@ -276,7 +276,7 @@ public final class Widget {
 					}
 
 					for (var7 = 0; var7 < 100; ++var7) {
-						a(var8 = var7 + 25122, "", var13, 0, 16777215, false, true);
+						textWidget(var8 = var7 + 25122, "", var13, 0, 16777215, false, true);
 					}
 
 					for (var7 = 100; var7 < 200; ++var7) {
@@ -298,12 +298,12 @@ public final class Widget {
 						widgets[var7].contentType = 20001 + (var7 - 25122);
 					}
 
-					var14 = a(994);
+					var14 = createWidgetWithParent(994);
 					allocateChildren(70, (Widget) var14);
-					a(995, "windowframes", 0);
+					spriteGroupWidget(995, "windowframes", 0);
 					var14.assignChild(0, 995, 5, 8);
-					a(1084, "bank", 1, 17, 17, "Close Window", 0, 1082, 3);
-					a(1082, "bank", 2, 17, 17, 1081);
+					spriteGroupWidgetWithTypes(1084, "bank", 1, 17, 17, "Close Window", 0, 1082, 3);
+					containerWidget(1082, "bank", 2, 17, 17, 1081);
 					var14.assignChild(1, 1084, 480, 17);
 					var14.assignChild(2, 1082, 480, 17);
 					var14.assignChild(3, 1117, 6, 17);
@@ -504,6 +504,7 @@ public final class Widget {
 				if (var5.group == 4) {
 					var5.defaultText = buffer.readString().replaceAll("RuneScape", "/v/scape");
 					var5.secondaryText = buffer.readString();
+					System.out.println(var5.id + ": " + var5.defaultText + ", " + var5.secondaryText);
 				}
 
 				if (var5.group == 1 || var5.group == 3 || var5.group == 4) {
@@ -613,7 +614,7 @@ public final class Widget {
 		}
 	}
 
-	private static void addSpriteWidget(int id, int spriteId, String spriteName, String hoverText) {
+	private static void createSpriteWidget(int id, int spriteId, String spriteName, String hoverText) {
 		Widget var4;
 		(var4 = widgets[id] = new Widget()).id = id;
 		var4.parent = id;
@@ -629,7 +630,7 @@ public final class Widget {
 		var4.hover = hoverText;
 	}
 
-	private static void a(int id, String var1, int var2, String var3) {
+	private static void createSpriteWidgetFromGroup(int id, String group, int index, String hoverText) {
 		Widget var4;
 		(var4 = widgets[id] = new Widget()).id = id;
 		var4.parent = id;
@@ -638,26 +639,26 @@ public final class Widget {
 		var4.contentType = 0;
 		var4.alpha = 0;
 		var4.hoverId = 52;
-		var4.defaultSprite = Animation.spriteFromGroup(var1, var2);
-		var4.secondarySprite = Animation.spriteFromGroup(var1, var2);
+		var4.defaultSprite = Animation.spriteFromGroup(group, index);
+		var4.secondarySprite = Animation.spriteFromGroup(group, index);
 		var4.width = var4.defaultSprite.width;
 		var4.height = var4.secondarySprite.height;
-		var4.hover = var3;
+		var4.hover = hoverText;
 	}
 
-	private static Widget a(int var0) {
+	private static Widget createWidgetWithParent(int parentId) {
 		Widget var1;
-		(var1 = widgets[var0] = new Widget()).id = var0;
-		var1.parent = var0;
+		(var1 = widgets[parentId] = new Widget()).id = parentId;
+		var1.parent = parentId;
 		var1.width = 512;
 		var1.height = 334;
 		return var1;
 	}
 
-	private static void a(int var0, String var1, RSFont[] var2, int var3, int var4, boolean var5, boolean var6) {
+	private static void textWidget(int id, String text, RSFont[] fonts, int fontId, int color, boolean centerText, boolean shadowText) {
 		Widget var7;
-		(var7 = container(var0)).parent = var0;
-		var7.id = var0;
+		(var7 = container(id)).parent = id;
+		var7.id = id;
 		var7.group = TYPE_TEXT;
 		var7.optionType = 0;
 		var7.width = 0;
@@ -665,22 +666,22 @@ public final class Widget {
 		var7.contentType = 0;
 		var7.alpha = 0;
 		var7.hoverId = -1;
-		var7.centeredText = var5;
-		var7.shadowedText = var6;
-		var7.font = var2[var3];
-		var7.defaultText = var1;
+		var7.centeredText = centerText;
+		var7.shadowedText = shadowText;
+		var7.font = fonts[fontId];
+		var7.defaultText = text;
 		var7.secondaryText = "";
-		var7.defaultColor = var4;
+		var7.defaultColor = color;
 		var7.secondaryColor = 0;
 		var7.defaultHoverColor = 0;
 		var7.secondaryHoverColor = 0;
 	}
 
-	private static void a(int var0, String var1, int var2, boolean var3, boolean var4, int var5, RSFont[] var6,
+	private static void fixedTextWidget(int parentId, String text, int var2, boolean var3, boolean var4, int var5, RSFont[] fonts,
 			int var7) {
 		Widget var8;
-		(var8 = a(var0)).parent = var0;
-		var8.id = var0;
+		(var8 = createWidgetWithParent(parentId)).parent = parentId;
+		var8.id = parentId;
 		var8.group = TYPE_TEXT;
 		var8.optionType = 0;
 		var8.width = 0;
@@ -690,14 +691,14 @@ public final class Widget {
 		var8.hoverId = 52;
 		var8.centeredText = false;
 		var8.shadowedText = true;
-		var8.font = var6[1];
-		var8.defaultText = var1;
+		var8.font = fonts[1];
+		var8.defaultText = text;
 		var8.secondaryText = "";
 		var8.defaultColor = 16750623;
 	}
 
-	private static void a(int id, int var1, String var2, int var3, String var4, int var5, int var6, int var7,
-			String var8, int var9, int var10, int var11) {
+	private static void spriteTextWidget(int id, int var1, String defaultGroup, int defaultId, String secondaryGroup, int secondaryId, int var6, int var7,
+			String hoverText, int var9, int var10, int var11) {
 		Widget var12;
 		(var12 = container(id)).parent = 5292;
 		var12.id = id;
@@ -716,51 +717,51 @@ public final class Widget {
 		var12.s[0][0] = 5;
 		var12.s[0][1] = var11;
 		var12.s[0][2] = 0;
-		var12.defaultSprite = Animation.spriteFromGroup(var2, var3);
-		var12.secondarySprite = Animation.spriteFromGroup(var4, var5);
-		var12.hover = var8;
+		var12.defaultSprite = Animation.spriteFromGroup(defaultGroup, defaultId);
+		var12.secondarySprite = Animation.spriteFromGroup(secondaryGroup, secondaryId);
+		var12.hover = hoverText;
 	}
 
-	private static void a(int var0, String var1, int var2) {
+	private static void spriteGroupWidget(int id, String group, int spriteId) {
 		Widget var3;
-		(var3 = widgets[var0] = new Widget()).id = var0;
-		var3.parent = var0;
+		(var3 = widgets[id] = new Widget()).id = id;
+		var3.parent = id;
 		var3.group = TYPE_SPRITE;
 		var3.optionType = 0;
 		var3.contentType = 0;
 		var3.alpha = 0;
 		var3.hoverId = 52;
-		var3.defaultSprite = Animation.spriteFromGroup(var1, var2);
-		var3.secondarySprite = Animation.spriteFromGroup(var1, var2);
+		var3.defaultSprite = Animation.spriteFromGroup(group, spriteId);
+		var3.secondarySprite = Animation.spriteFromGroup(group, spriteId);
 		var3.width = 512;
 		var3.height = 334;
 	}
 
-	private static void a(int var0, String var1, int var2, int var3, int var4, String var5, int var6, int var7,
-			int var8) {
+	private static void spriteGroupWidgetWithTypes(int id, String group, int spriteId, int width, int height, String hoverText, int contentType, int hoverId,
+			int optionType) {
 		Widget var9;
-		(var9 = container(var0)).id = var0;
-		var9.parent = var0;
+		(var9 = container(id)).id = id;
+		var9.parent = id;
 		var9.group = TYPE_SPRITE;
-		var9.optionType = var8;
-		var9.contentType = var6;
+		var9.optionType = optionType;
+		var9.contentType = contentType;
 		var9.alpha = 0;
-		var9.hoverId = var7;
-		var9.defaultSprite = Animation.spriteFromGroup(var1, var2);
-		var9.secondarySprite = Animation.spriteFromGroup(var1, var2);
-		var9.width = var3;
-		var9.height = var4;
-		var9.hover = var5;
+		var9.hoverId = hoverId;
+		var9.defaultSprite = Animation.spriteFromGroup(group, spriteId);
+		var9.secondarySprite = Animation.spriteFromGroup(group, spriteId);
+		var9.width = width;
+		var9.height = height;
+		var9.hover = hoverText;
 	}
 
-	private static void a(int var0, String var1, int var2, int var3, int var4, int var5) {
+	private static void containerWidget(int id, String group, int spriteId, int width, int height, int var5) {
 		Widget var6;
-		(var6 = container(var0)).parent = var0;
-		var6.id = var0;
+		(var6 = container(id)).parent = id;
+		var6.id = id;
 		var6.group = TYPE_CONTAINER;
 		var6.optionType = 0;
-		var6.width = var3;
-		var6.height = var4;
+		var6.width = width;
+		var6.height = height;
 		var6.aa = true;
 		var6.alpha = 0;
 		var6.hoverId = -1;
@@ -775,9 +776,9 @@ public final class Widget {
 		var7.height = 334;
 		var7.alpha = 0;
 		var7.hoverId = 52;
-		var7.defaultSprite = Animation.spriteFromGroup(var1, var2);
-		var7.secondarySprite = Animation.spriteFromGroup(var1, var2);
-		var6.c(1);
+		var7.defaultSprite = Animation.spriteFromGroup(group, spriteId);
+		var7.secondarySprite = Animation.spriteFromGroup(group, spriteId);
+		var6.allocateChildren(1);
 		var6.a(0, var5, 0, 0);
 	}
 
@@ -811,16 +812,16 @@ public final class Widget {
 		}
 	}
 
-	private void a(int var1, int var2, int var3, int var4) {
-		this.children[var1] = var2;
-		this.childX[var1] = var3;
-		this.childY[var1] = var4;
+	private void a(int childIndex, int childId, int x, int y) {
+		this.children[childIndex] = childId;
+		this.childX[childIndex] = x;
+		this.childY[childIndex] = y;
 	}
 
-	private void c(int var1) {
-		this.children = new int[var1];
-		this.childX = new int[var1];
-		this.childY = new int[var1];
+	private void allocateChildren(int num) {
+		this.children = new int[num];
+		this.childX = new int[num];
+		this.childY = new int[num];
 	}
 
 	private static Model getModel(int type, int id) {
@@ -919,10 +920,10 @@ public final class Widget {
 		var1.childY = new int[numChildren];
 	}
 
-	private void assignChild(int var1, int id, int x, int y) {
-		this.children[var1] = id;
-		this.childX[var1] = x;
-		this.childY[var1] = y;
+	private void assignChild(int index, int id, int x, int y) {
+		this.children[index] = id;
+		this.childX[index] = x;
+		this.childY[index] = y;
 	}
 
 	private static void d(int var0) {

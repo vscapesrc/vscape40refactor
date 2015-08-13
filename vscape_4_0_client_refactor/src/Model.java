@@ -69,10 +69,10 @@ public final class Model extends Renderable {
 	private static int aD;
 	private static int aE;
 	public static boolean A;
-	public static int B;
-	public static int C;
-	public static int D;
-	public static int[] E;
+	public static int mouseX;
+	public static int mouseY;
+	public static int hoveredModelsThisFrame;
+	public static int[] hoveredModelHash;
 	public static int[] SINE;
 	public static int[] COSINE;
 	private static int[] rgbTable;
@@ -103,7 +103,7 @@ public final class Model extends Renderable {
 		az = new int[10];
 		aA = new int[10];
 		aB = new int[10];
-		E = new int[1000];
+		hoveredModelHash = new int[1000];
 		SINE = Rasterizer3D.SINE;
 		COSINE = Rasterizer3D.COSINE;
 		rgbTable = Rasterizer3D.rgbTable;
@@ -2365,9 +2365,9 @@ public final class Model extends Renderable {
 					var10 = var7 * var3 - var10 * var2 >> 16;
 					int var17 = this.r * var2 >> 16;
 					int var18;
-					if ((var18 = var10 + var17 << Client.d) / var13 > -Rasterizer2D.q) {
+					if ((var18 = var10 + var17 << Client.d) / var13 > -Rasterizer2D.centreY) {
 						var17 += super.modelHeight * var3 >> 16;
-						if ((var17 = var10 - var17 << Client.d) / var13 < Rasterizer2D.q) {
+						if ((var17 = var10 - var17 << Client.d) / var13 < Rasterizer2D.centreY) {
 							int var19 = var12 + (super.modelHeight * var2 >> 16);
 							boolean var20 = false;
 							if (var11 - var19 <= 50) {
@@ -2396,11 +2396,11 @@ public final class Model extends Renderable {
 									var17 /= var12;
 								}
 
-								var10 = B - Rasterizer3D.e;
-								var13 = C - Rasterizer3D.f;
+								var10 = mouseX - Rasterizer3D.e;
+								var13 = mouseY - Rasterizer3D.f;
 								if (var10 > var15 && var10 < var16 && var13 > var17 && var13 < var18) {
 									if (this.y) {
-										E[D++] = var9;
+										hoveredModelHash[hoveredModelsThisFrame++] = var9;
 									} else {
 										var23 = true;
 									}
@@ -2491,13 +2491,13 @@ public final class Model extends Renderable {
 						int var14 = an[var7];
 						int var15 = var10003;
 						int var16 = var10002;
-						var17 = C;
-						var18 = B;
+						var17 = mouseY;
+						var18 = mouseX;
 						if (var17 < var16 && var17 < var15 && var17 < var14 ? false
 								: (var17 > var16 && var17 > var15 && var17 > var14 ? false
 										: (var18 < var8 && var18 < var9 && var18 < var10 ? false
 												: var18 <= var8 || var18 <= var9 || var18 <= var10))) {
-							E[D++] = var3;
+							hoveredModelHash[hoveredModelsThisFrame++] = var3;
 							var2 = false;
 						}
 					}

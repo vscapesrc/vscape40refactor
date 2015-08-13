@@ -8,7 +8,7 @@ public class Rasterizer2D extends CacheableNode {
 	public static int clipRight;
 	public static int o;
 	public static int centreX;
-	public static int q;
+	public static int centreY;
 
 	public static void init(int height, int width, int[] pixels) {
 		Rasterizer2D.pixels = pixels;
@@ -69,7 +69,7 @@ public class Rasterizer2D extends CacheableNode {
 		clipTop = var0;
 		o = clipRight;
 		centreX = clipRight / 2;
-		q = clipTop / 2;
+		centreY = clipTop / 2;
 	}
 
 	public static void reset() {

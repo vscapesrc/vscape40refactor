@@ -604,20 +604,20 @@ final class SceneGraph {
 				? var4.groundDecoration.key : 0;
 	}
 
-	public final int c(int var1, int var2, int var3, int var4) {
+	public final int getTileConfig(int z, int x, int y, int hash) {
 		SceneTile var5;
-		if ((var5 = this.tiles[var1][var2][var3]) == null) {
+		if ((var5 = this.tiles[z][x][y]) == null) {
 			return -1;
-		} else if (var5.wall != null && var5.wall.hash == var4) {
+		} else if (var5.wall != null && var5.wall.hash == hash) {
 			return var5.wall.config & 255;
-		} else if (var5.wallDecoration != null && var5.wallDecoration.hash == var4) {
+		} else if (var5.wallDecoration != null && var5.wallDecoration.hash == hash) {
 			return var5.wallDecoration.config & 255;
-		} else if (var5.groundDecoration != null && var5.groundDecoration.key == var4) {
+		} else if (var5.groundDecoration != null && var5.groundDecoration.key == hash) {
 			return var5.groundDecoration.config & 255;
 		} else {
-			for (var2 = 0; var2 < var5.k; ++var2) {
-				if (var5.gameObjects[var2].m == var4) {
-					return var5.gameObjects[var2].config & 255;
+			for (x = 0; x < var5.k; ++x) {
+				if (var5.gameObjects[x].m == hash) {
+					return var5.gameObjects[x].config & 255;
 				}
 			}
 
