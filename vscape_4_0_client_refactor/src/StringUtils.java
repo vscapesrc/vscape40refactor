@@ -1,11 +1,11 @@
 final class StringUtils {
-   private static final char[] a = new char[]{' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'};
+   private static final char[] BASE_37_CHARACTERS = new char[]{' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'};
 
-   public static long a(String var0) {
+   public static long encodeBase37(String string) {
       long var1 = 0L;
 
-      for(int var3 = 0; var3 < var0.length() && var3 < 12; ++var3) {
-         char var4 = var0.charAt(var3);
+      for(int var3 = 0; var3 < string.length() && var3 < 12; ++var3) {
+         char var4 = string.charAt(var3);
          var1 *= 38L;
          if(var4 >= 65 && var4 <= 90) {
             var1 += (long)(var4 + 1 - 65);
@@ -25,25 +25,25 @@ final class StringUtils {
       return var1;
    }
 
-   public static String longToName(long var0) {
-      if(var0 > 0L && var0 < 9065737908494995456L) {
+   public static String decodeBase37(long value) {
+      if(value > 0L && value < 9065737908494995456L) {
          try {
-            if(var0 % 38L == 0L) {
+            if(value % 38L == 0L) {
                return "invalid_name";
             } else {
                int var2 = 0;
 
                char[] var3;
                long var4;
-               for(var3 = new char[12]; var0 != 0L; var3[11 - var2++] = a[(int)(var4 - var0 * 38L)]) {
-                  var4 = var0;
-                  var0 /= 38L;
+               for(var3 = new char[12]; value != 0L; var3[11 - var2++] = BASE_37_CHARACTERS[(int)(var4 - value * 38L)]) {
+                  var4 = value;
+                  value /= 38L;
                }
 
                return new String(var3, 12 - var2, var2);
             }
          } catch (RuntimeException var6) {
-            SignLink.reportError("81570, " + var0 + ", -99" + ", " + var6.toString());
+            SignLink.reportError("81570, " + value + ", -99" + ", " + var6.toString());
             throw new RuntimeException();
          }
       } else {
@@ -51,26 +51,26 @@ final class StringUtils {
       }
    }
 
-   public static long hashSpriteName(String var0) {
-      var0 = var0.toUpperCase();
+   public static long hashSpriteName(String name) {
+      name = name.toUpperCase();
       long var1 = 0L;
 
-      for(int var3 = 0; var3 < var0.length(); ++var3) {
-         var1 = (var1 = var1 * 61L + (long)var0.charAt(var3) - 32L) + (var1 >> 56) & 72057594037927935L;
+      for(int var3 = 0; var3 < name.length(); ++var3) {
+         var1 = (var1 = var1 * 61L + (long)name.charAt(var3) - 32L) + (var1 >> 56) & 72057594037927935L;
       }
 
       return var1;
    }
 
-   public static String a(int var0) {
-      return (var0 >>> 24) + "." + (var0 >> 16 & 255) + "." + (var0 >> 8 & 255) + "." + (var0 & 255);
+   public static String decodeIp(int ip) {
+      return (ip >>> 24) + "." + (ip >> 16 & 255) + "." + (ip >> 8 & 255) + "." + (ip & 255);
    }
 
-   public static String formatName(String var0) {
-      if(var0.length() <= 0) {
-         return var0;
+   public static String format(String string) {
+      if(string.length() <= 0) {
+         return string;
       } else {
-         char[] var2 = var0.toCharArray();
+         char[] var2 = string.toCharArray();
 
          for(int var1 = 0; var1 < var2.length; ++var1) {
             if((var2[var1] == 95 || var2[var1] == 32) && var1 + 1 < var2.length && var2[var1 + 1] >= 97 && var2[var1 + 1] <= 122) {
@@ -86,10 +86,10 @@ final class StringUtils {
       }
    }
 
-   public static String d(String var0) {
+   public static String getAsterisks(String string) {
       StringBuffer var1 = new StringBuffer();
 
-      for(int var2 = 0; var2 < var0.length(); ++var2) {
+      for(int var2 = 0; var2 < string.length(); ++var2) {
          var1.append("*");
       }
 

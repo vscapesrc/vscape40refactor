@@ -7,14 +7,14 @@ public final class Npc extends Actor {
       } else {
          int var2;
          Model var10000;
-         if(super.animation >= 0 && super.D == 0) {
-            var2 = Animation.animations[super.animation].primaryFrames[super.B];
+         if(super.emoteAnimation >= 0 && super.D == 0) {
+            var2 = Animation.animations[super.emoteAnimation].primaryFrames[super.B];
             int var3 = -1;
             if(super.r >= 0 && super.r != super.l) {
                var3 = Animation.animations[super.r].primaryFrames[super.s];
             }
 
-            var10000 = this.npcDefinition.getAnimatedModel(var3, var2, Animation.animations[super.animation].interleaveOrder);
+            var10000 = this.npcDefinition.getAnimatedModel(var3, var2, Animation.animations[super.emoteAnimation].interleaveOrder);
          } else {
             var2 = -1;
             if(super.r >= 0) {
@@ -38,11 +38,11 @@ public final class Npc extends Actor {
                var7.applyTransform(var4);
                var7.faceGroups = null;
                var7.vertexGroups = null;
-               if(var6.c != 128 || var6.d != 128) {
-                  var7.scale(var6.c, var6.c, var6.d);
+               if(var6.breadthScale != 128 || var6.depthScale != 128) {
+                  var7.scale(var6.breadthScale, var6.breadthScale, var6.depthScale);
                }
 
-               var7.light(64 + var6.f, 850 + var6.g, -30, -50, -30, true);
+               var7.light(64 + var6.modelBrightness, 850 + var6.modelShadow, -30, -50, -30, true);
                Model[] var5 = new Model[]{var1, var7};
                var1 = new Model(var5);
             }

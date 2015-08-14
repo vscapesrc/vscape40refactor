@@ -30,8 +30,8 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
    ProducingGraphicsBuffer mainImageProducer;
    ScapeFrame scapeFrame;
    private boolean e = true;
-   boolean O = true;
-   int P;
+   boolean awtFocus = true;
+   int idleTime;
    int Q;
    public int mouseX;
    public int mouseY;
@@ -69,7 +69,7 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 		e.printStackTrace();
 	}
       try {
-		this.f();
+		this.startUp();
 	} catch (Throwable e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -250,7 +250,7 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
          Widget var10;
          int var11;
          int var12;
-         if((var9 = Client.u[Client.C]) != -1) {
+         if((var9 = Client.u[Client.tabId]) != -1) {
             var10 = Widget.widgets[var9];
             var9 = Client.resizeMode == 0?Client.clientWidth - 218:(Client.resizeMode == 0?28:Client.clientWidth - 197);
             var11 = Client.resizeMode == 0?Client.clientHeight - 298:(Client.resizeMode == 0?37:Client.clientHeight - (Client.clientWidth >= 900?37:74) - 267);
@@ -282,8 +282,8 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
             }
          }
 
-         if(Client.j != -1) {
-            var10 = Widget.widgets[Client.j];
+         if(Client.openInterfaceId != -1) {
+            var10 = Widget.widgets[Client.openInterfaceId];
             var9 = Client.resizeMode == 0?4:Client.clientWidth / 2 - 256;
             var11 = Client.resizeMode == 0?4:Client.clientHeight / 2 - 167;
 
@@ -336,7 +336,7 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
          var4 -= var5.top;
       }
 
-      this.P = 0;
+      this.idleTime = 0;
       this.g = var3;
       this.h = var4;
       this.i = System.currentTimeMillis();
@@ -366,7 +366,7 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
          var10000 = var2.top;
       }
 
-      this.P = 0;
+      this.idleTime = 0;
       this.Q = 0;
       this.mouseState = 3;
    }
@@ -378,7 +378,7 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
    }
 
    public final void mouseExited(MouseEvent var1) {
-      this.P = 0;
+      this.idleTime = 0;
       this.mouseX = -1;
       this.mouseY = -1;
    }
@@ -402,7 +402,7 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
          this.m = var1.getX();
          this.n = var1.getY();
       } else {
-         this.P = 0;
+         this.idleTime = 0;
          this.mouseX = x;
          this.mouseY = y;
          this.mouseState = 2;
@@ -418,14 +418,14 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
          var4 -= var3.top;
       }
 
-      this.P = 0;
+      this.idleTime = 0;
       this.mouseX = var2;
       this.mouseY = var4;
       this.mouseState = 4;
    }
 
    public final void keyPressed(KeyEvent var1) {
-      this.P = 0;
+      this.idleTime = 0;
       int var2 = var1.getKeyCode();
       int var3;
       if((var3 = var1.getKeyChar()) < 30) {
@@ -528,7 +528,7 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
    }
 
    public final void keyReleased(KeyEvent var1) {
-      this.P = 0;
+      this.idleTime = 0;
       int var2 = var1.getKeyCode();
       char var3;
       if((var3 = var1.getKeyChar()) < 30) {
@@ -595,13 +595,13 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
    }
 
    public final void focusGained(FocusEvent var1) {
-      this.O = true;
+      this.awtFocus = true;
       this.e = true;
       this.h();
    }
 
    public final void focusLost(FocusEvent var1) {
-      this.O = false;
+      this.awtFocus = false;
 
       for(int var2 = 0; var2 < 128; ++var2) {
          this.W[var2] = 0;
@@ -632,7 +632,7 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
    public final void windowOpened(WindowEvent var1) {
    }
 
-   void f() throws Throwable {
+   void startUp() throws Throwable {
    }
 
    void b() throws Throwable {

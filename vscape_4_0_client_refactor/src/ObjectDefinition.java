@@ -409,7 +409,7 @@ private void reset() {
          }
 
          while(var1-- > 0) {
-            var18.e();
+            var18.rotateClockwise();
          }
 
          if(var16.originalColors != null) {

@@ -269,8 +269,8 @@ private void decode(Buffer buffer, int id) {
       try {
          Buffer spritesIdx = new Buffer(fileToByteArray(SignLink.getLocalCacheDirectory() + "sprites.idx"));
          Buffer spritesDat = new Buffer(fileToByteArray(SignLink.getLocalCacheDirectory() + "sprites.dat"));
-         DataInputStream spritesIdxStream = new DataInputStream(new GZIPInputStream(new ByteArrayInputStream(spritesIdx.buf)));
-         DataInputStream spritesDatStream = new DataInputStream(new GZIPInputStream(new ByteArrayInputStream(spritesDat.buf)));
+         DataInputStream spritesIdxStream = new DataInputStream(new GZIPInputStream(new ByteArrayInputStream(spritesIdx.payload)));
+         DataInputStream spritesDatStream = new DataInputStream(new GZIPInputStream(new ByteArrayInputStream(spritesDat.payload)));
          int numSprites = spritesIdxStream.readInt();
          if(spriteGroups == null) {
             spriteGroups = new SpriteGroup[numSprites];

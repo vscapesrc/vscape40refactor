@@ -64,8 +64,8 @@ final class Projectile extends Renderable {
             var1.vertexGroups = null;
          }
 
-         if(this.animation.c != 128 || this.animation.d != 128) {
-            var1.scale(this.animation.c, this.animation.c, this.animation.d);
+         if(this.animation.breadthScale != 128 || this.animation.depthScale != 128) {
+            var1.scale(this.animation.breadthScale, this.animation.breadthScale, this.animation.depthScale);
          }
 
          int var3 = this.z;
@@ -79,7 +79,7 @@ final class Projectile extends Renderable {
             var7.f[var5] = var6;
          }
 
-         var1.light(64 + this.animation.f, 850 + this.animation.g, -30, -50, -30, true);
+         var1.light(64 + this.animation.modelBrightness, 850 + this.animation.modelShadow, -30, -50, -30, true);
          return var1;
       }
    }

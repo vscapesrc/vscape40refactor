@@ -103,7 +103,7 @@ public final class Widget {
             int var6;
             int var7;
             int var8;
-            if(buffer.position >= buffer.buf.length) {
+            if(buffer.position >= buffer.payload.length) {
                Widget var14 = widgets[904];
                addSpriteWidget(24149, 1, "Options/SPRITE", "Fixed");
                addSpriteWidget(24150, 2, "Options/SPRITE", "Resizable");

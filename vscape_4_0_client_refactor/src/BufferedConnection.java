@@ -5,67 +5,67 @@ import java.net.Socket;
 import java.net.SocketException;
 
 final class BufferedConnection implements Runnable {
-   private InputStream a;
-   private OutputStream b;
-   private final Socket c;
-   private boolean d = false;
-   private final ScapeApplet e;
-   private byte[] f;
-   private int g;
-   private int h;
-   private boolean i = false;
-   private boolean j = false;
+   private InputStream input;
+   private OutputStream output;
+   private final Socket socket;
+   private boolean stopped = false;
+   private final ScapeApplet applet;
+   private byte[] outputBuffer;
+   private int cycle;
+   private int bufferIndex;
+   private boolean writing = false;
+   private boolean erred = false;
 
-   public BufferedConnection(ScapeApplet var1, Socket var2) throws IOException {
-      this.e = var1;
-      this.c = var2;
-      this.c.setSoTimeout(30000);
-      this.c.setTcpNoDelay(true);
-      this.a = this.c.getInputStream();
-      this.b = this.c.getOutputStream();
+   public BufferedConnection(ScapeApplet applet, Socket socket) throws IOException {
+      this.applet = applet;
+      this.socket = socket;
+      this.socket.setSoTimeout(30000);
+      this.socket.setTcpNoDelay(true);
+      this.input = this.socket.getInputStream();
+      this.output = this.socket.getOutputStream();
    }
 
-   public final void a() {
-      this.d = true;
+   public final void stop() {
+      this.stopped = true;
 
       try {
-         if(this.a != null) {
-            this.a.close();
+         if(this.input != null) {
+            this.input.close();
          }
 
-         if(this.b != null) {
-            this.b.close();
+         if(this.output != null) {
+            this.output.close();
          }
 
-         if(this.c != null) {
-            this.c.close();
+         if(this.socket != null) {
+            this.socket.close();
          }
       } catch (IOException var3) {
          System.out.println("Error closing stream");
       }
 
-      this.i = false;
+      this.writing = false;
       synchronized(this) {
          this.notify();
       }
 
-      this.f = null;
+      this.outputBuffer = null;
    }
 
-   public final int b() throws IOException {
-      return this.d?0:this.a.read();
+   public final int read() throws IOException {
+      return this.stopped?0:this.input.read();
    }
 
-   public final int c() throws IOException {
-      return this.d?0:this.a.available();
+   public final int available() throws IOException {
+      return this.stopped?0:this.input.available();
    }
 
-   public final void a(byte[] var1, int var2) throws IOException {
+   public final void flushInputStream(byte[] var1, int var2) throws IOException {
       int var3 = 0;
-      if(!this.d) {
+      if(!this.stopped) {
          while(var2 > 0) {
             int var4;
-            if((var4 = this.a.read(var1, var3, var2)) <= 0) {
+            if((var4 = this.input.read(var1, var3, var2)) <= 0) {
                throw new IOException("EOF");
             }
 
@@ -76,28 +76,28 @@ final class BufferedConnection implements Runnable {
       }
    }
 
-   public final void a(int var1, byte[] var2) throws IOException {
-      if(!this.d) {
-         if(this.j) {
-            this.j = false;
+   public final void write(int var1, byte[] var2) throws IOException {
+      if(!this.stopped) {
+         if(this.erred) {
+            this.erred = false;
             throw new IOException("Error in writer thread");
          } else {
-            if(this.f == null) {
-               this.f = new byte[5000];
+            if(this.outputBuffer == null) {
+               this.outputBuffer = new byte[5000];
             }
 
             synchronized(this) {
                for(int var4 = 0; var4 < var1; ++var4) {
-                  this.f[this.h] = var2[var4];
-                  this.h = (this.h + 1) % 5000;
-                  if(this.h == (this.g + 4900) % 5000) {
+                  this.outputBuffer[this.bufferIndex] = var2[var4];
+                  this.bufferIndex = (this.bufferIndex + 1) % 5000;
+                  if(this.bufferIndex == (this.cycle + 4900) % 5000) {
                      throw new IOException("buffer overflow");
                   }
                }
 
-               if(!this.i) {
-                  this.i = true;
-                  this.e.startThread(this, 3);
+               if(!this.writing) {
+                  this.writing = true;
+                  this.applet.startThread(this, 3);
                }
 
                this.notify();
@@ -107,11 +107,11 @@ final class BufferedConnection implements Runnable {
    }
 
    public final void run() {
-      while(this.i) {
+      while(this.writing) {
          int var2;
          int var3;
          synchronized(this) {
-            if(this.h == this.g) {
+            if(this.bufferIndex == this.cycle) {
                try {
                   this.wait();
                } catch (InterruptedException var6) {
@@ -119,33 +119,33 @@ final class BufferedConnection implements Runnable {
                }
             }
 
-            if(!this.i) {
+            if(!this.writing) {
                return;
             }
 
-            var2 = this.g;
-            if(this.h >= this.g) {
-               var3 = this.h - this.g;
+            var2 = this.cycle;
+            if(this.bufferIndex >= this.cycle) {
+               var3 = this.bufferIndex - this.cycle;
             } else {
-               var3 = 5000 - this.g;
+               var3 = 5000 - this.cycle;
             }
          }
 
          if(var3 > 0) {
             try {
-               this.b.write(this.f, var2, var3);
+               this.output.write(this.outputBuffer, var2, var3);
             } catch (IOException var5) {
-               this.j = true;
+               this.erred = true;
             }
 
-            this.g = (this.g + var3) % 5000;
+            this.cycle = (this.cycle + var3) % 5000;
 
             try {
-               if(this.h == this.g) {
-                  this.b.flush();
+               if(this.bufferIndex == this.cycle) {
+                  this.output.flush();
                }
             } catch (IOException var4) {
-               this.j = true;
+               this.erred = true;
             }
          }
       }

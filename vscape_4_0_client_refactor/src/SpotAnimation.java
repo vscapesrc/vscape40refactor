@@ -1,17 +1,17 @@
 public final class SpotAnimation {
    public static SpotAnimation[] cache;
-   private int i;
-   private int j;
-   private int k = -1;
+   private int id;
+   private int model;
+   private int animationId = -1;
    public Animation b;
-   private final int[] l = new int[6];
-   private final int[] m = new int[6];
-   public int c = 128;
-   public int d = 128;
-   public int e;
-   public int f;
-   public int g;
-   public static Cache h = new Cache(30);
+   private final int[] originalColors = new int[6];
+   private final int[] replacementColors = new int[6];
+   public int breadthScale = 128;
+   public int depthScale = 128;
+   public int orientation;
+   public int modelBrightness;
+   public int modelShadow;
+   public static Cache models = new Cache(30);
 
    public static void init(Archive var0) {
       Buffer var7;
@@ -21,49 +21,49 @@ public final class SpotAnimation {
       }
 
       label71:
-      for(int var2 = 0; var2 < var1; ++var2) {
-         if(cache[var2] == null) {
-            cache[var2] = new SpotAnimation();
+      for(int j = 0; j < var1; ++j) {
+         if(cache[j] == null) {
+            cache[j] = new SpotAnimation();
          }
 
-         cache[var2].i = var2;
-         SpotAnimation var10000 = cache[var2];
+         cache[j].id = j;
+         SpotAnimation var10000 = cache[j];
          Buffer var3 = var7;
          SpotAnimation var4 = var10000;
 
          while(true) {
             while(true) {
-               int var5;
-               if((var5 = var3.readUByte()) == 0) {
+               int i;
+               if((i = var3.readUByte()) == 0) {
                   continue label71;
                }
 
-               if(var5 == 1) {
-                  var4.j = var3.readUShort();
-               } else if(var5 == 2) {
-                  var4.k = var3.readUShort();
+               if(i == 1) {
+                  var4.model = var3.readUShort();
+               } else if(i == 2) {
+                  var4.animationId = var3.readUShort();
                   if(Animation.animations != null) {
-                     var4.b = Animation.animations[var4.k];
+                     var4.b = Animation.animations[var4.animationId];
                   }
-               } else if(var5 == 4) {
-                  var4.c = var3.readUShort();
-               } else if(var5 == 5) {
-                  var4.d = var3.readUShort();
-               } else if(var5 == 6) {
-                  var4.e = var3.readUShort();
-               } else if(var5 == 7) {
-                  var4.f = var3.readUByte();
-               } else if(var5 == 8) {
-                  var4.g = var3.readUByte();
-               } else if(var5 == 40) {
-                  var5 = var3.readUByte();
+               } else if(i == 4) {
+                  var4.breadthScale = var3.readUShort();
+               } else if(i == 5) {
+                  var4.depthScale = var3.readUShort();
+               } else if(i == 6) {
+                  var4.orientation = var3.readUShort();
+               } else if(i == 7) {
+                  var4.modelBrightness = var3.readUByte();
+               } else if(i == 8) {
+                  var4.modelShadow = var3.readUByte();
+               } else if(i == 40) {
+                  i = var3.readUByte();
 
-                  for(int var6 = 0; var6 < var5; ++var6) {
-                     var4.l[var6] = var3.readUShort();
-                     var4.m[var6] = var3.readUShort();
+                  for(int var6 = 0; var6 < i; ++var6) {
+                     var4.originalColors[var6] = var3.readUShort();
+                     var4.replacementColors[var6] = var3.readUShort();
                   }
                } else {
-                  System.out.println("Error unrecognised spotanim config code: " + var5);
+                  System.out.println("Error unrecognised spotanim config code: " + i);
                }
             }
          }
@@ -73,18 +73,18 @@ public final class SpotAnimation {
 
    public final Model getModel() {
       Model var1;
-      if((var1 = (Model)h.get((long)this.i)) != null) {
+      if((var1 = (Model)models.get((long)this.id)) != null) {
          return var1;
-      } else if((var1 = Model.lookup(this.j)) == null) {
+      } else if((var1 = Model.lookup(this.model)) == null) {
          return null;
       } else {
          for(int var2 = 0; var2 < 6; ++var2) {
-            if(this.l[0] != 0) {
-               var1.recolor(this.l[var2], this.m[var2]);
+            if(this.originalColors[0] != 0) {
+               var1.recolor(this.originalColors[var2], this.replacementColors[var2]);
             }
          }
 
-         h.put(var1, (long)this.i);
+         models.put(var1, (long)this.id);
          return var1;
       }
    }

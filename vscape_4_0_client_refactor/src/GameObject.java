@@ -1,16 +1,16 @@
 public final class GameObject {
-   int a;
-   int b;
-   int c;
-   int d;
+   int plane;
+   int renderHeight;
+   int centreX;
+   int centreY;
    public Renderable renderable;
-   public int f;
-   int g;
-   int h;
-   int i;
-   int j;
+   public int yaw;
+   int positionX;
+   int maxX;
+   int positionY;
+   int maxY;
    int k;
    int l;
-   public int m;
+   public int key;
    byte config;
 }

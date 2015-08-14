@@ -8,19 +8,19 @@ public final class IsaacCipher {
 
    public IsaacCipher(int[] var1) {
       System.arraycopy(var1, 0, this.b, 0, 4);
-      this.c();
+      this.initializeKeySet();
    }
 
-   public final int a() {
+   public final int getNextKey() {
       if(this.a-- == 0) {
-         this.b();
+         this.isaac();
          this.a = 255;
       }
 
       return this.b[this.a];
    }
 
-   private void b() {
+   private void isaac() {
       this.e += ++this.f;
 
       for(int var1 = 0; var1 < 256; ++var1) {
@@ -43,7 +43,7 @@ public final class IsaacCipher {
 
    }
 
-   private void c() {
+   private void initializeKeySet() {
       int var1 = -1640531527;
       int var2 = -1640531527;
       int var3 = -1640531527;
@@ -146,7 +146,7 @@ public final class IsaacCipher {
          this.c[var9 + 7] = var1;
       }
 
-      this.b();
+      this.isaac();
       this.a = 256;
    }
 }

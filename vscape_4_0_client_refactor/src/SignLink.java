@@ -15,8 +15,8 @@ public final class SignLink implements Runnable {
    private static Sequencer g = null;
    private static Sequence h = null;
    private static Synthesizer i = null;
-   public static RandomAccessFile a = null;
-   public static final RandomAccessFile[] b = new RandomAccessFile[5];
+   public static RandomAccessFile cache_dat = null;
+   public static final RandomAccessFile[] cache_idx = new RandomAccessFile[5];
    public static Applet c = null;
    private static boolean j;
    private static int k;
@@ -80,10 +80,10 @@ public final class SignLink implements Runnable {
 
       int var2;
       try {
-         a = new RandomAccessFile(var1 + "main_file_cache.dat", "rw");
+         cache_dat = new RandomAccessFile(var1 + "main_file_cache.dat", "rw");
 
          for(var2 = 0; var2 < 5; ++var2) {
-            b[var2] = new RandomAccessFile(var1 + "main_file_cache.idx" + var2, "rw");
+            cache_idx[var2] = new RandomAccessFile(var1 + "main_file_cache.idx" + var2, "rw");
          }
       } catch (Exception var5) {
          var5.printStackTrace();

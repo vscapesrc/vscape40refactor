@@ -11,7 +11,7 @@ final class ShapedTile {
    int[] j;
    final boolean flat;
    final int l;
-   final int m;
+   final int orientation;
    final int n;
    final int o;
    static final int[] p = new int[6];
@@ -33,7 +33,7 @@ final class ShapedTile {
    public ShapedTile(int var1, int var2, int var3, int var4, int var5, int var6, int var7, int var8, int var9, int var10, int var11, int var12, int var13, int var14, int var15, int var16, int var17, int var18, int var19) {
       this.flat = var13 == var12 && var13 == var4 && var13 == var11;
       this.l = var14;
-      this.m = var7;
+      this.orientation = var7;
       this.n = var9;
       this.o = var19;
       int[] var29;

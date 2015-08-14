@@ -245,7 +245,7 @@ final class MapRegion {
 
             for(var9 = 1; var9 < 103; ++var9) {
                for(var10 = 1; var10 < 103; ++var10) {
-                  scene.a(z, var10, var9, this.getCollisionPlane(var9, z, var10));
+                  scene.setCollisionPlane(z, var10, var9, this.getCollisionPlane(var9, z, var10));
                }
             }
          }

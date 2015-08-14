@@ -1,5 +1,5 @@
-public final class VarBits {
-   public static VarBits[] bits;
+public final class VariableBits {
+   public static VariableBits[] bits;
    public int setting;
    public int low;
    public int high;
@@ -9,19 +9,19 @@ public final class VarBits {
       Buffer buffer;
       int count = (buffer = new Buffer(archive.getEntry("varbit.dat"))).readUShort();
       if(bits == null) {
-         bits = new VarBits[count];
+         bits = new VariableBits[count];
       }
 
       for(int i = 0; i < count; ++i) {
          if(bits[i] == null) {
-            bits[i] = new VarBits();
+            bits[i] = new VariableBits();
          }
 
-         VarBits var10000 = bits[i];
+         VariableBits var10000 = bits[i];
          var10000.decode(buffer);
       }
 
-      if(buffer.position != buffer.buf.length) {
+      if(buffer.position != buffer.payload.length) {
          System.out.println("varbit load mismatch");
       }
 

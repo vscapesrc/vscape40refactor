@@ -1,5 +1,5 @@
-public final class Varp {
-   public static Varp[] parameters;
+public final class VariableParameter {
+   public static VariableParameter[] parameters;
    private static int c;
    private static int[] d;
    public int parameter;
@@ -9,7 +9,7 @@ public final class Varp {
       c = 0;
       int count = buffer.readUShort();
       if(parameters == null) {
-         parameters = new Varp[count];
+         parameters = new VariableParameter[count];
       }
 
       if(d == null) {
@@ -18,14 +18,14 @@ public final class Varp {
 
       for(int id = 0; id < count; ++id) {
          if(parameters[id] == null) {
-            parameters[id] = new Varp();
+            parameters[id] = new VariableParameter();
          }
 
-         Varp var10000 = parameters[id];
+         VariableParameter var10000 = parameters[id];
          var10000.decode(buffer, id);
       }
 
-      if(buffer.position != buffer.buf.length) {
+      if(buffer.position != buffer.payload.length) {
          System.out.println("varptype load mismatch");
       }
 

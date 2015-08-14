@@ -54,11 +54,11 @@ public final class Player extends Actor {
                   var3.applyTransform(var2.b.primaryFrames[super.v]);
                   var3.faceGroups = null;
                   var3.vertexGroups = null;
-                  if(var2.c != 128 || var2.d != 128) {
-                     var3.scale(var2.c, var2.c, var2.d);
+                  if(var2.breadthScale != 128 || var2.depthScale != 128) {
+                     var3.scale(var2.breadthScale, var2.breadthScale, var2.depthScale);
                   }
 
-                  var3.light(64 + var2.f, 850 + var2.g, -30, -50, -30, true);
+                  var3.light(64 + var2.modelBrightness, 850 + var2.modelShadow, -30, -50, -30, true);
                   Model[] var4 = new Model[]{var1, var3};
                   var1 = new Model(var4);
                }
@@ -70,32 +70,32 @@ public final class Player extends Actor {
 
                   if(Client.tick >= this.av && Client.tick < this.aw) {
                      Model var5 = this.playerModel;
-                     this.playerModel.a(this.az - super.X, this.aA - this.ax, this.aB - super.Y);
+                     this.playerModel.a(this.az - super.worldX, this.aA - this.ax, this.aB - super.worldY);
                      if(super.k == 512) {
-                        var5.e();
-                        var5.e();
-                        var5.e();
+                        var5.rotateClockwise();
+                        var5.rotateClockwise();
+                        var5.rotateClockwise();
                      } else if(super.k == 1024) {
-                        var5.e();
-                        var5.e();
+                        var5.rotateClockwise();
+                        var5.rotateClockwise();
                      } else if(super.k == 1536) {
-                        var5.e();
+                        var5.rotateClockwise();
                      }
 
                      Model[] var6 = new Model[]{var1, var5};
                      var1 = new Model(var6);
                      if(super.k == 512) {
-                        var5.e();
+                        var5.rotateClockwise();
                      } else if(super.k == 1024) {
-                        var5.e();
-                        var5.e();
+                        var5.rotateClockwise();
+                        var5.rotateClockwise();
                      } else if(super.k == 1536) {
-                        var5.e();
-                        var5.e();
-                        var5.e();
+                        var5.rotateClockwise();
+                        var5.rotateClockwise();
+                        var5.rotateClockwise();
                      }
 
-                     var5.a(super.X - this.az, this.ax - this.aA, super.Y - this.aB);
+                     var5.a(super.worldX - this.az, this.ax - this.aA, super.worldY - this.aB);
                   }
                }
 
@@ -176,7 +176,7 @@ public final class Player extends Actor {
          super.runAnimationId = -1;
       }
 
-      this.name = StringUtils.formatName(StringUtils.longToName(var1.m()));
+      this.name = StringUtils.format(StringUtils.decodeBase37(var1.readQWord()));
       this.combatLevel = var1.readUByte();
       this.totalLevel = var1.readUShort();
       this.aJ = var1.readUByte() == 1;
@@ -210,8 +210,8 @@ public final class Player extends Actor {
    public final Model getAnimatedModel() {
       if(this.al != null) {
          int var1 = -1;
-         if(super.animation >= 0 && super.D == 0) {
-            var1 = Animation.animations[super.animation].primaryFrames[super.B];
+         if(super.emoteAnimation >= 0 && super.D == 0) {
+            var1 = Animation.animations[super.emoteAnimation].primaryFrames[super.B];
          } else if(super.r >= 0) {
             var1 = Animation.animations[super.r].primaryFrames[super.s];
          }
@@ -223,9 +223,9 @@ public final class Player extends Actor {
          int var6 = -1;
          int var7 = -1;
          int var8 = -1;
-         if(super.animation >= 0 && super.D == 0) {
+         if(super.emoteAnimation >= 0 && super.D == 0) {
             Animation var9;
-            var5 = (var9 = Animation.animations[super.animation]).primaryFrames[super.B];
+            var5 = (var9 = Animation.animations[super.emoteAnimation]).primaryFrames[super.B];
             if(super.r >= 0 && super.r != super.l) {
                var6 = Animation.animations[super.r].primaryFrames[super.s];
             }
@@ -416,7 +416,7 @@ public final class Player extends Actor {
             Model var21;
             (var21 = Model.EMPTY_MODEL).a(var19, Frame.isInvalid(var5) & Frame.isInvalid(var6));
             if(var5 != -1 && var6 != -1) {
-               var21.applyTransform(Animation.animations[super.animation].interleaveOrder, var6, var5);
+               var21.applyTransform(Animation.animations[super.emoteAnimation].interleaveOrder, var6, var5);
             } else if(var5 != -1) {
                var21.applyTransform(var5);
             }

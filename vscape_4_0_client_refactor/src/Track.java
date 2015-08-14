@@ -139,18 +139,18 @@ final class Track {
          var0 = var12;
          d.position = 0;
          d.writeInt(1380533830);
-         d.writeIntLE(var0 + 36);
+         d.writeLEInt(var0 + 36);
          d.writeInt(1463899717);
          d.writeInt(1718449184);
-         d.writeIntLE(16);
-         d.writeShortLE(1);
-         d.writeShortLE(1);
-         d.writeIntLE(22050);
-         d.writeIntLE(22050);
-         d.writeShortLE(1);
-         d.writeShortLE(8);
+         d.writeLEInt(16);
+         d.writeLEShort(1);
+         d.writeLEShort(1);
+         d.writeLEInt(22050);
+         d.writeLEInt(22050);
+         d.writeLEShort(1);
+         d.writeLEShort(8);
          d.writeInt(1684108385);
-         d.writeIntLE(var0);
+         d.writeLEInt(var0);
          d.position += var0;
          return d;
       }

@@ -3,14 +3,14 @@ import java.util.Hashtable;
 public final class Frame {
    private static Hashtable h = new Hashtable();
    public int duration;
-   public Class39 b;
-   public int c;
-   public int[] d;
-   public int[] e;
-   public int[] f;
-   public int[] g;
+   public FrameBase b;
+   public int transformationCount;
+   public int[] translationIndices;
+   public int[] transformX;
+   public int[] transformY;
+   public int[] transformZ;
 
-   public static void a(byte[] var0, int var1) {
+   public static void decode(byte[] var0, int var1) {
       Buffer var2;
       (var2 = new Buffer(var0)).position = var0.length - 12;
       int var3 = var2.readInt();
@@ -27,12 +27,12 @@ public final class Frame {
       var3 += var20;
       Buffer var18;
       (var18 = new Buffer(var0)).position = var3;
-      Class39 var19 = new Class39(var18);
+      FrameBase var19 = new FrameBase(var18);
       var20 = var5.readInt();
-      int[] var22 = new int[500];
-      int[] var7 = new int[500];
-      int[] var8 = new int[500];
-      int[] var9 = new int[500];
+      int[] translationIndices = new int[500];
+      int[] transformX = new int[500];
+      int[] transformY = new int[500];
+      int[] transformZ = new int[500];
 
       for(int var10 = 0; var10 < var20; ++var10) {
          int var11 = var5.readInt();
@@ -47,41 +47,41 @@ public final class Frame {
          for(var15 = 0; var15 < var11; ++var15) {
             int var16;
             if((var16 = var6.readUByte()) > 0) {
-               if(var19.a[var15] != 0) {
+               if(var19.transformationTypes[var15] != 0) {
                   for(int var17 = var15 - 1; var17 > var13; --var17) {
-                     if(var19.a[var17] == 0) {
-                        var22[var14] = var17;
-                        var7[var14] = 0;
-                        var8[var14] = 0;
-                        var9[var14] = 0;
+                     if(var19.transformationTypes[var17] == 0) {
+                        translationIndices[var14] = var17;
+                        transformX[var14] = 0;
+                        transformY[var14] = 0;
+                        transformZ[var14] = 0;
                         ++var14;
                         break;
                      }
                   }
                }
 
-               var22[var14] = var15;
+               translationIndices[var14] = var15;
                short var23 = 0;
-               if(var19.a[var15] == 3) {
+               if(var19.transformationTypes[var15] == 3) {
                   var23 = 128;
                }
 
                if((var16 & 1) != 0) {
-                  var7[var14] = var21.r();
+                  transformX[var14] = var21.r();
                } else {
-                  var7[var14] = var23;
+                  transformX[var14] = var23;
                }
 
                if((var16 & 2) != 0) {
-                  var8[var14] = var21.r();
+                  transformY[var14] = var21.r();
                } else {
-                  var8[var14] = var23;
+                  transformY[var14] = var23;
                }
 
                if((var16 & 4) != 0) {
-                  var9[var14] = var21.r();
+                  transformZ[var14] = var21.r();
                } else {
-                  var9[var14] = var23;
+                  transformZ[var14] = var23;
                }
 
                var13 = var15;
@@ -89,23 +89,23 @@ public final class Frame {
             }
          }
 
-         var12.c = var14;
-         var12.d = new int[var14];
-         var12.e = new int[var14];
-         var12.f = new int[var14];
-         var12.g = new int[var14];
+         var12.transformationCount = var14;
+         var12.translationIndices = new int[var14];
+         var12.transformX = new int[var14];
+         var12.transformY = new int[var14];
+         var12.transformZ = new int[var14];
 
          for(var15 = 0; var15 < var14; ++var15) {
-            var12.d[var15] = var22[var15];
-            var12.e[var15] = var7[var15];
-            var12.f[var15] = var8[var15];
-            var12.g[var15] = var9[var15];
+            var12.translationIndices[var15] = translationIndices[var15];
+            var12.transformX[var15] = transformX[var15];
+            var12.transformY[var15] = transformY[var15];
+            var12.transformZ[var15] = transformZ[var15];
          }
       }
 
    }
 
-   public static void a() {
+   public static void clearFrames() {
       h = null;
    }
 

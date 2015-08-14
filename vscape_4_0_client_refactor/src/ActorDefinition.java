@@ -231,8 +231,8 @@ public final class ActorDefinition {
    public final ActorDefinition morph() {
       int var1 = -1;
       if(this.varbit != -1) {
-         VarBits var4;
-         int var2 = (var4 = VarBits.bits[this.varbit]).setting;
+         VariableBits var4;
+         int var2 = (var4 = VariableBits.bits[this.varbit]).setting;
          int var3 = var4.low;
          var1 = var4.high;
          var1 = Client.BIT_MASKS[var1 - var3];

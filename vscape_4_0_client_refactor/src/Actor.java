@@ -11,9 +11,9 @@ public class Actor extends Renderable {
    int l = -1;
    int m = -1;
    int n;
-   final int[] o = new int[4];
-   final int[] p = new int[4];
-   final int[] q = new int[4];
+   final int[] hitDamages = new int[4];
+   final int[] hitTypes = new int[4];
+   final int[] hitCycles = new int[4];
    int r = -1;
    int s;
    int t;
@@ -22,8 +22,8 @@ public class Actor extends Renderable {
    int w;
    int x;
    int y;
-   int z;
-   public int animation = -1;
+   int remainingPath;
+   public int emoteAnimation = -1;
    int B;
    int C;
    int D;
@@ -36,7 +36,7 @@ public class Actor extends Renderable {
    int K;
    int L;
    int M;
-   int N = 1;
+   int size = 1;
    boolean O = false;
    int P;
    int Q;
@@ -46,123 +46,123 @@ public class Actor extends Renderable {
    int U;
    int V;
    int W;
-   public int X;
-   public int Y;
+   public int worldX;
+   public int worldY;
    int Z;
-   final boolean[] aa = new boolean[10];
+   final boolean[] pathRun = new boolean[10];
    int ab = -1;
    int ac = -1;
    int ad = -1;
    int ae = -1;
 
-   public final void setPosition(int x, int y, boolean var3) {
-      if(this.animation != -1 && Animation.animations[this.animation].walkingPrecedence == 1) {
-         this.animation = -1;
+   public final void setPosition(int x, int y, boolean teleported) {
+      if(this.emoteAnimation != -1 && Animation.animations[this.emoteAnimation].walkingPrecedence == 1) {
+         this.emoteAnimation = -1;
       }
 
-      if(!var3) {
+      if(!teleported) {
          int var5 = x - this.pathX[0];
          int var4 = y - this.pathY[0];
          if(var5 >= -8 && var5 <= 8 && var4 >= -8 && var4 <= 8) {
-            if(this.z < 9) {
-               ++this.z;
+            if(this.remainingPath < 9) {
+               ++this.remainingPath;
             }
 
-            for(var5 = this.z; var5 > 0; --var5) {
+            for(var5 = this.remainingPath; var5 > 0; --var5) {
                this.pathX[var5] = this.pathX[var5 - 1];
                this.pathY[var5] = this.pathY[var5 - 1];
-               this.aa[var5] = this.aa[var5 - 1];
+               this.pathRun[var5] = this.pathRun[var5 - 1];
             }
 
             this.pathX[0] = x;
             this.pathY[0] = y;
-            this.aa[0] = false;
+            this.pathRun[0] = false;
             return;
          }
       }
 
-      this.z = 0;
+      this.remainingPath = 0;
       this.P = 0;
       this.f = 0;
       this.pathX[0] = x;
       this.pathY[0] = y;
-      this.X = (this.pathX[0] << 7) + (this.N << 6);
-      this.Y = (this.pathY[0] << 7) + (this.N << 6);
+      this.worldX = (this.pathX[0] << 7) + (this.size << 6);
+      this.worldY = (this.pathY[0] << 7) + (this.size << 6);
    }
 
    public final void resetPath() {
-      this.z = 0;
+      this.remainingPath = 0;
       this.P = 0;
    }
 
    public final void updateHits(int hitType, int hitDamage, int hitCycle) {
       for(int var4 = 0; var4 < 4; ++var4) {
-         if(this.q[var4] <= hitCycle) {
-            this.o[var4] = hitDamage;
-            this.p[var4] = hitType;
-            this.q[var4] = hitCycle + 70;
+         if(this.hitCycles[var4] <= hitCycle) {
+            this.hitDamages[var4] = hitDamage;
+            this.hitTypes[var4] = hitType;
+            this.hitCycles[var4] = hitCycle + 70;
             return;
          }
       }
 
    }
 
-   public final void move(boolean running, int direction) {
-      int var3 = this.pathX[0];
-      int var4 = this.pathY[0];
+   public final void walk(boolean running, int direction) {
+      int x = this.pathX[0];
+      int y = this.pathY[0];
       if(direction == 0) {
-         --var3;
-         ++var4;
+         --x;
+         ++y;
       }
 
       if(direction == 1) {
-         ++var4;
+         ++y;
       }
 
       if(direction == 2) {
-         ++var3;
-         ++var4;
+         ++x;
+         ++y;
       }
 
       if(direction == 3) {
-         --var3;
+         --x;
       }
 
       if(direction == 4) {
-         ++var3;
+         ++x;
       }
 
       if(direction == 5) {
-         --var3;
-         --var4;
+         --x;
+         --y;
       }
 
       if(direction == 6) {
-         --var4;
+         --y;
       }
 
       if(direction == 7) {
-         ++var3;
-         --var4;
+         ++x;
+         --y;
       }
 
-      if(this.animation != -1 && Animation.animations[this.animation].walkingPrecedence == 1) {
-         this.animation = -1;
+      if(this.emoteAnimation != -1 && Animation.animations[this.emoteAnimation].walkingPrecedence == 1) {
+         this.emoteAnimation = -1;
       }
 
-      if(this.z < 9) {
-         ++this.z;
+      if(this.remainingPath < 9) {
+         ++this.remainingPath;
       }
 
-      for(direction = this.z; direction > 0; --direction) {
+      for(direction = this.remainingPath; direction > 0; --direction) {
          this.pathX[direction] = this.pathX[direction - 1];
          this.pathY[direction] = this.pathY[direction - 1];
-         this.aa[direction] = this.aa[direction - 1];
+         this.pathRun[direction] = this.pathRun[direction - 1];
       }
 
-      this.pathX[0] = var3;
-      this.pathY[0] = var4;
-      this.aa[0] = running;
+      this.pathX[0] = x;
+      this.pathY[0] = y;
+      this.pathRun[0] = running;
    }
 
    public boolean isVisible() {

@@ -221,7 +221,7 @@ public final class ResourceProvider extends Provider implements Runnable {
       this.client.startThread((Runnable)this, 2);
    }
 
-   public final int b() {
+   public final int getNodeCount() {
       Queue var1 = this.requests;
       synchronized(this.requests) {
          return this.requests.getNodeCount();
@@ -242,7 +242,7 @@ public final class ResourceProvider extends Provider implements Runnable {
 
             this.e = var2;
             int var10001 = Client.k;
-            this.socket = Client.a('ꩊ');
+            this.socket = Client.openSocket('ꩊ');
             this.inputStream = this.socket.getInputStream();
             this.outputStream = this.socket.getOutputStream();
             this.outputStream.write(15);

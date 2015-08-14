@@ -1,5 +1,5 @@
 public final class SceneTile extends Node {
-   int a;
+   int plane;
    final int positionX;
    final int positionY;
    final int d;
@@ -9,11 +9,11 @@ public final class SceneTile extends Node {
    public WallDecoration wallDecoration;
    public GroundDecoration groundDecoration;
    public GroundItem groundItem;
-   int k;
+   int objectCount;
    public final GameObject[] gameObjects = new GameObject[5];
    final int[] objectAttributes = new int[5];
-   int n;
-   int o;
+   int attributes;
+   int collisionPlane;
    boolean p;
    boolean q;
    boolean r;
@@ -24,7 +24,7 @@ public final class SceneTile extends Node {
    public SceneTile sceneTile;
 
    public SceneTile(int z, int x, int y) {
-      this.d = this.a = z;
+      this.d = this.plane = z;
       this.positionX = x;
       this.positionY = y;
    }

@@ -2,9 +2,9 @@ final class GroundItem {
    int a;
    int b;
    int c;
-   Renderable d;
-   Renderable e;
-   Renderable f;
+   Renderable primary;
+   Renderable tertiary;
+   Renderable secondary;
    int g;
    int h;
 }

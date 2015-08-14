@@ -1829,14 +1829,14 @@ public final class Model extends Renderable {
          if(var1 != -1) {
             Frame var5;
             if((var5 = Frame.lookup(var1)) != null) {
-               Class39 var2 = var5.b;
+               FrameBase var2 = var5.b;
                aC = 0;
                aD = 0;
                aE = 0;
 
-               for(int var3 = 0; var3 < var5.c; ++var3) {
-                  int var4 = var5.d[var3];
-                  this.a(var2.a[var4], var2.b[var4], var5.e[var3], var5.f[var3], var5.g[var3]);
+               for(int var3 = 0; var3 < var5.transformationCount; ++var3) {
+                  int var4 = var5.translationIndices[var3];
+                  this.a(var2.transformationTypes[var4], var2.groups[var4], var5.transformX[var3], var5.transformY[var3], var5.transformZ[var3]);
                }
 
             }
@@ -1853,7 +1853,7 @@ public final class Model extends Renderable {
                if((var9 = Frame.lookup(var2)) == null) {
                   this.applyTransform(var3);
                } else {
-                  Class39 var10 = var4.b;
+                  FrameBase var10 = var4.b;
                   aC = 0;
                   aD = 0;
                   aE = 0;
@@ -1863,13 +1863,13 @@ public final class Model extends Renderable {
 
                   int var7;
                   int var8;
-                  for(var7 = 0; var7 < var4.c; ++var7) {
-                     for(var8 = var4.d[var7]; var8 > var6; var6 = var1[var11++]) {
+                  for(var7 = 0; var7 < var4.transformationCount; ++var7) {
+                     for(var8 = var4.translationIndices[var7]; var8 > var6; var6 = var1[var11++]) {
                         ;
                      }
 
-                     if(var8 != var6 || var10.a[var8] == 0) {
-                        this.a(var10.a[var8], var10.b[var8], var4.e[var7], var4.f[var7], var4.g[var7]);
+                     if(var8 != var6 || var10.transformationTypes[var8] == 0) {
+                        this.a(var10.transformationTypes[var8], var10.groups[var8], var4.transformX[var7], var4.transformY[var7], var4.transformZ[var7]);
                      }
                   }
 
@@ -1880,13 +1880,13 @@ public final class Model extends Renderable {
                   var11 = var5 + 1;
                   var6 = var1[0];
 
-                  for(var7 = 0; var7 < var9.c; ++var7) {
-                     for(var8 = var9.d[var7]; var8 > var6; var6 = var1[var11++]) {
+                  for(var7 = 0; var7 < var9.transformationCount; ++var7) {
+                     for(var8 = var9.translationIndices[var7]; var8 > var6; var6 = var1[var11++]) {
                         ;
                      }
 
-                     if(var8 == var6 || var10.a[var8] == 0) {
-                        this.a(var10.a[var8], var10.b[var8], var9.e[var7], var9.f[var7], var9.g[var7]);
+                     if(var8 == var6 || var10.transformationTypes[var8] == 0) {
+                        this.a(var10.transformationTypes[var8], var10.groups[var8], var9.transformX[var7], var9.transformY[var7], var9.transformZ[var7]);
                      }
                   }
 
@@ -2041,7 +2041,7 @@ public final class Model extends Renderable {
       }
    }
 
-   public final void e() {
+   public final void rotateClockwise() {
       for(int var1 = 0; var1 < this.vertices; ++var1) {
          int var2 = this.e[var1];
          this.e[var1] = this.g[var1];
@@ -2059,10 +2059,10 @@ public final class Model extends Renderable {
 
    }
 
-   public final void recolor(int var1, int var2) {
+   public final void recolor(int oldColor, int newColor) {
       for(int var3 = 0; var3 < this.faces; ++var3) {
-         if(this.faceColors[var3] == var1) {
-            this.faceColors[var3] = var2;
+         if(this.faceColors[var3] == oldColor) {
+            this.faceColors[var3] = newColor;
          }
       }
 

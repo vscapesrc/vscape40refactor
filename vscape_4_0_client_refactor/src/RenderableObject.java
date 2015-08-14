@@ -18,8 +18,8 @@ final class RenderableObject extends Renderable {
       int state = -1;
       if(this.morphVarbitIndex != -1) {
          try {
-            VarBits bits;
-            int var = (bits = VarBits.bits[this.morphVarbitIndex]).setting;
+            VariableBits bits;
+            int var = (bits = VariableBits.bits[this.morphVarbitIndex]).setting;
             int low = bits.low;
             int high = bits.high;
             high = Client.BIT_MASKS[high - low];
