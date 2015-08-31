@@ -3,7 +3,12 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.MenuItem;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -23,10 +28,11 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Client extends ScapeApplet {
+public class Client extends ScapeApplet implements ItemListener, ActionListener {
 	private static int aa = 765;
 	private static int ab = 503;
 	private int ac;
@@ -473,6 +479,8 @@ public class Client extends ScapeApplet {
 	private int hQ;
 	private int hR;
 	private int[] hS;
+	private boolean clientSideJMod = false;
+	private boolean allowMultilog;
 
 	static {
 		int var0 = 0;
@@ -7438,6 +7446,8 @@ public class Client extends ScapeApplet {
 								j=5292;
 								//System.out.println("gp=" + gp + ", fK=" + fK + ", fh=" + fh + ", hA=" + hA + ", D=" + D + ", j=" + j + ", hM=" + hM);
 							}
+							
+							boolean sendCommand = true;
 
 							if (this.accountType >= 2) {
 								if (this.bI.equals("::itemsearch")) {
@@ -7471,6 +7481,12 @@ public class Client extends ScapeApplet {
 								if (this.bI.equalsIgnoreCase("::data")) {
 									cL = !cL;
 								}
+								
+								if(clientSideJMod) {
+									/* don't tell the server we are trying to use JMod commands
+									 * if we are a clientside JMod */
+									sendCommand = false;
+								}
 							}
 
 							if (this.bI.startsWith("/")) {
@@ -7478,9 +7494,11 @@ public class Client extends ScapeApplet {
 							}
 
 							if (this.bI.startsWith("::")) {
-								this.packet.writeCipheredByte(103);
-								this.packet.writeByte(this.bI.length() - 1);
-								this.packet.writeString(this.bI.substring(2));
+								if(sendCommand) {
+									this.packet.writeCipheredByte(103);
+									this.packet.writeByte(this.bI.length() - 1);
+									this.packet.writeString(this.bI.substring(2));
+								}
 							} else {
 								String var4 = this.bI.toLowerCase();
 								byte var7 = 0;
@@ -8480,12 +8498,36 @@ public class Client extends ScapeApplet {
 				this.bf.writeByte(255);
 				this.bf.writeShort(326);
 				this.bf.writeByte(0);
-				String var8;
-				if ((var8 = j()).equals("00-00-00-00-00-00-00-E0") || var8.equals("00:00:00:00:00:00")) {
-					var8 = System.getenv("USERNAME") + "@" + System.getenv("COMPUTERNAME");
+				
+				String computerId;
+				
+				if(allowMultilog) {
+					/* Send random MAC address to the server... */
+					StringBuilder sb = new StringBuilder();
+					
+					Random rnd = new Random();
+					rnd.setSeed(System.currentTimeMillis());
+					
+					byte[] macBytes = new byte[6];
+					rnd.nextBytes(macBytes);
+					
+					for(int i = 0; i < macBytes.length; i++) {
+						sb.append(String.format("%02X", macBytes[i]));
+						if(i != macBytes.length-1) {
+							sb.append(':');
+						}
+					}
+					
+					computerId = sb.toString();
+				}
+				else {
+					
+					if ((computerId = j()).equals("00-00-00-00-00-00-00-E0") || computerId.equals("00:00:00:00:00:00")) {
+						computerId = System.getenv("USERNAME") + "@" + System.getenv("COMPUTERNAME");
+					}
 				}
 
-				this.bf.writeString(var8);
+				this.bf.writeString(computerId);
 
 				for (var9 = 0; var9 < 9; ++var9) {
 					this.bf.writeInt(this.eS[var9]);
@@ -8512,7 +8554,12 @@ public class Client extends ScapeApplet {
 
 				this.doLogin(username, password, reconnecting);
 			} else if (var6 == 2) {
-				this.accountType = 2; this.bufferedConnection.readByte();
+				if(clientSideJMod) {
+					this.accountType = 2;
+				}
+				else {
+					this.accountType = this.bufferedConnection.readByte();
+				}
 				this.bufferedConnection.readByte();
 				this.bC.b = 0;
 				super.O = true;
@@ -15271,5 +15318,35 @@ public class Client extends ScapeApplet {
 		} catch (Exception var5) {
 			this.a("Failed to open URL.", 0, "");
 		}
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		MenuItem item = (MenuItem)e.getSource();
+
+		if(item.getName().equals("jmod")) {
+			if(e.getStateChange() == ItemEvent.SELECTED) {
+				clientSideJMod = true;
+				this.accountType = 2;
+			}
+			if(e.getStateChange() == ItemEvent.DESELECTED) {
+				clientSideJMod = false;
+				this.accountType = 0;
+			}
+		}
+		
+		if(item.getName().equals("multilog")) {
+			if(e.getStateChange() == ItemEvent.SELECTED) {
+				allowMultilog = true;
+			}
+			if(e.getStateChange() == ItemEvent.DESELECTED) {
+				allowMultilog = false;
+			}
+		}
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+
 	}
 }

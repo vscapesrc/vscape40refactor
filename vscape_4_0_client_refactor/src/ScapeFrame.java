@@ -1,30 +1,61 @@
+import java.awt.CheckboxMenuItem;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.awt.Menu;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
 import java.awt.Toolkit;
 
+import javax.swing.JMenuBar;
+
 final class ScapeFrame extends Frame {
-	private final ScapeApplet a;
+	private final ScapeApplet applet;
 	private Toolkit b = Toolkit.getDefaultToolkit();
 	private Dimension c;
+	
+	MenuBar bar;
 
-	public ScapeFrame(ScapeApplet var1, int width, int height, boolean undecorated) {
+	public ScapeFrame(ScapeApplet applet, int width, int height, boolean undecorated) {
 		this.c = this.b.getScreenSize();
 		this.c.getWidth();
 		this.c.getHeight();
-		this.a = var1;
+		this.applet = applet;
 		this.setTitle("/v/scape");
 		this.setUndecorated(undecorated);
 		this.setBackground(Color.BLACK);
+		
 		this.setVisible(true);
 		this.requestFocus();
 		this.toFront();
 		this.setResizable(Client.resizeMode != 0);
 		this.setFocusTraversalKeysEnabled(false);
 		this.toFront();
+		
+		bar = new MenuBar();
+		
+		Menu clientMenu = new Menu("Client");
+		bar.add(clientMenu);
+		
+		CheckboxMenuItem multilog = new CheckboxMenuItem("Allow MultiLogging");
+		multilog.addItemListener(this.applet);
+		multilog.setName("multilog");
+		clientMenu.add(multilog);
+		
+		Menu hacksMenu = new Menu("Hacks");
+		Menu playerHacks = new Menu("Player");
+		CheckboxMenuItem jmod = new CheckboxMenuItem("Clientside JMod");
+		jmod.addItemListener(this.applet);
+		jmod.setName("jmod");
+		playerHacks.add(jmod);
+		hacksMenu.add(playerHacks);
+		bar.add(hacksMenu);
+		
+		this.setMenuBar(bar);
+		
 		Insets var5 = this.getInsets();
 
 		// this.setSize(width + var5.left + var5.right, height + var5.top +
@@ -57,10 +88,10 @@ final class ScapeFrame extends Frame {
 	}
 
 	public final void update(Graphics var1) {
-		this.a.update(var1);
+		this.applet.update(var1);
 	}
 
 	public final void paint(Graphics var1) {
-		this.a.paint(var1);
+		this.applet.paint(var1);
 	}
 }

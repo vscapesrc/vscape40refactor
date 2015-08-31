@@ -5,8 +5,12 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -18,7 +22,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 public class ScapeApplet extends Applet implements FocusListener, KeyListener, MouseListener, MouseMotionListener,
-		MouseWheelListener, WindowListener, Runnable {
+		MouseWheelListener, WindowListener, Runnable, ItemListener, ActionListener {
 	private int a;
 	private int b = 20;
 	int H = 1;
@@ -704,5 +708,17 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 		this.frameGraphics.setColor(Color.white);
 		this.frameGraphics.drawString(text, (Client.clientWidth - var4.stringWidth(text)) / 2, var7 + 22);
 		this.frameGraphics.drawString("", (Client.clientWidth - var10.stringWidth("")) / 2, var7 - 8);
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

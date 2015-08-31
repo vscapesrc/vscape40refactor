@@ -504,7 +504,7 @@ public final class Widget {
 				if (var5.group == 4) {
 					var5.defaultText = buffer.readString().replaceAll("RuneScape", "/v/scape");
 					var5.secondaryText = buffer.readString();
-					System.out.println(var5.id + ": " + var5.defaultText + ", " + var5.secondaryText);
+					//System.out.println(var5.id + ": " + var5.defaultText + ", " + var5.secondaryText);
 				}
 
 				if (var5.group == 1 || var5.group == 3 || var5.group == 4) {
