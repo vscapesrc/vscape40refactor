@@ -183,8 +183,8 @@ public class Client extends ScapeApplet {
 	private static boolean playingOnMembersServer = true;
 	private static boolean cN;
 	private volatile boolean cO;
-	private int cP;
-	private int cQ;
+	private int worldToScreenX;
+	private int worldToScreenY;
 	private final int[] cR;
 	private final int[] cS;
 	final Index[] indices;
@@ -622,8 +622,6 @@ public class Client extends ScapeApplet {
 	}
 
 	private boolean mouseWithinRegion(int left, int top, int right, int bottom) {
-		Rasterizer2D.drawRectangle(left, right - left, bottom - top,
-				0x0000FF00, top);
 		return super.mouseX >= left && super.mouseX <= right
 				&& super.mouseY >= top && super.mouseY <= bottom;
 	}
@@ -3490,126 +3488,127 @@ public class Client extends ScapeApplet {
 
 	}
 
-	private void p() {
+	private void draw2DWorldEffects() {
 		try {
 			int var1 = 0;
 
-			int var2;
+			int id;
 			int var13;
-			for (var2 = -1; var2 < this.playerCount + this.npcCount; ++var2) {
-				Object var3;
-				if (var2 == -1) {
-					var3 = localPlayer;
-				} else if (var2 < this.playerCount) {
-					var3 = this.playerArray[this.bN[var2]];
+			for (id = -1; id < this.playerCount + this.npcCount; ++id) {
+				Object actor;
+				if (id == -1) {
+					actor = localPlayer;
+				} else if (id < this.playerCount) {
+					actor = this.playerArray[this.bN[id]];
 				} else {
-					var3 = this.npcArray[this.aY[var2 - this.playerCount]];
+					actor = this.npcArray[this.aY[id - this.playerCount]];
 				}
 
-				if (var3 != null && ((Actor) var3).isVisible()) {
-					ActorDefinition var4;
-					if (var3 instanceof Npc) {
-						var4 = ((Npc) var3).npcDefinition;
-						if (((Npc) var3).npcDefinition.morphisms != null) {
-							var4 = var4.morph();
+				if (actor != null && ((Actor) actor).isVisible()) {
+					ActorDefinition actorDef;
+					if (actor instanceof Npc) {
+						actorDef = ((Npc) actor).npcDefinition;
+						if (((Npc) actor).npcDefinition.morphisms != null) {
+							actorDef = actorDef.morph();
 						}
 
-						if (var4 == null) {
+						if (actorDef == null) {
 							continue;
 						}
 					}
 
-					if (var2 < this.playerCount) {
+					if (id < this.playerCount) {
 						var13 = 30;
 						Player var5;
-						if ((var5 = (Player) var3).headIcon >= 0) {
-							this.a((Actor) var3, ((Actor) var3).j + 15);
-							if (this.cP >= 0) {
-								if (var5.at < 2) {
-									this.headiconsPk[var5.at].drawSprite(this.cP - 12,
-											this.cQ - 30);
+
+						if ((var5 = (Player) actor).headIcon >= 0) {
+							this.computeActorScreenPosition((Actor) actor, ((Actor) actor).actorHeight + 15);
+							if (this.worldToScreenX >= 0) {
+								if (var5.pkHeadIcon < 2) {
+									this.headiconsPk[var5.pkHeadIcon].drawSprite(this.worldToScreenX - 12,
+											this.worldToScreenY - 30);
 									var13 += 25;
 								}
 
 								if (var5.headIcon < 7) {
 									this.headiconsPrayer[var5.headIcon].drawSprite(
-											this.cP - 12, this.cQ - var13);
+											this.worldToScreenX - 12, this.worldToScreenY - var13);
 									var13 += 18;
 								}
 							}
 						}
 
-						if (var2 >= 0 && this.bm == 10
-								&& this.cl == this.bN[var2]) {
-							this.a((Actor) var3, ((Actor) var3).j + 15);
-							if (this.cP >= 0) {
-								this.fa[var5.au].drawSprite(this.cP - 12,
-										this.cQ - var13);
+						if (id >= 0 && this.bm == 10
+								&& this.cl == this.bN[id]) {
+							this.computeActorScreenPosition((Actor) actor, ((Actor) actor).actorHeight + 15);
+							if (this.worldToScreenX >= 0) {
+								this.fa[var5.au].drawSprite(this.worldToScreenX - 12,
+										this.worldToScreenY - var13);
 							}
 						}
 					} else {
-						var4 = ((Npc) var3).npcDefinition;
-						if (((Npc) var3).npcDefinition.headIcon >= 0
-								&& var4.headIcon < this.headiconsPrayer.length) {
-							this.a((Actor) var3, ((Actor) var3).j + 15);
-							if (this.cP >= 0) {
-								this.headiconsPrayer[var4.headIcon].drawSprite(this.cP - 12,
-										this.cQ - 30);
+						actorDef = ((Npc) actor).npcDefinition;
+						if (((Npc) actor).npcDefinition.headIcon >= 0
+								&& actorDef.headIcon < this.headiconsPrayer.length) {
+							this.computeActorScreenPosition((Actor) actor, ((Actor) actor).actorHeight + 15);
+							if (this.worldToScreenX >= 0) {
+								this.headiconsPrayer[actorDef.headIcon].drawSprite(this.worldToScreenX - 12,
+										this.worldToScreenY - 30);
 							}
 						}
 
-						if (this.bm == 1 && this.gI == this.aY[var2 - this.playerCount]
+						if (this.bm == 1 && this.gI == this.aY[id - this.playerCount]
 								&& tick % 20 < 10) {
-							this.a((Actor) var3, ((Actor) var3).j + 15);
-							if (this.cP >= 0) {
-								this.fa[0].drawSprite(this.cP - 12,
-										this.cQ - 28);
+							this.computeActorScreenPosition((Actor) actor, ((Actor) actor).actorHeight + 15);
+							if (this.worldToScreenX >= 0) {
+								this.fa[0].drawSprite(this.worldToScreenX - 12,
+										this.worldToScreenY - 28);
 							}
 						}
 					}
 
-					if (((Actor) var3).i != null
-							&& (var2 >= this.playerCount || this.G == 0 || this.G == 3 || this.G == 1
-									&& this.c(((Player) var3).name))) {
-						this.a((Actor) var3, ((Actor) var3).j);
-						if (this.cP >= 0 && var1 < 50) {
-							this.cY[var1] = this.b12_full.getTextWidth(((Actor) var3).i) / 2;
+					if (((Actor) actor).i != null
+							&& (id >= this.playerCount || this.G == 0 || this.G == 3 || this.G == 1
+									&& this.c(((Player) actor).name))) {
+						this.computeActorScreenPosition((Actor) actor, ((Actor) actor).actorHeight);
+						if (this.worldToScreenX >= 0 && var1 < 50) {
+							this.cY[var1] = this.b12_full.getTextWidth(((Actor) actor).i) / 2;
 							this.cX[var1] = this.b12_full.verticalSpace;
-							this.cV[var1] = this.cP;
-							this.cW[var1] = this.cQ;
-							this.cZ[var1] = ((Actor) var3).n;
-							this.da[var1] = ((Actor) var3).F;
-							this.db[var1] = ((Actor) var3).J;
-							this.dc[var1++] = ((Actor) var3).i;
-							if (this.hb == 0 && ((Actor) var3).F > 0
-									&& ((Actor) var3).F <= 3) {
+							this.cV[var1] = this.worldToScreenX;
+							this.cW[var1] = this.worldToScreenY;
+							this.cZ[var1] = ((Actor) actor).n;
+							this.da[var1] = ((Actor) actor).F;
+							this.db[var1] = ((Actor) actor).J;
+							this.dc[var1++] = ((Actor) actor).i;
+							if (this.hb == 0 && ((Actor) actor).F > 0
+									&& ((Actor) actor).F <= 3) {
 								this.cX[var1] += 10;
 								this.cW[var1] += 5;
 							}
 
-							if (this.hb == 0 && ((Actor) var3).F == 4) {
+							if (this.hb == 0 && ((Actor) actor).F == 4) {
 								this.cY[var1] = 60;
 							}
 
-							if (this.hb == 0 && ((Actor) var3).F == 5) {
+							if (this.hb == 0 && ((Actor) actor).F == 5) {
 								this.cX[var1] += 5;
 							}
 						}
 					}
 
-					if (((Actor) var3).G > tick) {
+					if (((Actor) actor).G > tick) {
 						try {
-							this.a((Actor) var3, ((Actor) var3).j + 15);
-							if (this.cP >= 0) {
-								if ((var13 = ((Actor) var3).H * 30
-										/ ((Actor) var3).I) > 30) {
+							this.computeActorScreenPosition((Actor) actor, ((Actor) actor).actorHeight + 15);
+							if (this.worldToScreenX >= 0) {
+								if ((var13 = ((Actor) actor).H * 30
+										/ ((Actor) actor).I) > 30) {
 									var13 = 30;
 								}
 
-								Rasterizer2D.fillRectangle(5, this.cQ - 3,
-										this.cP - 15, '\uff00', var13);
-								Rasterizer2D.fillRectangle(5, this.cQ - 3,
-										this.cP - 15 + var13, 16711680,
+								Rasterizer2D.fillRectangle(5, this.worldToScreenY - 3,
+										this.worldToScreenX - 15, '\uff00', var13);
+								Rasterizer2D.fillRectangle(5, this.worldToScreenY - 3,
+										this.worldToScreenX - 15 + var13, 16711680,
 										30 - var13);
 							}
 						} catch (Exception var9) {
@@ -3618,50 +3617,50 @@ public class Client extends ScapeApplet {
 					}
 
 					for (var13 = 0; var13 < 4; ++var13) {
-						if (((Actor) var3).hitCycles[var13] > tick) {
-							this.a((Actor) var3, ((Actor) var3).j / 2);
-							if (this.cP >= 0) {
+						if (((Actor) actor).hitCycles[var13] > tick) {
+							this.computeActorScreenPosition((Actor) actor, ((Actor) actor).actorHeight / 2);
+							if (this.worldToScreenX >= 0) {
 								if (var13 == 1) {
-									this.cQ -= 20;
+									this.worldToScreenY -= 20;
 								}
 
 								if (var13 == 2) {
-									this.cP -= 15;
-									this.cQ -= 10;
+									this.worldToScreenX -= 15;
+									this.worldToScreenY -= 10;
 								}
 
 								if (var13 == 3) {
-									this.cP += 15;
-									this.cQ -= 10;
+									this.worldToScreenX += 15;
+									this.worldToScreenY -= 10;
 								}
 
-								this.hitsplats[((Actor) var3).hitTypes[var13]].drawSprite(
-										this.cP - 12, this.cQ - 12);
+								this.hitsplats[((Actor) actor).hitTypes[var13]].drawSprite(
+										this.worldToScreenX - 12, this.worldToScreenY - 12);
 								this.p11_full.a(
 										0,
-										String.valueOf(((Actor) var3).hitDamages[var13]),
-										this.cQ + 4, this.cP);
+										String.valueOf(((Actor) actor).hitDamages[var13]),
+										this.worldToScreenY + 4, this.worldToScreenX);
 								this.p11_full.a(
 										16777215,
-										String.valueOf(((Actor) var3).hitDamages[var13]),
-										this.cQ + 3, this.cP - 1);
+										String.valueOf(((Actor) actor).hitDamages[var13]),
+										this.worldToScreenY + 3, this.worldToScreenX - 1);
 							}
 						}
 					}
 				}
 			}
 
-			for (var2 = 0; var2 < var1; ++var2) {
-				int var11 = this.cV[var2];
-				var13 = this.cW[var2];
-				int var12 = this.cY[var2];
-				int var6 = this.cX[var2];
+			for (id = 0; id < var1; ++id) {
+				int var11 = this.cV[id];
+				var13 = this.cW[id];
+				int var12 = this.cY[id];
+				int var6 = this.cX[id];
 				boolean var7 = true;
 
 				while (var7) {
 					var7 = false;
 
-					for (int var8 = 0; var8 < var2; ++var8) {
+					for (int var8 = 0; var8 < id; ++var8) {
 						if (var13 + 2 > this.cW[var8] - this.cX[var8]
 								&& var13 - var6 < this.cW[var8] + 2
 								&& var11 - var12 < this.cV[var8]
@@ -3675,29 +3674,29 @@ public class Client extends ScapeApplet {
 					}
 				}
 
-				this.cP = this.cV[var2];
-				this.cQ = this.cW[var2] = var13;
-				String var14 = this.dc[var2];
+				this.worldToScreenX = this.cV[id];
+				this.worldToScreenY = this.cW[id] = var13;
+				String var14 = this.dc[id];
 				if (this.hb == 0) {
 					var11 = 16776960;
-					if (this.cZ[var2] < 6) {
-						var11 = this.cR[this.cZ[var2]];
+					if (this.cZ[id] < 6) {
+						var11 = this.cR[this.cZ[id]];
 					}
 
-					if (this.cZ[var2] == 6) {
+					if (this.cZ[id] == 6) {
 						var11 = this.hp % 20 >= 10 ? 16776960 : 16711680;
 					}
 
-					if (this.cZ[var2] == 7) {
+					if (this.cZ[id] == 7) {
 						var11 = this.hp % 20 >= 10 ? '\uffff' : 255;
 					}
 
-					if (this.cZ[var2] == 8) {
+					if (this.cZ[id] == 8) {
 						var11 = this.hp % 20 >= 10 ? 8454016 : '뀀';
 					}
 
-					if (this.cZ[var2] == 9) {
-						if ((var13 = 150 - this.db[var2]) < 50) {
+					if (this.cZ[id] == 9) {
+						if ((var13 = 150 - this.db[id]) < 50) {
 							var11 = 16711680 + var13 * 1280;
 						} else if (var13 < 100) {
 							var11 = 16776960 - 327680 * (var13 - 50);
@@ -3706,8 +3705,8 @@ public class Client extends ScapeApplet {
 						}
 					}
 
-					if (this.cZ[var2] == 10) {
-						if ((var13 = 150 - this.db[var2]) < 50) {
+					if (this.cZ[id] == 10) {
+						if ((var13 = 150 - this.db[id]) < 50) {
 							var11 = 16711680 + 5 * var13;
 						} else if (var13 < 100) {
 							var11 = 16711935 - 327680 * (var13 - 50);
@@ -3717,8 +3716,8 @@ public class Client extends ScapeApplet {
 						}
 					}
 
-					if (this.cZ[var2] == 11) {
-						if ((var13 = 150 - this.db[var2]) < 50) {
+					if (this.cZ[id] == 11) {
+						if ((var13 = 150 - this.db[id]) < 50) {
 							var11 = 16777215 - var13 * 327685;
 						} else if (var13 < 100) {
 							var11 = '\uff00' + 327685 * (var13 - 50);
@@ -3727,40 +3726,40 @@ public class Client extends ScapeApplet {
 						}
 					}
 
-					if (this.da[var2] == 0) {
-						this.b12_full.a(0, var14, this.cQ + 1, this.cP);
-						this.b12_full.a(var11, var14, this.cQ, this.cP);
+					if (this.da[id] == 0) {
+						this.b12_full.a(0, var14, this.worldToScreenY + 1, this.worldToScreenX);
+						this.b12_full.a(var11, var14, this.worldToScreenY, this.worldToScreenX);
 					}
 
-					if (this.da[var2] == 1) {
-						this.b12_full.wave(0, var14, this.cP, this.hp, this.cQ + 1);
-						this.b12_full.wave(var11, var14, this.cP, this.hp, this.cQ);
+					if (this.da[id] == 1) {
+						this.b12_full.wave(0, var14, this.worldToScreenX, this.hp, this.worldToScreenY + 1);
+						this.b12_full.wave(var11, var14, this.worldToScreenX, this.hp, this.worldToScreenY);
 					}
 
-					if (this.da[var2] == 2) {
-						this.b12_full.wave2(this.cP, var14, this.hp, this.cQ + 1, 0);
-						this.b12_full.wave2(this.cP, var14, this.hp, this.cQ, var11);
+					if (this.da[id] == 2) {
+						this.b12_full.wave2(this.worldToScreenX, var14, this.hp, this.worldToScreenY + 1, 0);
+						this.b12_full.wave2(this.worldToScreenX, var14, this.hp, this.worldToScreenY, var11);
 					}
 
-					if (this.da[var2] == 3) {
-						this.b12_full.shake(150 - this.db[var2], var14, this.hp,
-								this.cQ + 1, this.cP, 0);
-						this.b12_full.shake(150 - this.db[var2], var14, this.hp, this.cQ,
-								this.cP, var11);
+					if (this.da[id] == 3) {
+						this.b12_full.shake(150 - this.db[id], var14, this.hp,
+								this.worldToScreenY + 1, this.worldToScreenX, 0);
+						this.b12_full.shake(150 - this.db[id], var14, this.hp, this.worldToScreenY,
+								this.worldToScreenX, var11);
 					}
 
-					if (this.da[var2] == 4) {
+					if (this.da[id] == 4) {
 						var13 = this.b12_full.getTextWidth(var14);
-						var12 = (150 - this.db[var2]) * (var13 + 100) / 150;
-						Rasterizer2D.setBounds(334, this.cP - 50, this.cP + 50,
+						var12 = (150 - this.db[id]) * (var13 + 100) / 150;
+						Rasterizer2D.setBounds(334, this.worldToScreenX - 50, this.worldToScreenX + 50,
 								0);
-						this.b12_full.render(0, var14, this.cQ + 1, this.cP + 50 - var12);
-						this.b12_full.render(var11, var14, this.cQ, this.cP + 50 - var12);
+						this.b12_full.render(0, var14, this.worldToScreenY + 1, this.worldToScreenX + 50 - var12);
+						this.b12_full.render(var11, var14, this.worldToScreenY, this.worldToScreenX + 50 - var12);
 						Rasterizer2D.setDefaultBounds();
 					}
 
-					if (this.da[var2] == 5) {
-						var13 = 150 - this.db[var2];
+					if (this.da[id] == 5) {
+						var13 = 150 - this.db[id];
 						var12 = 0;
 						if (var13 < 25) {
 							var12 = var13 - 25;
@@ -3768,15 +3767,15 @@ public class Client extends ScapeApplet {
 							var12 = var13 - 125;
 						}
 
-						Rasterizer2D.setBounds(this.cQ + 5, 0, 512, this.cQ
+						Rasterizer2D.setBounds(this.worldToScreenY + 5, 0, 512, this.worldToScreenY
 								- this.b12_full.verticalSpace - 1);
-						this.b12_full.a(0, var14, this.cQ + 1 + var12, this.cP);
-						this.b12_full.a(var11, var14, this.cQ + var12, this.cP);
+						this.b12_full.a(0, var14, this.worldToScreenY + 1 + var12, this.worldToScreenX);
+						this.b12_full.a(var11, var14, this.worldToScreenY + var12, this.worldToScreenX);
 						Rasterizer2D.setDefaultBounds();
 					}
 				} else {
-					this.b12_full.a(0, var14, this.cQ + 1, this.cP);
-					this.b12_full.a(16776960, var14, this.cQ, this.cP);
+					this.b12_full.a(0, var14, this.worldToScreenY + 1, this.worldToScreenX);
+					this.b12_full.a(16776960, var14, this.worldToScreenY, this.worldToScreenX);
 				}
 			}
 
@@ -11423,13 +11422,13 @@ public class Client extends ScapeApplet {
 				var22.scene.a(var22.bn, var22.bp, var22.br, var22.bo, var2,
 						var22.bq);
 				var22.scene.c();
-				var22.p();
+				var22.draw2DWorldEffects();
 				if (var22.bm == 2) {
-					var22.d((var22.cm - var22.dO << 7) + var22.cp,
+					var22.worldToScreen((var22.cm - var22.dO << 7) + var22.cp,
 							var22.co << 1, (var22.cn - var22.dP << 7)
 									+ var22.cq);
-					if (var22.cP >= 0 && tick % 20 < 10) {
-						var22.fa[0].drawSprite(var22.cP - 12, var22.cQ - 28);
+					if (var22.worldToScreenX >= 0 && tick % 20 < 10) {
+						var22.fa[0].drawSprite(var22.worldToScreenX - 12, var22.worldToScreenY - 28);
 					}
 				}
 
@@ -12568,12 +12567,6 @@ public class Client extends ScapeApplet {
 													var44.drawSprite(var34,
 															var28);
 												}
-												
-												/* draw item ids */
-												this.p11_full.render(0x0000FF00,
-														"ID: " + itemId, var28 + 9 + 12
-																+ var20,
-														var34 + var19);
 
 												if (var44.resizeWidth == 33
 														|| var13.itemAmounts[var23] != 1) {
@@ -13956,35 +13949,35 @@ public class Client extends ScapeApplet {
 		}
 	}
 
-	private void a(Actor var1, int var2) {
-		this.d(var1.worldX, var2, var1.worldY);
+	private void computeActorScreenPosition(Actor var1, int height) {
+		this.worldToScreen(var1.worldX, height, var1.worldY);
 	}
 
-	private void d(int var1, int var2, int var3) {
-		if (var1 >= 128 && var3 >= 128 && var1 <= 13056 && var3 <= 13056) {
-			var2 = this.b(this.plane, var3, var1) - var2;
-			var1 -= this.bn;
-			var2 -= this.bo;
-			var3 -= this.bp;
+	private void worldToScreen(int x, int height, int y) {
+		if (x >= 128 && y >= 128 && x <= 13056 && y <= 13056) {
+			height = this.b(this.plane, y, x) - height;
+			x -= this.bn;
+			height -= this.bo;
+			y -= this.bp;
 			int var4 = Model.SINE[this.bq];
 			int var5 = Model.COSINE[this.bq];
 			int var6 = Model.SINE[this.br];
 			int var7 = Model.COSINE[this.br];
-			int var8 = var3 * var6 + var1 * var7 >> 16;
-			var3 = var3 * var7 - var1 * var6 >> 16;
-			var1 = var8;
-			var8 = var2 * var5 - var3 * var4 >> 16;
-			var3 = var2 * var4 + var3 * var5 >> 16;
-			if (var3 >= 50) {
-				this.cP = Rasterizer3D.e + (var1 << d) / var3;
-				this.cQ = Rasterizer3D.f + (var8 << d) / var3;
+			int var8 = y * var6 + x * var7 >> 16;
+			y = y * var7 - x * var6 >> 16;
+			x = var8;
+			var8 = height * var5 - y * var4 >> 16;
+			y = height * var4 + y * var5 >> 16;
+			if (y >= 50) {
+				this.worldToScreenX = Rasterizer3D.e + (x << d) / y;
+				this.worldToScreenY = Rasterizer3D.f + (var8 << d) / y;
 			} else {
-				this.cP = -1;
-				this.cQ = -1;
+				this.worldToScreenX = -1;
+				this.worldToScreenY = -1;
 			}
 		} else {
-			this.cP = -1;
-			this.cQ = -1;
+			this.worldToScreenX = -1;
+			this.worldToScreenY = -1;
 		}
 	}
 
@@ -14583,78 +14576,78 @@ public class Client extends ScapeApplet {
 		}
 	}
 
-	private void a(int var1, int var2, int var3, int var4, int var5, int var6,
-			int var7) {
-		if (var5 > 0 && var1 > 0 && var5 <= 102 && var1 <= 102) {
+	private void a(int y, int var2, int var3, int var4, int x, int var6,
+			int id) {
+		if (x > 0 && y > 0 && x <= 102 && y <= 102) {
 			int var8 = 0;
 			if (var6 == 0) {
-				var8 = this.scene.getWallKey(var2, var5, var1);
+				var8 = this.scene.getWallKey(var2, x, y);
 			}
 
 			if (var6 == 1) {
-				var8 = this.scene.getWallDecorationKey(var2, var5, var1);
+				var8 = this.scene.getWallDecorationKey(var2, x, y);
 			}
 
 			if (var6 == 2) {
-				var8 = this.scene.k(var2, var5, var1);
+				var8 = this.scene.k(var2, x, y);
 			}
 
 			if (var6 == 3) {
-				var8 = this.scene.l(var2, var5, var1);
+				var8 = this.scene.l(var2, x, y);
 			}
 
-			int var9;
+			int z;
 			if (var8 != 0) {
-				var9 = this.scene.c(var2, var5, var1, var8);
+				z = this.scene.c(var2, x, y, var8);
 				var8 = var8 >> 14 & 32767;
-				int var10 = var9 & 31;
-				var9 >>= 6;
+				int var10 = z & 31;
+				z >>= 6;
 				ObjectDefinition var11;
 				if (var6 == 0) {
-					this.scene.a(var5, var2, var1, (byte) -119);
+					this.scene.a(x, var2, y, (byte) -119);
 					if ((var11 = ObjectDefinition.byId(var8)).solid) {
-						this.gQ[var2].removeObject(var9, var10, var11.impenetrable, var5,
-								var1);
+						this.gQ[var2].removeObject(z, var10, var11.impenetrable, x,
+								y);
 					}
 				}
 
 				if (var6 == 1) {
-					this.scene.a(var1, var2, var5);
+					this.scene.a(y, var2, x);
 				}
 
 				if (var6 == 2) {
-					this.scene.b(var2, var5, var1);
+					this.scene.b(var2, x, y);
 					var11 = ObjectDefinition.byId(var8);
-					if (var5 + var11.width > 103 || var1 + var11.width > 103
-							|| var5 + var11.length > 103
-							|| var1 + var11.length > 103) {
+					if (x + var11.width > 103 || y + var11.width > 103
+							|| x + var11.length > 103
+							|| y + var11.length > 103) {
 						return;
 					}
 
 					if (var11.solid) {
-						this.gQ[var2].removeObject(var9, var11.width, var5, var1,
+						this.gQ[var2].removeObject(z, var11.width, x, y,
 								var11.length, var11.impenetrable);
 					}
 				}
 
 				if (var6 == 3) {
-					this.scene.c(var2, var1, var5);
+					this.scene.c(var2, y, x);
 					if ((var11 = ObjectDefinition.byId(var8)).solid
 							&& var11.interactive) {
 						CollisionMap var12 = this.gQ[var2];
-						var12.adjacencies[var5][var1] &= 14680063;
+						var12.adjacencies[x][y] &= 14680063;
 					}
 				}
 			}
 
-			if (var7 >= 0) {
-				var9 = var2;
-				if (var2 < 3 && (this.byteGroundArray[1][var5][var1] & 2) == 2) {
-					var9 = var2 + 1;
+			if (id >= 0) {
+				z = var2;
+				if (var2 < 3 && (this.byteGroundArray[1][x][y] & 2) == 2) {
+					z = var2 + 1;
 				}
 
-				MapRegion.placeObject(this.scene, var3, var1, var4, var9, this.gQ[var2],
-						this.tileHeights, var5, var7, var2);
+				MapRegion.placeObject(this.scene, var3, y, var4, z, this.gQ[var2],
+						this.tileHeights, x, id, var2);
 			}
 		}
 
@@ -16223,8 +16216,8 @@ public class Client extends ScapeApplet {
 		this.cG = new long[200];
 		this.cJ = -1;
 		this.cO = false;
-		this.cP = -1;
-		this.cQ = -1;
+		this.worldToScreenX = -1;
+		this.worldToScreenY = -1;
 		this.cS = new int[33];
 		this.indices = new Index[5];
 		this.settings = new int[2000];

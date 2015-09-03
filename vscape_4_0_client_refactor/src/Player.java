@@ -10,7 +10,7 @@ public final class Player extends Actor {
    static Cache modelCache = new Cache(260);
    public int combatLevel;
    public int headIcon;
-   public int at;
+   public int pkHeadIcon;
    public int au;
    public int av;
    int aw;
@@ -37,7 +37,7 @@ public final class Player extends Actor {
          if((var1 = this.getAnimatedModel()) == null) {
             return null;
          } else {
-            super.j = var1.modelHeight;
+            super.actorHeight = var1.modelHeight;
             var1.y = true;
             if(this.am) {
                return var1;
@@ -110,7 +110,7 @@ public final class Player extends Actor {
       var1.position = 0;
       this.gender = var1.readUByte();
       this.headIcon = var1.readUByte();
-      this.at = var1.readUByte();
+      this.pkHeadIcon = var1.readUByte();
       this.al = null;
       this.ao = 0;
 

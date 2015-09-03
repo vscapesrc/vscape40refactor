@@ -473,7 +473,7 @@ final class MapRegion {
 
    }
 
-   private void a(int y, SceneGraph scene, CollisionMap map, int type, int z, int x, int id, int orientation) {
+   private void placeObject(int y, SceneGraph scene, CollisionMap map, int type, int z, int x, int id, int orientation) {
       if(lowMemory && (this.tileFlags[0][x][y] & 2) == 0) {
          if((this.tileFlags[z][x][y] & 16) != 0) {
             return;
@@ -1062,7 +1062,7 @@ final class MapRegion {
                      var26 = maps[y];
                   }
 
-                  this.a(offset, scene, var26, type, var6, var24, id, packed + var9 & 3);
+                  this.placeObject(offset, scene, var26, type, var6, var24, id, packed + var9 & 3);
                }
             }
          }
@@ -1180,7 +1180,7 @@ final class MapRegion {
 
                var0.addWall(p[var1], (Renderable)var16, key, y, config, x, (Renderable)null, meanY, 0, var9);
                if(definition.solid) {
-                  var5.flagObject(y, var1, x, var3, definition.impenetrable);
+                 var5.flagObject(y, var1, x, var3, definition.impenetrable);
                }
 
             } else {
@@ -1392,21 +1392,21 @@ final class MapRegion {
    }
 
    public final void decodeLandscapes(int localX, CollisionMap[] maps, int localY, SceneGraph scene, byte[] data) {
-      Buffer var15 = new Buffer(data);
+      Buffer buf = new Buffer(data);
       int id = -1;
 
       int idOffset;
-      while((idOffset = var15.s()) != 0) {
+      while((idOffset = buf.s()) != 0) {
          id += idOffset;
          idOffset = 0;
 
          int y;
-         while((y = var15.s()) != 0) {
+         while((y = buf.s()) != 0) {
             y = (idOffset += y - 1) & 63;
             int x = idOffset >> 6 & 63;
             int z = idOffset >> 12;
             int orientation;
-            int type = (orientation = var15.readUByte()) >> 2;
+            int type = (orientation = buf.readUByte()) >> 2;
             orientation &= 3;
             x += localX;
             y += localY;
@@ -1421,7 +1421,7 @@ final class MapRegion {
                   map = maps[plane];
                }
 
-               this.a(y, scene, map, type, z, x, id, orientation);
+               this.placeObject(y, scene, map, type, z, x, id, orientation);
             }
          }
       }

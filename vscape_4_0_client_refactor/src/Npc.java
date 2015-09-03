@@ -28,7 +28,7 @@ public final class Npc extends Actor {
          if(var10000 == null) {
             return null;
          } else {
-            super.j = var1.modelHeight;
+            super.actorHeight = var1.modelHeight;
             SpotAnimation var6;
             Model var7;
             if(super.u != -1 && super.v != -1 && (var7 = (var6 = SpotAnimation.cache[super.u]).getModel()) != null) {

@@ -6,7 +6,7 @@ public class Actor extends Renderable {
    int g = 32;
    int runAnimationId = -1;
    public String i;
-   public int j = 200;
+   public int actorHeight = 200;
    public int k;
    int l = -1;
    int m = -1;

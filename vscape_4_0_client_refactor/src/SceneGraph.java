@@ -8,7 +8,7 @@ final class SceneGraph {
    private final SceneTile[][][] tiles = new SceneTile[4][104][104];
    private int j;
    private int k;
-   private final GameObject[] l = new GameObject[5000];
+   private final GameObject[] sceneEntitys = new GameObject[5000];
    private final int[][][] m = new int[4][105][105];
    private static int n;
    private static int o;
@@ -98,7 +98,7 @@ final class SceneGraph {
       }
 
       for(var1 = 0; var1 < this.k; ++var1) {
-         this.l[var1] = null;
+         this.sceneEntitys[var1] = null;
       }
 
       this.k = 0;
@@ -402,11 +402,12 @@ final class SceneGraph {
             var17.objectAttributes[var17.objectCount] = centreX;
             var17.attributes |= centreX;
             ++var17.objectCount;
+
          }
       }
 
       if(flag) {
-         this.l[this.k++] = var18;
+         this.sceneEntitys[this.k++] = var18;
       }
 
       return true;
@@ -414,9 +415,9 @@ final class SceneGraph {
 
    public final void c() {
       for(int var1 = 0; var1 < this.k; ++var1) {
-         GameObject var2 = this.l[var1];
+         GameObject var2 = this.sceneEntitys[var1];
          this.removeInteractable(var2);
-         this.l[var1] = null;
+         this.sceneEntitys[var1] = null;
       }
 
       this.k = 0;
