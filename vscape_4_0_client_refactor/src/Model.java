@@ -1,4 +1,4 @@
-public final class Model extends Renderable {
+public final class Model extends Renderable implements bot.iface.Model {
 	private static boolean[] H;
 	private static String I = "Cla";
 	private static String J = "at Cl";
@@ -1209,7 +1209,7 @@ public final class Model extends Renderable {
 		}
 	}
 
-	public static void a(Provider var0) {
+	public static void init(Provider var0) {
 		modelHeaders = new ModelHeader[80000];
 		H = new boolean[100000];
 		ae = var0;
@@ -2300,8 +2300,8 @@ public final class Model extends Renderable {
 	}
 
 	public final void render(int var1, int var2, int var3, int var4, int var5, int var6) {
-		int var7 = Rasterizer3D.e;
-		int var8 = Rasterizer3D.f;
+		int var7 = Rasterizer3D.originViewX;
+		int var8 = Rasterizer3D.originViewY;
 		int var9 = SINE[var1];
 		int var10 = COSINE[var1];
 		int var11 = SINE[var2];
@@ -2396,8 +2396,8 @@ public final class Model extends Renderable {
 									var17 /= var12;
 								}
 
-								var10 = mouseX - Rasterizer3D.e;
-								var13 = mouseY - Rasterizer3D.f;
+								var10 = mouseX - Rasterizer3D.originViewX;
+								var13 = mouseY - Rasterizer3D.originViewY;
 								if (var10 > var15 && var10 < var16 && var13 > var17 && var13 < var18) {
 									if (this.y) {
 										hoveredModelHash[hoveredModelsThisFrame++] = var9;
@@ -2407,8 +2407,8 @@ public final class Model extends Renderable {
 								}
 							}
 
-							var12 = Rasterizer3D.e;
-							var10 = Rasterizer3D.f;
+							var12 = Rasterizer3D.originViewX;
+							var10 = Rasterizer3D.originViewY;
 							var13 = 0;
 							var14 = 0;
 							if (var1 != 0) {
@@ -2719,8 +2719,8 @@ public final class Model extends Renderable {
 			}
 		} else {
 			if (this.faceColors == null || this.faceColors[modelID] != '\uffff') {
-				var3 = Rasterizer3D.e;
-				var4 = Rasterizer3D.f;
+				var3 = Rasterizer3D.originViewX;
+				var4 = Rasterizer3D.originViewY;
 				var5 = 0;
 				var6 = this.i[modelID];
 				var7 = this.j[modelID];
@@ -2906,5 +2906,15 @@ public final class Model extends Renderable {
 			}
 
 		}
+	}
+
+	@Override
+	public int[] getSINE() {
+		return SINE;
+	}
+
+	@Override
+	public int[] getCOSINE() {
+		return COSINE;
 	}
 }

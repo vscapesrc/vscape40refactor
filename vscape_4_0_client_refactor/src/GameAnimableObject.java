@@ -1,8 +1,8 @@
-final class GameAnimableObject extends Renderable {
-	public final int c;
-	public final int d;
-	public final int e;
-	public final int f;
+final class GameAnimableObject extends Renderable implements bot.iface.GameAnimableObject {
+	public final int plane;
+	public final int x;
+	public final int y;
+	public final int height;
 	public final int g;
 	public boolean transformCompleted = false;
 	private final SpotAnimation animation;
@@ -11,10 +11,10 @@ final class GameAnimableObject extends Renderable {
 
 	public GameAnimableObject(int plane, int loopCycle, int loopCycleOffset, int animationIndex, int z, int y, int x) {
 		this.animation = SpotAnimation.cache[animationIndex];
-		this.c = plane;
-		this.d = x;
-		this.e = y;
-		this.f = z;
+		this.plane = plane;
+		this.x = x;
+		this.y = y;
+		this.height = z;
 		this.g = loopCycle + loopCycleOffset;
 		this.transformCompleted = false;
 	}
@@ -77,5 +77,15 @@ final class GameAnimableObject extends Renderable {
 			this.elapsedFrames = 0;
 			this.transformCompleted = true;
 		}
+	}
+
+	@Override
+	public boolean isTransformCompleted() {
+		return transformCompleted;
+	}
+
+	@Override
+	public int getElapsedFrames() {
+		return elapsedFrames;
 	}
 }

@@ -1,5 +1,5 @@
 public final class IndexedImage extends Rasterizer2D {
-	public byte[] a;
+	public byte[] raster;
 	public final int[] b;
 	public int c;
 	public int d;
@@ -34,17 +34,17 @@ public final class IndexedImage extends Rasterizer2D {
 		this.d = var6.readUShort();
 		var5 = var6.readUByte();
 		int var7 = this.c * this.d;
-		this.a = new byte[var7];
+		this.raster = new byte[var7];
 		if (var5 == 0) {
 			for (var3 = 0; var3 < var7; ++var3) {
-				this.a[var3] = var8.readByte();
+				this.raster[var3] = var8.readByte();
 			}
 
 		} else {
 			if (var5 == 1) {
 				for (var3 = 0; var3 < this.c; ++var3) {
 					for (var7 = 0; var7 < this.d; ++var7) {
-						this.a[var3 + var7 * this.c] = var8.readByte();
+						this.raster[var3 + var7 * this.c] = var8.readByte();
 					}
 				}
 			}
@@ -60,11 +60,11 @@ public final class IndexedImage extends Rasterizer2D {
 
 		for (int var3 = 0; var3 < this.d; ++var3) {
 			for (int var4 = 0; var4 < this.c; ++var4) {
-				var1[(var4 + this.e >> 1) + (var3 + this.f >> 1) * this.g] = this.a[var2++];
+				var1[(var4 + this.e >> 1) + (var3 + this.f >> 1) * this.g] = this.raster[var2++];
 			}
 		}
 
-		this.a = var1;
+		this.raster = var1;
 		this.c = this.g;
 		this.d = this.r;
 		this.e = 0;
@@ -78,11 +78,11 @@ public final class IndexedImage extends Rasterizer2D {
 
 			for (int var3 = 0; var3 < this.d; ++var3) {
 				for (int var4 = 0; var4 < this.c; ++var4) {
-					var1[var4 + this.e + (var3 + this.f) * this.g] = this.a[var2++];
+					var1[var4 + this.e + (var3 + this.f) * this.g] = this.raster[var2++];
 				}
 			}
 
-			this.a = var1;
+			this.raster = var1;
 			this.c = this.g;
 			this.d = this.r;
 			this.e = 0;
@@ -165,7 +165,7 @@ public final class IndexedImage extends Rasterizer2D {
 			var7 = var4;
 			var5 = var3;
 			var4 = var10003;
-			byte[] var14 = this.a;
+			byte[] var14 = this.raster;
 			int[] var13 = Rasterizer2D.pixels;
 			var1 = var10000;
 			int var10 = -(var6 >> 2);

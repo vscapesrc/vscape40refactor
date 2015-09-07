@@ -32,7 +32,7 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Client extends ScapeApplet implements ItemListener, ActionListener {
+public class Client extends ScapeApplet implements bot.iface.Client {
 	private static int aa = 765;
 	private static int ab = 503;
 	private int ac;
@@ -75,13 +75,13 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	public int g;
 	public int h;
 	private int aH;
-	private Sprite aI;
-	private Sprite aJ;
-	private Sprite aK;
+	private Sprite background;
+	private Sprite mascotInv;
+	private Sprite mascotChat;
 	private ProducingGraphicsBuffer aL;
 	private ProducingGraphicsBuffer aM;
 	private int aN;
-	private long aO;
+	private long loadingStartTime;
 	private int[][] aP;
 	private int[] aQ;
 	private LinkedList[][][] aR;
@@ -89,15 +89,15 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private Socket aT;
 	private int aU;
 	private Buffer aV;
-	private Npc[] aW;
+	private Npc[] npcs;
 	private int aX;
 	private int[] aY;
 	private int aZ;
 	private int[] ba;
-	private int bb;
-	private int bc;
-	private int bd;
-	private String be;
+	private int lastOpcode;
+	private int secondLastOpcode;
+	private int thirdLastOpcode;
+	private String clickToContinueString;
 	public int i;
 	private Buffer bf;
 	private boolean bg;
@@ -106,29 +106,29 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private int[] bj;
 	private int[] bk;
 	private static int bl;
-	private int bm;
+	private int hintIconType;
 	static int j;
-	private int bn;
-	private int bo;
-	private int bp;
-	private int bq;
-	private int br;
+	private int offsetX;
+	private int offsetHeight;
+	private int offsetY;
+	private int pitch;
+	private int yaw;
 	private int accountType;
-	private final int[] bt;
-	private Sprite bu;
-	private Sprite bv;
+	private final int[] skillXp;
+	private Sprite mapmarkerZero;
+	private Sprite mapmarkerOne;
 	private boolean bw;
 	private final int[] bx;
 	private final boolean[] by;
 	private long bz;
 	private int bA;
 	private int bB;
-	private MouseMonitor bC;
+	private MouseMonitor mouseMonitor;
 	private volatile boolean bD;
 	private String bE;
 	private int bF;
 	private boolean menuShowing;
-	private int bH;
+	private int hoveredWidgetId;
 	private String bI;
 	private final int bJ;
 	private final int bK;
@@ -139,7 +139,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private int[] bP;
 	private Buffer[] bQ;
 	private int bR;
-	private int bS;
+	private int numFriends;
 	private int bT;
 	private int bU;
 	private int[][] bV;
@@ -158,10 +158,10 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private int[][] ci;
 	private Sprite cj;
 	private Sprite ck;
-	private int cl;
-	private int cm;
-	private int cn;
-	private int co;
+	private int hintIconPlayer;
+	private int hintIconX;
+	private int hintIconY;
+	private int hintIconHeight;
 	private int cp;
 	private int cq;
 	private final int[] cr;
@@ -170,15 +170,15 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private final String[] cu;
 	private int cv;
 	private SceneGraph scene;
-	private Sprite[] cx;
-	private Sprite[] cy;
+	private Sprite[] sideicon;
+	private Sprite[] staticons;
 	private int cz;
-	private int cA;
-	private int cB;
-	private int cC;
-	private int cD;
+	private int menuX;
+	private int menuY;
+	private int menuWidth;
+	private int menuHeight;
 	private long cE;
-	private boolean cF;
+	private boolean wasFocused;
 	private long[] cG;
 	private long[] cH;
 	private int[] cI;
@@ -217,8 +217,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private int dm;
 	private int dn;
 	private int do_;
-	private IsaacCipher dp;
-	private Sprite dq;
+	private IsaacCipher decryption;
+	private Sprite mapedgeSprite;
 	static final int[][] n = new int[][] { { 6798, 107, 10283, 16, 4797, 7744, 5799, 4634, '莡', 22433, 2983, '펱' },
 			{ 8741, 12, '羽', 'ꢚ', 7735, 8404, 1701, '阞', 24094, 10153, '\udd2d', 4783, 1341, 16578, '袻', 25239 },
 			{ 25238, 8742, 12, '羽', 'ꢚ', 7735, 8404, 1701, '阞', 24094, 10153, '\udd2d', 4783, 1341, 16578, '袻' },
@@ -226,9 +226,9 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private String dr;
 	private static int ds;
 	private int dt;
-	private int du;
+	private int packetSize;
 	private int serverPacketOpcode;
-	private int dw;
+	private int timeoutCounter;
 	private int dx;
 	private int dy;
 	private LinkedList projectiles;
@@ -239,13 +239,13 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private int dE;
 	private static final int[] dF = new int[99];
 	private int dG;
-	private int dH;
-	private Sprite dI;
-	private Sprite dJ;
+	private int loadingStage;
+	private Sprite scrollbarZero;
+	private Sprite scrollbarOne;
 	private int dK;
 	private final int[] dL;
 	private boolean dM;
-	private Sprite[] dN;
+	private Sprite[] mapFunctionSprites;
 	private int sceneX;
 	private int sceneY;
 	private int dQ;
@@ -264,15 +264,15 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private Archive fonts;
 	private int ee;
 	private int ef;
-	private LinkedList eg;
+	private LinkedList animableObjects;
 	private final int[] eh;
-	private Widget ei;
-	private IndexedImage[] ej;
+	private Widget widget;
+	private IndexedImage[] mapsceneImages;
 	private int ek;
 	private final int el;
 	private int em;
 	private final int[] en;
-	private int eo;
+	private int nextInventorySlot;
 	private int ep;
 	public ResourceProvider resourceProvider;
 	private int eq;
@@ -280,18 +280,18 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private int es;
 	private int[] et;
 	private int[] eu;
-	private Sprite ev;
-	private Sprite ew;
-	private Sprite ex;
-	private Sprite ey;
-	private Sprite ez;
+	private Sprite mapdotZero;
+	private Sprite mapdotOne;
+	private Sprite mapdotTwo;
+	private Sprite mapdotThree;
+	private Sprite mapdotFour;
 	private Sprite clanChatSprite;
 	private int eB;
 	private boolean eC;
 	private String[] eD;
-	private Buffer eE;
-	private int eF;
-	private int eG;
+	private Buffer incoming;
+	private int modifiedWidgetId;
+	private int selectedInventorySlot;
 	private int eH;
 	private int eI;
 	private int eJ;
@@ -312,10 +312,10 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private int[] actionParam2;
 	private int[] actionIds;
 	private int[] actionItemId;
-	private Sprite eX;
+	private Sprite overlayMultiway;
 	private Sprite[] headiconsPrayer;
 	private Sprite[] headiconsPk;
-	private Sprite[] fa;
+	private Sprite[] headiconHintSprites;
 	private static int fb;
 	private int fc;
 	private int fd;
@@ -323,7 +323,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private int ff;
 	private int fg;
 	private static boolean fh;
-	private int fi;
+	private int systemUpdateTime;
 	private ProducingGraphicsBuffer fj;
 	private ProducingGraphicsBuffer fk;
 	private ProducingGraphicsBuffer loginScreen;
@@ -342,7 +342,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private final String[] fx;
 	private final boolean[] fy;
 	private final int[][][] fz;
-	public static final int[] u = new int[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+	public static final int[] redStoneWidgetIds = new int[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
 	private int fA;
 	private int numActions;
 	private static int fC;
@@ -364,7 +364,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	public boolean loggedIn;
 	private boolean fR;
 	private boolean fS;
-	private boolean fT;
+	private boolean oriented;
 	static int tick;
 	private ProducingGraphicsBuffer fU;
 	private ProducingGraphicsBuffer fV;
@@ -389,13 +389,13 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private int camYawDelta;
 	private int camPitchDelta;
 	private static int go;
-	private int gp;
+	private int altInterfaceWidget;
 	private int[] gq;
 	private int[] gr;
 	private Buffer packet;
 	private int gt;
 	private int gu;
-	private IndexedImage gv;
+	private IndexedImage mapbackImage;
 	private String[] actions;
 	private Sprite gx;
 	private Sprite gy;
@@ -407,21 +407,21 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	static int B;
 	private String gC;
 	private int gD;
-	private int[][][] gE;
-	private long gF;
+	private int[][][] tileHeights;
+	private long serverSeed;
 	private int gG;
-	private final IndexedImage[] gH;
-	static int C;
-	private int gI;
-	public static boolean D;
+	private final IndexedImage[] modIcons;
+	static int selectedRedStoneId;
+	private int hintIconNpc;
+	public static boolean redrawDialog;
 	private int gJ;
 	private static int gK;
-	private int requestedSong;
-	private boolean gM;
+	private int musicId;
+	private boolean fadeMusic;
 	private int midiVolume;
 	private MidiPlayer midi;
 	private final int[] gP;
-	private CollisionMap[] gQ;
+	private CollisionMap[] collisionMaps;
 	public static int[] BIT_MASKS;
 	private int[] gR;
 	private int[] gS;
@@ -442,7 +442,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private int hg;
 	private boolean hh;
 	private boolean hi;
-	private byte[][][] hj;
+	private byte[][][] tileFlags;
 	private int loopMusic;
 	private int hl;
 	private int hm;
@@ -453,12 +453,12 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private String hr;
 	private int hs;
 	private int ht;
-	private RSFont p11_full;
-	private RSFont p12_full;
-	private RSFont b12_full;
-	private Class71 hx;
-	private Class71 hy;
-	private Class71 hz;
+	private RSFont smallFont;
+	private RSFont frameFont;
+	private RSFont bold;
+	private VScapeFont smallFontVscape;
+	private VScapeFont frameFontVscape;
+	private VScapeFont boldFontVscape;
 	private int hA;
 	private int hB;
 	private int[] hC;
@@ -504,13 +504,13 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 	public final void a() throws Throwable {
 		if (resizeMode == 1) {
-			if (clientWidth != this.scapeFrame.a()) {
-				clientWidth = this.scapeFrame.a();
+			if (clientWidth != this.scapeFrame.getRealWidth()) {
+				clientWidth = this.scapeFrame.getRealWidth();
 				this.i();
 			}
 
-			if (clientHeight != this.scapeFrame.b()) {
-				clientHeight = this.scapeFrame.b();
+			if (clientHeight != this.scapeFrame.getRealHeight()) {
+				clientHeight = this.scapeFrame.getRealHeight();
 				this.i();
 			}
 
@@ -522,15 +522,15 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	}
 
 	private void i() {
-		Rasterizer3D.a(resizeMode == 0 ? aa : clientWidth, resizeMode == 0 ? ab : clientHeight);
-		this.hS = Rasterizer3D.t;
-		Rasterizer3D.a(resizeMode == 0 ? 516 : clientWidth, resizeMode == 0 ? 165 : clientHeight);
-		this.gg = Rasterizer3D.t;
-		Rasterizer3D.a(resizeMode == 0 ? (this.fU != null ? this.fU.width : 250) : clientWidth,
+		Rasterizer3D.reposition(resizeMode == 0 ? aa : clientWidth, resizeMode == 0 ? ab : clientHeight);
+		this.hS = Rasterizer3D.scanOffsets;
+		Rasterizer3D.reposition(resizeMode == 0 ? 516 : clientWidth, resizeMode == 0 ? 165 : clientHeight);
+		this.gg = Rasterizer3D.scanOffsets;
+		Rasterizer3D.reposition(resizeMode == 0 ? (this.fU != null ? this.fU.width : 250) : clientWidth,
 				resizeMode == 0 ? (this.fU != null ? this.fU.height : 335) : clientHeight);
-		this.gh = Rasterizer3D.t;
-		Rasterizer3D.a(resizeMode == 0 ? 512 : clientWidth, resizeMode == 0 ? 334 : clientHeight);
-		this.gi = Rasterizer3D.t;
+		this.gh = Rasterizer3D.scanOffsets;
+		Rasterizer3D.reposition(resizeMode == 0 ? 512 : clientWidth, resizeMode == 0 ? 334 : clientHeight);
+		this.gi = Rasterizer3D.scanOffsets;
 		int[] var1 = new int[9];
 
 		for (int var2 = 0; var2 < 9; ++var2) {
@@ -542,7 +542,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 		SceneGraph.a(500, 800, resizeMode == 0 ? 512 : clientWidth, resizeMode == 0 ? 334 : clientHeight, var1);
 		this.fW = new ProducingGraphicsBuffer(resizeMode == 0 ? 512 : clientWidth, resizeMode == 0 ? 334 : clientHeight,
-				this.getFrameComponent());
+				this.getDrawComponent());
 		Rasterizer2D.reset();
 		this.E();
 		if (!this.loggedIn) {
@@ -599,12 +599,12 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 				var10.scapeFrame = new ScapeFrame(var10, var5, var4, var11);
 				var10.scapeFrame.addWindowListener(var10);
-				var10.frameGraphics = var10.scapeFrame.getGraphics();
-				var10.getFrameComponent().addMouseWheelListener(var10);
-				var10.getFrameComponent().addMouseListener(var10);
-				var10.getFrameComponent().addMouseMotionListener(var10);
-				var10.getFrameComponent().addKeyListener(var10);
-				var10.getFrameComponent().addFocusListener(var10);
+				var10.drawGraphics = var10.scapeFrame.getGraphics();
+				var10.getDrawComponent().addMouseWheelListener(var10);
+				var10.getDrawComponent().addMouseListener(var10);
+				var10.getDrawComponent().addMouseMotionListener(var10);
+				var10.getDrawComponent().addKeyListener(var10);
+				var10.getDrawComponent().addFocusListener(var10);
 				var8.i();
 				var8.mouseX = var8.mouseY = -1;
 			} catch (Exception var6) {
@@ -621,7 +621,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	}
 
 	private boolean b(int var1, int var2, int var3, int var4) {
-		return super.U >= var1 && super.U <= var3 && super.V >= var2 && super.V <= var4;
+		return super.lastClickX >= var1 && super.lastClickX <= var3 && super.lastClickY >= var2 && super.lastClickY <= var4;
 	}
 
 	private static String j() {
@@ -744,7 +744,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			long var4 = StringUtils.nameToLong(var1.trim());
 			int var7 = -1;
 
-			for (int var6 = 0; var6 < this.bS; ++var6) {
+			for (int var6 = 0; var6 < this.numFriends; ++var6) {
 				if (this.cG[var6] == var4) {
 					var7 = var6;
 					break;
@@ -753,7 +753,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 			if (var7 != -1) {
 				if (this.aQ[var7] > 0) {
-					D = true;
+					redrawDialog = true;
 					this.gJ = 0;
 					this.hi = true;
 					this.gC = "";
@@ -799,13 +799,13 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private int a(int var1, int var2, int var3) {
 		switch (var1) {
 		case 1:
-			this.gH[0].a(var2, var3);
+			this.modIcons[0].a(var2, var3);
 			return 15;
 		case 2:
-			this.gH[1].a(var2, var3);
+			this.modIcons[1].a(var2, var3);
 			return 15;
 		case 3:
-			this.gH[1].a(var2, var3);
+			this.modIcons[1].a(var2, var3);
 			return 15;
 		case 4:
 			Animation.spriteFromGroup("chaticons", 0).drawSprite(var2, var3);
@@ -905,16 +905,16 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		}
 	}
 
-	private void l() {
+	private void drawGameFrame() {
 		int var1 = 0;
-		Rasterizer3D.t = this.gg;
+		Rasterizer3D.scanOffsets = this.gg;
 		if (resizeMode == 0) {
 			this.fX.initializeRasterizer();
 		}
 
 		if (resizeMode == 0) {
 			Animation.spriteFromGroup("chat", 4).drawSprite(0, 0);
-			this.aK.b(7, 6);
+			this.mascotChat.b(7, 6);
 		}
 
 		if (resizeMode != 0) {
@@ -924,7 +924,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		if (resizeMode != 0 && eQ) {
 			Animation.spriteFromGroup("chat", 5).drawSprite(0, var1 - 1);
 			Rasterizer2D.fillRectangle(13417370, var1 + 6, 506, 129, 200, 7);
-			this.aK.b(7, var1 + 6);
+			this.mascotChat.b(7, var1 + 6);
 		}
 
 		if (resizeMode != 0) {
@@ -1017,39 +1017,39 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			}
 		}
 
-		this.p11_full.shadow(true, 26, 16777215, "All", resizeMode == 0 ? 157 : clientHeight - 8);
-		this.p11_full.shadow(true, 86, 16777215, "Game", resizeMode == 0 ? 152 : clientHeight - 12);
-		this.p11_full.shadow(true, 150, 16777215, "Public", resizeMode == 0 ? 152 : clientHeight - 12);
-		this.p11_full.shadow(true, 212, 16777215, "Private", resizeMode == 0 ? 152 : clientHeight - 12);
-		this.p11_full.shadow(true, 286, 16777215, "Clan", resizeMode == 0 ? 152 : clientHeight - 12);
-		this.p11_full.shadow(true, 349, 16777215, "Trade", resizeMode == 0 ? 152 : clientHeight - 12);
-		this.p11_full.shadow(true, 411, 16777215, "Global", resizeMode == 0 ? 152 : clientHeight - 12);
-		this.p11_full.a(var5[this.h], 100, var4[this.h], resizeMode == 0 ? 163 : clientHeight - 1, true);
-		this.p11_full.a(var9[this.G], 164, var8[this.G], resizeMode == 0 ? 163 : clientHeight - 1, true);
-		this.p11_full.a(var9[this.i], 230, var8[this.i], resizeMode == 0 ? 163 : clientHeight - 1, true);
-		this.p11_full.a(var7[this.f], 296, var6[this.f], resizeMode == 0 ? 163 : clientHeight - 1, true);
-		this.p11_full.a(var9[this.F], 362, var8[this.F], resizeMode == 0 ? 163 : clientHeight - 1, true);
-		this.p11_full.a(var7[this.g], 428, var6[this.g], resizeMode == 0 ? 163 : clientHeight - 1, true);
-		RSFont var2 = this.p12_full;
+		this.smallFont.shadow(true, 26, 16777215, "All", resizeMode == 0 ? 157 : clientHeight - 8);
+		this.smallFont.shadow(true, 86, 16777215, "Game", resizeMode == 0 ? 152 : clientHeight - 12);
+		this.smallFont.shadow(true, 150, 16777215, "Public", resizeMode == 0 ? 152 : clientHeight - 12);
+		this.smallFont.shadow(true, 212, 16777215, "Private", resizeMode == 0 ? 152 : clientHeight - 12);
+		this.smallFont.shadow(true, 286, 16777215, "Clan", resizeMode == 0 ? 152 : clientHeight - 12);
+		this.smallFont.shadow(true, 349, 16777215, "Trade", resizeMode == 0 ? 152 : clientHeight - 12);
+		this.smallFont.shadow(true, 411, 16777215, "Global", resizeMode == 0 ? 152 : clientHeight - 12);
+		this.smallFont.a(var5[this.h], 100, var4[this.h], resizeMode == 0 ? 163 : clientHeight - 1, true);
+		this.smallFont.a(var9[this.G], 164, var8[this.G], resizeMode == 0 ? 163 : clientHeight - 1, true);
+		this.smallFont.a(var9[this.i], 230, var8[this.i], resizeMode == 0 ? 163 : clientHeight - 1, true);
+		this.smallFont.a(var7[this.f], 296, var6[this.f], resizeMode == 0 ? 163 : clientHeight - 1, true);
+		this.smallFont.a(var9[this.F], 362, var8[this.F], resizeMode == 0 ? 163 : clientHeight - 1, true);
+		this.smallFont.a(var7[this.g], 428, var6[this.g], resizeMode == 0 ? 163 : clientHeight - 1, true);
+		RSFont var2 = this.frameFont;
 		if (this.hi) {
-			this.b12_full.a(0, this.fu, var1 + 60, 259);
-			this.b12_full.a(128, this.gC + "*", var1 + 80, 259);
+			this.bold.a(0, this.fu, var1 + 60, 259);
+			this.bold.a(128, this.gC + "*", var1 + 80, 259);
 		} else if (this.gJ == 1) {
-			this.b12_full.a(0, "Enter amount:", var1 + 60, 259);
-			this.b12_full.a(128, this.dr + "*", var1 + 80, 259);
+			this.bold.a(0, "Enter amount:", var1 + 60, 259);
+			this.bold.a(128, this.dr + "*", var1 + 80, 259);
 		} else if (this.gJ == 2) {
-			this.b12_full.a(0, "Enter name:", var1 + 60, 259);
-			this.b12_full.a(128, this.dr + "*", var1 + 80, 259);
+			this.bold.a(0, "Enter name:", var1 + 60, 259);
+			this.bold.a(128, this.dr + "*", var1 + 80, 259);
 		} else {
 			int var11;
 			if (this.gJ != 3 && this.gJ != 4) {
-				if (this.be != null) {
-					this.b12_full.a(0, this.be, var1 + 60, 259);
-					this.b12_full.a(128, "Click to continue", var1 + 80, 259);
+				if (this.clickToContinueString != null) {
+					this.bold.a(0, this.clickToContinueString, var1 + 60, 259);
+					this.bold.a(128, "Click to continue", var1 + 80, 259);
 				} else if (this.hA != -1) {
-					this.a(0, 20, (Widget) Widget.widgets[this.hA], var1 + 20);
+					this.processWidgets(0, 20, (Widget) Widget.widgets[this.hA], var1 + 20);
 				} else if (this.dU != -1) {
-					this.a(0, 20, (Widget) Widget.widgets[this.dU], var1 + 20);
+					this.processWidgets(0, 20, (Widget) Widget.widgets[this.dU], var1 + 20);
 				} else if (eQ || resizeMode == 0) {
 					var3 = 0;
 					Rasterizer2D.setBounds(var1 + 122, 8, 497, var1 + 7);
@@ -1304,8 +1304,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 				for (var3 = 0; var3 < this.ac; ++var3) {
 					if ((var11 = 18 + var3 * 14 - this.af) > 0 && var11 < 132) {
-						this.hy.a(this.ad[var3], 10, var11 + var1, 0, -1);
-						this.hy.a(String.valueOf(this.ae[var3]), 220, var11 + var1, 0, -1);
+						this.frameFontVscape.a(this.ad[var3], 10, var11 + var1, 0, -1);
+						this.frameFontVscape.a(String.valueOf(this.ae[var3]), 220, var11 + var1, 0, -1);
 					}
 				}
 
@@ -1317,27 +1317,27 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				String var19;
 				if (this.dr.length() == 0) {
 					var19 = this.gJ == 3 ? "Item Search" : "Npc Search";
-					this.hz.b(var19, 259, var1 + 40, 0, -1);
+					this.boldFontVscape.b(var19, 259, var1 + 40, 0, -1);
 				} else if (this.ac == 0) {
 					var19 = this.gJ == 3 ? "items" : "npcs";
-					this.hz.b("No matching " + var19 + " found", 259, var1 + 70, 0, -1);
+					this.boldFontVscape.b("No matching " + var19 + " found", 259, var1 + 70, 0, -1);
 				}
 
-				this.hy.a(this.dr + "*", 10, var1 + 132, 16777215, 0);
+				this.frameFontVscape.a(this.dr + "*", 10, var1 + 132, 16777215, 0);
 				Rasterizer2D.drawHorizontal_(7, var1 + 121, 505, resizeMode == 0 ? 8418912 : 16777215);
 			}
 		}
 
 		if (this.menuShowing && resizeMode == 0) {
-			this.c(0, 338);
+			this.drawMenu(0, 338);
 		}
 
 		if (resizeMode == 0) {
-			this.fX.drawImage(338, super.frameGraphics, 0);
+			this.fX.drawImage(338, super.drawGraphics, 0);
 		}
 
 		this.fW.initializeRasterizer();
-		Rasterizer3D.t = this.gi;
+		Rasterizer3D.scanOffsets = this.gi;
 	}
 
 	public final void startThread(Runnable runnable, int priority) {
@@ -1354,8 +1354,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 	private void m() throws Throwable {
 		if (this.eH == 0) {
-			int var1 = super.T;
-			if (this.fD == 1 && super.U >= 516 && super.V >= 160 && super.U <= 765 && super.V <= 205) {
+			int var1 = super.lastMetaModifier;
+			if (this.fD == 1 && super.lastClickX >= 516 && super.lastClickY >= 160 && super.lastClickX <= 765 && super.lastClickY <= 205) {
 				var1 = 0;
 			}
 
@@ -1370,18 +1370,18 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					var3 = super.mouseY;
 					var2 -= 4;
 					var3 -= 4;
-					if (var2 < this.cA - 10 || var2 > this.cA + this.cC + 10 || var3 < this.cB - 10
-							|| var3 > this.cB + this.cD + 10) {
+					if (var2 < this.menuX - 10 || var2 > this.menuX + this.menuWidth + 10 || var3 < this.menuY - 10
+							|| var3 > this.menuY + this.menuHeight + 10) {
 						this.menuShowing = false;
 					}
 				}
 
 				if (var1 == 1) {
-					var2 = this.cA;
-					var3 = this.cB;
-					var4 = this.cC;
-					var11 = super.U;
-					var1 = super.V;
+					var2 = this.menuX;
+					var3 = this.menuY;
+					var4 = this.menuWidth;
+					var11 = super.lastClickX;
+					var1 = super.lastClickY;
 					var11 -= 4;
 					var1 -= 4;
 					menuIndex = -1;
@@ -1411,11 +1411,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					if ((var5 = Widget.widgets[var4]).swappableItems || var5.replaceItems) {
 						this.gV = false;
 						this.dh = 0;
-						this.eF = var4;
-						this.eG = var3;
+						this.modifiedWidgetId = var4;
+						this.selectedInventorySlot = var3;
 						this.eH = 2;
-						this.eI = super.U;
-						this.eJ = super.V;
+						this.eI = super.lastClickX;
+						this.eJ = super.lastClickY;
 						if (Widget.widgets[var4].parent == j) {
 							this.eH = 1;
 						}
@@ -1437,12 +1437,12 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				}
 
 				if (var1 == 2 && this.numActions > 0) {
-					this.Q();
+					this.openMenu();
 				}
 
-				if (this.dG == 0 && super.T == 1) {
-					var2 = resizeMode == 0 ? super.U - 25 - 545 : super.U - clientWidth + 183;
-					var3 = resizeMode == 0 ? super.V - 9 : super.V - 10;
+				if (this.dG == 0 && super.lastMetaModifier == 1) {
+					var2 = resizeMode == 0 ? super.lastClickX - 25 - 545 : super.lastClickX - clientWidth + 183;
+					var3 = resizeMode == 0 ? super.lastClickY - 9 : super.lastClickY - 10;
 					if (var2 >= 0 && var3 >= 0 && var2 < 146 && var3 < 151 && (super.mouseX < clientWidth - 21
 							|| super.mouseX > clientWidth || super.mouseY < 0 || super.mouseY > 21)) {
 						boolean var10 = true;
@@ -1461,7 +1461,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 							var4 = var3 * var4 - var2 * var11 >> 11;
 							var11 = localPlayer.X + menuIndex >> 7;
 							var4 = localPlayer.Y - var4 >> 7;
-							if (this.a(1, 0, 0, 0, localPlayer.pathY[0], 0, 0, var4, localPlayer.pathX[0], true,
+							if (this.walk(1, 0, 0, 0, localPlayer.pathY[0], 0, 0, var4, localPlayer.pathX[0], true,
 									var11)) {
 								this.packet.writeByte(var2);
 								this.packet.writeByte(var3);
@@ -1479,7 +1479,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 						if (++fs > 1151) {
 							fs = 0;
-							this.packet.writeCipheredByte(246);
+							this.packet.writeOpcode(246);
 							this.packet.writeByte(0);
 							var4 = this.packet.position;
 							if ((int) (Math.random() * 2.0D) == 0) {
@@ -1508,469 +1508,469 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 				int[] var9 = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
 				if (resizeMode == 0) {
-					if (super.T == 1) {
-						if (super.U >= 524 && super.U <= 561 && super.V >= 169 && super.V < 205 && u[0] != -1) {
-							C = 0;
+					if (super.lastMetaModifier == 1) {
+						if (super.lastClickX >= 524 && super.lastClickX <= 561 && super.lastClickY >= 169 && super.lastClickY < 205 && redStoneWidgetIds[0] != -1) {
+							selectedRedStoneId = 0;
 							fh = true;
 						}
 
-						if (super.U >= 562 && super.U <= 594 && super.V >= 168 && super.V < 205 && u[1] != -1) {
-							C = 1;
+						if (super.lastClickX >= 562 && super.lastClickX <= 594 && super.lastClickY >= 168 && super.lastClickY < 205 && redStoneWidgetIds[1] != -1) {
+							selectedRedStoneId = 1;
 							fh = true;
 						}
 
-						if (super.U >= 595 && super.U <= 626 && super.V >= 168 && super.V < 205 && u[2] != -1) {
-							C = 2;
+						if (super.lastClickX >= 595 && super.lastClickX <= 626 && super.lastClickY >= 168 && super.lastClickY < 205 && redStoneWidgetIds[2] != -1) {
+							selectedRedStoneId = 2;
 							fh = true;
 						}
 
-						if (super.U >= 627 && super.U <= 660 && super.V >= 168 && super.V < 203 && u[3] != -1) {
-							C = 3;
+						if (super.lastClickX >= 627 && super.lastClickX <= 660 && super.lastClickY >= 168 && super.lastClickY < 203 && redStoneWidgetIds[3] != -1) {
+							selectedRedStoneId = 3;
 							fh = true;
 						}
 
-						if (super.U >= 661 && super.U <= 693 && super.V >= 168 && super.V < 205 && u[4] != -1) {
-							C = 4;
+						if (super.lastClickX >= 661 && super.lastClickX <= 693 && super.lastClickY >= 168 && super.lastClickY < 205 && redStoneWidgetIds[4] != -1) {
+							selectedRedStoneId = 4;
 							fh = true;
 						}
 
-						if (super.U >= 694 && super.U <= 725 && super.V >= 168 && super.V < 205 && u[5] != -1) {
-							C = 5;
+						if (super.lastClickX >= 694 && super.lastClickX <= 725 && super.lastClickY >= 168 && super.lastClickY < 205 && redStoneWidgetIds[5] != -1) {
+							selectedRedStoneId = 5;
 							fh = true;
 						}
 
-						if (super.U >= 726 && super.U <= 765 && super.V >= 169 && super.V < 205 && u[6] != -1) {
-							C = 6;
+						if (super.lastClickX >= 726 && super.lastClickX <= 765 && super.lastClickY >= 169 && super.lastClickY < 205 && redStoneWidgetIds[6] != -1) {
+							selectedRedStoneId = 6;
 							fh = true;
 						}
 
-						if (super.U >= 524 && super.U <= 561 && super.V >= 466 && super.V < 503 && u[7] != -1) {
-							C = 7;
+						if (super.lastClickX >= 524 && super.lastClickX <= 561 && super.lastClickY >= 466 && super.lastClickY < 503 && redStoneWidgetIds[7] != -1) {
+							selectedRedStoneId = 7;
 							fh = true;
 						}
 
-						if (super.U >= 562 && super.U <= 594 && super.V >= 466 && super.V < 503 && u[8] != -1) {
-							C = 8;
+						if (super.lastClickX >= 562 && super.lastClickX <= 594 && super.lastClickY >= 466 && super.lastClickY < 503 && redStoneWidgetIds[8] != -1) {
+							selectedRedStoneId = 8;
 							fh = true;
 						}
 
-						if (super.U >= 595 && super.U <= 627 && super.V >= 466 && super.V < 503 && u[9] != -1) {
-							C = 9;
+						if (super.lastClickX >= 595 && super.lastClickX <= 627 && super.lastClickY >= 466 && super.lastClickY < 503 && redStoneWidgetIds[9] != -1) {
+							selectedRedStoneId = 9;
 							fh = true;
 						}
 
-						if (super.U >= 627 && super.U <= 664 && super.V >= 466 && super.V < 503 && u[10] != -1) {
-							C = 10;
+						if (super.lastClickX >= 627 && super.lastClickX <= 664 && super.lastClickY >= 466 && super.lastClickY < 503 && redStoneWidgetIds[10] != -1) {
+							selectedRedStoneId = 10;
 							fh = true;
 						}
 
-						if (super.U >= 661 && super.U <= 694 && super.V >= 466 && super.V < 503 && u[11] != -1) {
-							C = 11;
+						if (super.lastClickX >= 661 && super.lastClickX <= 694 && super.lastClickY >= 466 && super.lastClickY < 503 && redStoneWidgetIds[11] != -1) {
+							selectedRedStoneId = 11;
 							fh = true;
 						}
 
-						if (super.U >= 695 && super.U <= 725 && super.V >= 466 && super.V < 503 && u[12] != -1) {
-							C = 12;
+						if (super.lastClickX >= 695 && super.lastClickX <= 725 && super.lastClickY >= 466 && super.lastClickY < 503 && redStoneWidgetIds[12] != -1) {
+							selectedRedStoneId = 12;
 							fh = true;
 						}
 
-						if (super.U >= 726 && super.U <= 765 && super.V >= 466 && super.V < 502 && u[13] != -1) {
-							C = 13;
+						if (super.lastClickX >= 726 && super.lastClickX <= 765 && super.lastClickY >= 466 && super.lastClickY < 502 && redStoneWidgetIds[13] != -1) {
+							selectedRedStoneId = 13;
 							fh = true;
 						}
 					}
-				} else if (resizeMode != 0 && clientWidth < this.eR && super.T == 1) {
-					if (super.U >= clientWidth - 241 && super.U <= clientWidth - 204 && super.V >= clientHeight - 72
-							&& super.V < clientHeight - 40 && u[0] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[0]) {
+				} else if (resizeMode != 0 && clientWidth < this.eR && super.lastMetaModifier == 1) {
+					if (super.lastClickX >= clientWidth - 241 && super.lastClickX <= clientWidth - 204 && super.lastClickY >= clientHeight - 72
+							&& super.lastClickY < clientHeight - 40 && redStoneWidgetIds[0] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[0]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[0];
+						selectedRedStoneId = var9[0];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 202 && super.U <= clientWidth - 171 && super.V >= clientHeight - 72
-							&& super.V < clientHeight - 40 && u[1] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[1]) {
+					if (super.lastClickX >= clientWidth - 202 && super.lastClickX <= clientWidth - 171 && super.lastClickY >= clientHeight - 72
+							&& super.lastClickY < clientHeight - 40 && redStoneWidgetIds[1] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[1]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[1];
+						selectedRedStoneId = var9[1];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 170 && super.U <= clientWidth - 139 && super.V >= clientHeight - 72
-							&& super.V < clientHeight - 40 && u[2] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[2]) {
+					if (super.lastClickX >= clientWidth - 170 && super.lastClickX <= clientWidth - 139 && super.lastClickY >= clientHeight - 72
+							&& super.lastClickY < clientHeight - 40 && redStoneWidgetIds[2] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[2]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[2];
+						selectedRedStoneId = var9[2];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 138 && super.U <= clientWidth - 105 && super.V >= clientHeight - 72
-							&& super.V < clientHeight - 40 && u[3] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[3]) {
+					if (super.lastClickX >= clientWidth - 138 && super.lastClickX <= clientWidth - 105 && super.lastClickY >= clientHeight - 72
+							&& super.lastClickY < clientHeight - 40 && redStoneWidgetIds[3] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[3]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[3];
+						selectedRedStoneId = var9[3];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 104 && super.U <= clientWidth - 72 && super.V >= clientHeight - 72
-							&& super.V < clientHeight - 40 && u[4] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[4]) {
+					if (super.lastClickX >= clientWidth - 104 && super.lastClickX <= clientWidth - 72 && super.lastClickY >= clientHeight - 72
+							&& super.lastClickY < clientHeight - 40 && redStoneWidgetIds[4] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[4]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[4];
+						selectedRedStoneId = var9[4];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 71 && super.U <= clientWidth - 39 && super.V >= clientHeight - 72
-							&& super.V < clientHeight - 40 && u[5] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[5]) {
+					if (super.lastClickX >= clientWidth - 71 && super.lastClickX <= clientWidth - 39 && super.lastClickY >= clientHeight - 72
+							&& super.lastClickY < clientHeight - 40 && redStoneWidgetIds[5] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[5]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[5];
+						selectedRedStoneId = var9[5];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 38 && super.U <= clientWidth && super.V >= clientHeight - 72
-							&& super.V < clientHeight - 40 && u[6] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[6]) {
+					if (super.lastClickX >= clientWidth - 38 && super.lastClickX <= clientWidth && super.lastClickY >= clientHeight - 72
+							&& super.lastClickY < clientHeight - 40 && redStoneWidgetIds[6] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[6]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[6];
+						selectedRedStoneId = var9[6];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 241 && super.U <= clientWidth - 204 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[7] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[7]) {
+					if (super.lastClickX >= clientWidth - 241 && super.lastClickX <= clientWidth - 204 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[7] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[7]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[7];
+						selectedRedStoneId = var9[7];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 202 && super.U <= clientWidth - 171 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[8] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[8]) {
+					if (super.lastClickX >= clientWidth - 202 && super.lastClickX <= clientWidth - 171 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[8] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[8]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[8];
+						selectedRedStoneId = var9[8];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 170 && super.U <= clientWidth - 139 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[9] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[9]) {
+					if (super.lastClickX >= clientWidth - 170 && super.lastClickX <= clientWidth - 139 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[9] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[9]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[9];
+						selectedRedStoneId = var9[9];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 138 && super.U <= clientWidth - 105 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[10] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[10]) {
+					if (super.lastClickX >= clientWidth - 138 && super.lastClickX <= clientWidth - 105 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[10] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[10]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[10];
+						selectedRedStoneId = var9[10];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 104 && super.U <= clientWidth - 72 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[11] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[11]) {
+					if (super.lastClickX >= clientWidth - 104 && super.lastClickX <= clientWidth - 72 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[11] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[11]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[11];
+						selectedRedStoneId = var9[11];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 71 && super.U <= clientWidth - 39 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[12] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[12]) {
+					if (super.lastClickX >= clientWidth - 71 && super.lastClickX <= clientWidth - 39 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[12] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[12]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[12];
+						selectedRedStoneId = var9[12];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 38 && super.U <= clientWidth && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[13] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[13]) {
+					if (super.lastClickX >= clientWidth - 38 && super.lastClickX <= clientWidth && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[13] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[13]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[13];
+						selectedRedStoneId = var9[13];
 						fh = true;
 					}
 				}
 
-				if (clientWidth >= this.eR && super.T == 1) {
-					if (super.U >= clientWidth - 462 && super.U <= clientWidth - 429 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[0] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[0]) {
+				if (clientWidth >= this.eR && super.lastMetaModifier == 1) {
+					if (super.lastClickX >= clientWidth - 462 && super.lastClickX <= clientWidth - 429 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[0] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[0]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[0];
+						selectedRedStoneId = var9[0];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 429 && super.U <= clientWidth - 396 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[1] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[1]) {
+					if (super.lastClickX >= clientWidth - 429 && super.lastClickX <= clientWidth - 396 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[1] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[1]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[1];
+						selectedRedStoneId = var9[1];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 396 && super.U <= clientWidth - 363 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[2] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[2]) {
+					if (super.lastClickX >= clientWidth - 396 && super.lastClickX <= clientWidth - 363 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[2] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[2]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[2];
+						selectedRedStoneId = var9[2];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 363 && super.U <= clientWidth - 330 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[3] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[3]) {
+					if (super.lastClickX >= clientWidth - 363 && super.lastClickX <= clientWidth - 330 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[3] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[3]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[3];
+						selectedRedStoneId = var9[3];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 330 && super.U <= clientWidth - 297 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[4] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[4]) {
+					if (super.lastClickX >= clientWidth - 330 && super.lastClickX <= clientWidth - 297 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[4] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[4]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[4];
+						selectedRedStoneId = var9[4];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 297 && super.U <= clientWidth - 264 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[5] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[5]) {
+					if (super.lastClickX >= clientWidth - 297 && super.lastClickX <= clientWidth - 264 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[5] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[5]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[5];
+						selectedRedStoneId = var9[5];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 264 && super.U <= clientWidth - 231 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[6] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[6]) {
+					if (super.lastClickX >= clientWidth - 264 && super.lastClickX <= clientWidth - 231 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[6] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[6]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[6];
+						selectedRedStoneId = var9[6];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 231 && super.U <= clientWidth - 198 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[7] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[7]) {
+					if (super.lastClickX >= clientWidth - 231 && super.lastClickX <= clientWidth - 198 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[7] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[7]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[7];
+						selectedRedStoneId = var9[7];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 198 && super.U <= clientWidth - 165 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[8] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[8]) {
+					if (super.lastClickX >= clientWidth - 198 && super.lastClickX <= clientWidth - 165 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[8] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[8]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[8];
+						selectedRedStoneId = var9[8];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 165 && super.U <= clientWidth - 132 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[9] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[9]) {
+					if (super.lastClickX >= clientWidth - 165 && super.lastClickX <= clientWidth - 132 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[9] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[9]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[9];
+						selectedRedStoneId = var9[9];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 132 && super.U <= clientWidth - 99 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[10] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[10]) {
+					if (super.lastClickX >= clientWidth - 132 && super.lastClickX <= clientWidth - 99 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[10] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[10]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[10];
+						selectedRedStoneId = var9[10];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 99 && super.U <= clientWidth - 66 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[11] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[11]) {
+					if (super.lastClickX >= clientWidth - 99 && super.lastClickX <= clientWidth - 66 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[11] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[11]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[11];
+						selectedRedStoneId = var9[11];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 66 && super.U <= clientWidth - 33 && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[12] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[12]) {
+					if (super.lastClickX >= clientWidth - 66 && super.lastClickX <= clientWidth - 33 && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[12] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[12]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[12];
+						selectedRedStoneId = var9[12];
 						fh = true;
 					}
 
-					if (super.U >= clientWidth - 33 && super.U <= clientWidth && super.V >= clientHeight - 37
-							&& super.V < clientHeight && u[13] != -1) {
-						if (this.gp == -1) {
-							if (C == var9[13]) {
+					if (super.lastClickX >= clientWidth - 33 && super.lastClickX <= clientWidth && super.lastClickY >= clientHeight - 37
+							&& super.lastClickY < clientHeight && redStoneWidgetIds[13] != -1) {
+						if (this.altInterfaceWidget == -1) {
+							if (selectedRedStoneId == var9[13]) {
 								this.eP = !this.eP;
 							} else {
 								this.eP = true;
 							}
 						}
 
-						C = var9[13];
+						selectedRedStoneId = var9[13];
 						fh = true;
 					}
 				}
@@ -1983,43 +1983,43 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				if (super.mouseX >= 5 && super.mouseX <= 61 && super.mouseY >= var2 + 482
 						&& super.mouseY <= var2 + 503) {
 					this.ag = 0;
-					D = true;
+					redrawDialog = true;
 				} else if (super.mouseX >= 71 && super.mouseX <= 127 && super.mouseY >= var2 + 482
 						&& super.mouseY <= var2 + 503) {
 					this.ag = 1;
-					D = true;
+					redrawDialog = true;
 				} else if (super.mouseX >= 137 && super.mouseX <= 193 && super.mouseY >= var2 + 482
 						&& super.mouseY <= var2 + 503) {
 					this.ag = 2;
-					D = true;
+					redrawDialog = true;
 				} else if (super.mouseX >= 203 && super.mouseX <= 259 && super.mouseY >= var2 + 482
 						&& super.mouseY <= var2 + 503) {
 					this.ag = 3;
-					D = true;
+					redrawDialog = true;
 				} else if (super.mouseX >= 269 && super.mouseX <= 325 && super.mouseY >= var2 + 482
 						&& super.mouseY <= var2 + 503) {
 					this.ag = 4;
-					D = true;
+					redrawDialog = true;
 				} else if (super.mouseX >= 335 && super.mouseX <= 391 && super.mouseY >= var2 + 482
 						&& super.mouseY <= var2 + 503) {
 					this.ag = 5;
-					D = true;
+					redrawDialog = true;
 				} else if (super.mouseX >= 401 && super.mouseX <= 457 && super.mouseY >= var2 + 482
 						&& super.mouseY <= var2 + 503) {
 					this.ag = 6;
-					D = true;
+					redrawDialog = true;
 				} else {
 					this.ag = -1;
-					D = true;
+					redrawDialog = true;
 				}
 
-				if (super.T == 1) {
-					if (super.U >= 5 && super.U <= 61 && super.V >= var2 + 482 && super.V <= var2 + 505) {
+				if (super.lastMetaModifier == 1) {
+					if (super.lastClickX >= 5 && super.lastClickX <= 61 && super.lastClickY >= var2 + 482 && super.lastClickY <= var2 + 505) {
 						if (resizeMode != 0) {
 							if (this.ai != 0) {
 								this.ah = 0;
 								this.aG = 0;
-								D = true;
+								redrawDialog = true;
 								this.ai = 0;
 								return;
 							}
@@ -2030,17 +2030,17 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 						this.ah = 0;
 						this.aG = 0;
-						D = true;
+						redrawDialog = true;
 						this.ai = 0;
 						return;
 					}
 
-					if (super.U >= 71 && super.U <= 127 && super.V >= var2 + 482 && super.V <= var2 + 505) {
+					if (super.lastClickX >= 71 && super.lastClickX <= 127 && super.lastClickY >= var2 + 482 && super.lastClickY <= var2 + 505) {
 						if (resizeMode != 0) {
 							if (this.ai != 1 && resizeMode != 0) {
 								this.ah = 1;
 								this.aG = 5;
-								D = true;
+								redrawDialog = true;
 								this.ai = 1;
 								return;
 							}
@@ -2051,17 +2051,17 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 						this.ah = 1;
 						this.aG = 5;
-						D = true;
+						redrawDialog = true;
 						this.ai = 1;
 						return;
 					}
 
-					if (super.U >= 137 && super.U <= 193 && super.V >= var2 + 482 && super.V <= var2 + 505) {
+					if (super.lastClickX >= 137 && super.lastClickX <= 193 && super.lastClickY >= var2 + 482 && super.lastClickY <= var2 + 505) {
 						if (resizeMode != 0) {
 							if (this.ai != 2 && resizeMode != 0) {
 								this.ah = 2;
 								this.aG = 1;
-								D = true;
+								redrawDialog = true;
 								this.ai = 2;
 								return;
 							}
@@ -2072,17 +2072,17 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 						this.ah = 2;
 						this.aG = 1;
-						D = true;
+						redrawDialog = true;
 						this.ai = 2;
 						return;
 					}
 
-					if (super.U >= 203 && super.U <= 259 && super.V >= var2 + 482 && super.V <= var2 + 505) {
+					if (super.lastClickX >= 203 && super.lastClickX <= 259 && super.lastClickY >= var2 + 482 && super.lastClickY <= var2 + 505) {
 						if (resizeMode != 0) {
 							if (this.ai != 3 && resizeMode != 0) {
 								this.ah = 3;
 								this.aG = 2;
-								D = true;
+								redrawDialog = true;
 								this.ai = 3;
 								return;
 							}
@@ -2093,17 +2093,17 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 						this.ah = 3;
 						this.aG = 2;
-						D = true;
+						redrawDialog = true;
 						this.ai = 3;
 						return;
 					}
 
-					if (super.U >= 269 && super.U <= 325 && super.V >= var2 + 482 && super.V <= var2 + 505) {
+					if (super.lastClickX >= 269 && super.lastClickX <= 325 && super.lastClickY >= var2 + 482 && super.lastClickY <= var2 + 505) {
 						if (resizeMode != 0) {
 							if (this.ai != 16 && resizeMode != 0) {
 								this.ah = 4;
 								this.aG = 16;
-								D = true;
+								redrawDialog = true;
 								this.ai = 16;
 								return;
 							}
@@ -2114,17 +2114,17 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 						this.ah = 4;
 						this.aG = 16;
-						D = true;
+						redrawDialog = true;
 						this.ai = 16;
 						return;
 					}
 
-					if (super.U >= 335 && super.U <= 391 && super.V >= var2 + 482 && super.V <= var2 + 505) {
+					if (super.lastClickX >= 335 && super.lastClickX <= 391 && super.lastClickY >= var2 + 482 && super.lastClickY <= var2 + 505) {
 						if (resizeMode != 0) {
 							if (this.ai != 5 && resizeMode != 0) {
 								this.ah = 5;
 								this.aG = 3;
-								D = true;
+								redrawDialog = true;
 								this.ai = 5;
 								return;
 							}
@@ -2135,12 +2135,12 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 						this.ah = 5;
 						this.aG = 3;
-						D = true;
+						redrawDialog = true;
 						this.ai = 5;
 						return;
 					}
 
-					if (super.U >= 401 && super.U <= 457 && super.V >= var2 + 482 && super.V <= var2 + 505) {
+					if (super.lastClickX >= 401 && super.lastClickX <= 457 && super.lastClickY >= var2 + 482 && super.lastClickY <= var2 + 505) {
 						if (resizeMode != 0 && (this.ai == 9 || resizeMode == 0)) {
 							eQ = !eQ;
 							return;
@@ -2148,7 +2148,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 						this.ah = 6;
 						this.aG = 9;
-						D = true;
+						redrawDialog = true;
 						this.ai = 9;
 					}
 				}
@@ -2168,7 +2168,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		int var14;
 		try {
 			this.de = -1;
-			this.eg.clear();
+			this.animableObjects.clear();
 			this.projectiles.clear();
 			Rasterizer3D.e();
 			o();
@@ -2176,20 +2176,20 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			System.gc();
 
 			for (var1 = 0; var1 < 4; ++var1) {
-				this.gQ[var1].a();
+				this.collisionMaps[var1].a();
 			}
 
 			for (var1 = 0; var1 < 4; ++var1) {
 				for (var2 = 0; var2 < 104; ++var2) {
 					for (var3 = 0; var3 < 104; ++var3) {
-						this.hj[var1][var2][var3] = 0;
+						this.tileFlags[var1][var2][var3] = 0;
 					}
 				}
 			}
 
-			MapRegion var12 = new MapRegion(this.hj, this.gE);
+			MapRegion var12 = new MapRegion(this.tileFlags, this.tileHeights);
 			var2 = this.gj.length;
-			this.packet.writeCipheredByte(0);
+			this.packet.writeOpcode(0);
 			if (!this.fS) {
 				for (var3 = 0; var3 < var2; ++var3) {
 					var4 = (this.gR[var3] >> 8 << 6) - this.sceneX;
@@ -2200,7 +2200,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					}
 
 					if (var6 != null) {
-						var12.decodeRegionMapData(var6, var5, var4, this.eq - 6 << 3, this.er - 6 << 3, this.gQ);
+						var12.decodeRegionMapData(var6, var5, var4, this.eq - 6 << 3, this.er - 6 << 3, this.collisionMaps);
 					}
 				}
 
@@ -2214,18 +2214,18 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 				if (++fb > 160) {
 					fb = 0;
-					this.packet.writeCipheredByte(238);
+					this.packet.writeOpcode(238);
 					this.packet.writeByte(96);
 				}
 
-				this.packet.writeCipheredByte(0);
+				this.packet.writeOpcode(0);
 
 				for (var3 = 0; var3 < var2; ++var3) {
 					byte[] var13;
 					if ((var13 = this.ha[var3]) != null) {
 						var5 = (this.gR[var3] >> 8 << 6) - this.sceneX;
 						var14 = ((this.gR[var3] & 255) << 6) - this.sceneY;
-						var12.decodeLandscapes(var5, this.gQ, var14, this.scene, var13);
+						var12.decodeLandscapes(var5, this.collisionMaps, var14, this.scene, var13);
 					}
 				}
 			}
@@ -2245,7 +2245,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 							}
 						}
 
-						this.packet.writeCipheredByte(0);
+						this.packet.writeOpcode(0);
 						var3 = 0;
 
 						while (true) {
@@ -2264,7 +2264,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 										for (var10 = 0; var10 < this.gR.length; ++var10) {
 											if (this.gR[var10] == var9 && this.ha[var10] != null) {
-												var12.decodeConstructedLandscapes(this.gQ, this.scene, var7, var4 << 3,
+												var12.decodeConstructedLandscapes(this.collisionMaps, this.scene, var7, var4 << 3,
 														(var14 & 7) << 3, var3, this.ha[var10], (var2 & 7) << 3, var8,
 														var5 << 3);
 												break;
@@ -2289,7 +2289,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 								for (var10 = 0; var10 < this.gR.length; ++var10) {
 									if (this.gR[var10] == var9 && this.gj[var10] != null) {
-										var12.decodeConstructedMapData(var7, var8, this.gQ, var4 << 3, (var2 & 7) << 3,
+										var12.decodeConstructedMapData(var7, var8, this.collisionMaps, var4 << 3, (var2 & 7) << 3,
 												this.gj[var10], (var14 & 7) << 3, var3, var5 << 3);
 										break;
 									}
@@ -2302,10 +2302,10 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				}
 			}
 
-			this.packet.writeCipheredByte(0);
-			var12.a(this.gQ, this.scene);
+			this.packet.writeOpcode(0);
+			var12.a(this.collisionMaps, this.scene);
 			this.fW.initializeRasterizer();
-			this.packet.writeCipheredByte(0);
+			this.packet.writeOpcode(0);
 			int var10000 = MapRegion.maximumPlane;
 			this.scene.a(0);
 
@@ -2317,7 +2317,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 			if (++eb > 98) {
 				eb = 0;
-				this.packet.writeCipheredByte(150);
+				this.packet.writeOpcode(150);
 			}
 
 			this.z();
@@ -2327,7 +2327,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 		ObjectDefinition.baseModels.removeAll();
 		if (super.scapeFrame != null) {
-			this.packet.writeCipheredByte(210);
+			this.packet.writeOpcode(210);
 			this.packet.writeInt(1057001181);
 		}
 
@@ -2385,11 +2385,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			var3 = 24628 + (103 - var4 << 9 << 2);
 
 			for (var5 = 1; var5 < 103; ++var5) {
-				if ((this.hj[var1][var5][var4] & 24) == 0) {
+				if ((this.tileFlags[var1][var5][var4] & 24) == 0) {
 					this.scene.a(var2, var3, var1, var5, var4);
 				}
 
-				if (var1 < 3 && (this.hj[var1 + 1][var5][var4] & 8) != 0) {
+				if (var1 < 3 && (this.tileFlags[var1 + 1][var5][var4] & 8) != 0) {
 					this.scene.a(var2, var3, var1 + 1, var5, var4);
 				}
 
@@ -2406,11 +2406,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		int var10;
 		for (var5 = 1; var5 < 103; ++var5) {
 			for (var10 = 1; var10 < 103; ++var10) {
-				if ((this.hj[var1][var10][var5] & 24) == 0) {
+				if ((this.tileFlags[var1][var10][var5] & 24) == 0) {
 					this.b(var5, var4, var10, var3, var1);
 				}
 
-				if (var1 < 3 && (this.hj[var1 + 1][var10][var5] & 8) != 0) {
+				if (var1 < 3 && (this.tileFlags[var1 + 1][var10][var5] & 8) != 0) {
 					this.b(var5, var4, var10, var3, var1 + 1);
 				}
 			}
@@ -2427,7 +2427,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					var4 = var10;
 					if (var1 != 22 && var1 != 29 && var1 != 34 && var1 != 36 && var1 != 46 && var1 != 47
 							&& var1 != 48) {
-						int[][] var6 = this.gQ[this.plane].adjacencies;
+						int[][] var6 = this.collisionMaps[this.plane].adjacencies;
 
 						for (int var7 = 0; var7 < 10; ++var7) {
 							int var8;
@@ -2450,7 +2450,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						}
 					}
 
-					this.fH[this.es] = this.dN[var1];
+					this.fH[this.es] = this.mapFunctionSprites[var1];
 					this.et[this.es] = var3;
 					this.eu[this.es] = var4;
 					++this.es;
@@ -2505,7 +2505,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 	private void a(boolean var1) {
 		for (int var2 = 0; var2 < this.aX; ++var2) {
-			Npc var3 = this.aW[this.aY[var2]];
+			Npc var3 = this.npcs[this.aY[var2]];
 			int var4 = 536870912 + (this.aY[var2] << 14);
 			if (var3 != null && var3.isVisible() && var3.npcDefinition.priorityRender == var1) {
 				int var5 = var3.X >> 7;
@@ -2531,68 +2531,68 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 	}
 
-	private void a(int var1, Widget var2, int var3, int var4, int var5, int var6) {
-		if (var2 == null) {
-			var2 = Widget.widgets[21356];
+	private void processWidget(int baseX, Widget baseWidget, int mouseX, int baseY, int mouseY, int offsetY) {
+		if (baseWidget == null) {
+			baseWidget = Widget.widgets[21356];
 		}
 
-		if (var2.group == Widget.TYPE_CONTAINER && var2.children != null && !var2.aa) {
-			if (var3 >= var1 && var5 >= var4 && var3 <= var1 + var2.width && var5 <= var4 + var2.height) {
-				int var7 = var2.children.length;
+		if (baseWidget.group == Widget.TYPE_CONTAINER && baseWidget.children != null && !baseWidget.aa) {
+			if (mouseX >= baseX && mouseY >= baseY && mouseX <= baseX + baseWidget.width && mouseY <= baseY + baseWidget.height) {
+				int var7 = baseWidget.children.length;
 
-				for (int var8 = 0; var8 < var7; ++var8) {
-					int var9 = var2.childX[var8] + var1;
-					int var10 = var2.childY[var8] + var4 - var6;
-					Widget widget = Widget.widgets[var2.children[var8]];
-					var9 += widget.Y;
-					var10 += widget.Z;
-					if ((widget.hoverId >= 0 || widget.defaultHoverColor != 0) && var3 >= var9 && var5 >= var10
-							&& var3 < var9 + widget.width && var5 < var10 + widget.height) {
+				for (int childIdx = 0; childIdx < var7; ++childIdx) {
+					int childX = baseWidget.childX[childIdx] + baseX;
+					int childY = baseWidget.childY[childIdx] + baseY - offsetY;
+					Widget widget = Widget.widgets[baseWidget.children[childIdx]];
+					childX += widget.drawOffsetX;
+					childY += widget.drawOffsetY;
+					if ((widget.hoverId >= 0 || widget.defaultHoverColor != 0) && mouseX >= childX && mouseY >= childY
+							&& mouseX < childX + widget.width && mouseY < childY + widget.height) {
 						if (widget.hoverId >= 0) {
-							this.bH = widget.hoverId;
+							this.hoveredWidgetId = widget.hoverId;
 						} else {
-							this.bH = widget.id;
+							this.hoveredWidgetId = widget.id;
 						}
 					}
 
-					if (widget.group == 8 && var3 >= var9 && var5 >= var10 && var3 < var9 + widget.width
-							&& var5 < var10 + widget.height) {
+					if (widget.group == 8 && mouseX >= childX && mouseY >= childY && mouseX < childX + widget.width
+							&& mouseY < childY + widget.height) {
 						this.hP = widget.id;
 					}
 
 					if (widget.group == Widget.TYPE_CONTAINER) {
-						this.a(var9, widget, var3, var10, var5, widget.q);
+						this.processWidget(childX, widget, mouseX, childY, mouseY, widget.q);
 						if (widget.W > widget.height) {
-							this.a(var9 + widget.width, widget.height, var3, var5, widget, var10, true, widget.W);
+							this.a(childX + widget.width, widget.height, mouseX, mouseY, widget, childY, true, widget.W);
 						}
 					} else {
-						int var13;
-						int var14;
-						if (widget.optionType == 1 && var3 >= var9 && var5 >= var10 && var3 < var9 + widget.width
-								&& var5 < var10 + widget.height) {
+						int y;
+						int x;
+						if (widget.optionType == 1 && mouseX >= childX && mouseY >= childY && mouseX < childX + widget.width
+								&& mouseY < childY + widget.height) {
 							boolean var12 = false;
 							if (widget.contentType != 0) {
-								var14 = widget.contentType;
+								x = widget.contentType;
 								boolean var10000;
-								if (widget.contentType > 0 && var14 <= 200 || var14 >= 701 && var14 <= 900) {
-									if (var14 >= 801) {
-										var14 -= 701;
-									} else if (var14 >= 701) {
-										var14 -= 601;
-									} else if (var14 >= 101) {
-										var14 -= 101;
+								if (widget.contentType > 0 && x <= 200 || x >= 701 && x <= 900) {
+									if (x >= 801) {
+										x -= 701;
+									} else if (x >= 701) {
+										x -= 601;
+									} else if (x >= 101) {
+										x -= 101;
 									} else {
-										--var14;
+										--x;
 									}
 
-									this.actions[this.numActions] = "Remove @whi@" + this.eD[var14];
+									this.actions[this.numActions] = "Remove @whi@" + this.eD[x];
 									this.actionIds[this.numActions] = 792;
 									++this.numActions;
-									this.actions[this.numActions] = "Message @whi@" + this.eD[var14];
+									this.actions[this.numActions] = "Message @whi@" + this.eD[x];
 									this.actionIds[this.numActions] = 639;
 									++this.numActions;
 									var10000 = true;
-								} else if (var14 >= 401 && var14 <= 500) {
+								} else if (x >= 401 && x <= 500) {
 									this.actions[this.numActions] = "Remove @whi@" + widget.defaultText;
 									this.actionIds[this.numActions] = 322;
 									++this.numActions;
@@ -2604,11 +2604,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 								label421: {
 									if (!var10000) {
 										label418: {
-											var14 = widget.contentType;
-											if (widget.contentType >= 20001 && var14 <= 20101) {
-												var13 = var14 - 20001;
+											x = widget.contentType;
+											if (widget.contentType >= 20001 && x <= 20101) {
+												y = x - 20001;
 												String var19;
-												if ((var19 = StringUtils.longToName(this.cH[var13])).length() > 0) {
+												if ((var19 = StringUtils.longToName(this.cH[y])).length() > 0) {
 													if (var19.startsWith("@cc1@") || var19.startsWith("@cc2@")
 															|| var19.startsWith("@cc3@")) {
 														var19 = var19.substring(5);
@@ -2652,8 +2652,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 							}
 						}
 
-						if (widget.optionType == 2 && this.fD == 0 && var3 >= var9 && var5 >= var10
-								&& var3 < var9 + widget.width && var5 < var10 + widget.height) {
+						if (widget.optionType == 2 && this.fD == 0 && mouseX >= childX && mouseY >= childY
+								&& mouseX < childX + widget.width && mouseY < childY + widget.height) {
 							String var18 = widget.optionCircumfix;
 							if (widget.optionCircumfix.indexOf(" ") != -1) {
 								var18 = var18.substring(0, var18.indexOf(" "));
@@ -2678,16 +2678,16 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 							++this.numActions;
 						}
 
-						if (widget.optionType == 3 && var3 >= var9 && var5 >= var10 && var3 < var9 + widget.width
-								&& var5 < var10 + widget.height) {
+						if (widget.optionType == 3 && mouseX >= childX && mouseY >= childY && mouseX < childX + widget.width
+								&& mouseY < childY + widget.height) {
 							this.actions[this.numActions] = "Close";
 							this.actionIds[this.numActions] = 200;
 							this.actionParam2[this.numActions] = widget.id;
 							++this.numActions;
 						}
 
-						if (widget.optionType == 4 && var3 >= var9 && var5 >= var10 && var3 < var9 + widget.width
-								&& var5 < var10 + widget.height) {
+						if (widget.optionType == 4 && mouseX >= childX && mouseY >= childY && mouseX < childX + widget.width
+								&& mouseY < childY + widget.height) {
 							this.actions[this.numActions] = widget.hover;
 							this.actionIds[this.numActions] = 169;
 							this.actionParam2[this.numActions] = widget.id;
@@ -2695,16 +2695,16 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 							String var21 = widget.a;
 						}
 
-						if (widget.optionType == 5 && var3 >= var9 && var5 >= var10 && var3 < var9 + widget.width
-								&& var5 < var10 + widget.height) {
+						if (widget.optionType == 5 && mouseX >= childX && mouseY >= childY && mouseX < childX + widget.width
+								&& mouseY < childY + widget.height) {
 							this.actions[this.numActions] = widget.hover;
 							this.actionIds[this.numActions] = 646;
 							this.actionParam2[this.numActions] = widget.id;
 							++this.numActions;
 						}
 
-						if (widget.optionType == 6 && !this.fK && var3 >= var9 && var5 >= var10
-								&& var3 < var9 + widget.width && var5 < var10 + widget.height) {
+						if (widget.optionType == 6 && !this.fK && mouseX >= childX && mouseY >= childY
+								&& mouseX < childX + widget.width && mouseY < childY + widget.height) {
 							this.actions[this.numActions] = widget.hover;
 							this.actionIds[this.numActions] = 679;
 							this.actionParam2[this.numActions] = widget.id;
@@ -2713,36 +2713,36 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						if (widget.group == Widget.TYPE_INVENTORY) {
 							int inventoryIndex = 0;
 
-							for (var13 = 0; var13 < widget.height; ++var13) {
-								for (var14 = 0; var14 < widget.width; ++var14) {
-									int var15 = var9 + var14 * (32 + widget.spritePaddingX);
-									int var16 = var10 + var13 * (32 + widget.spritePaddingY);
+							for (y = 0; y < widget.height; ++y) {
+								for (x = 0; x < widget.width; ++x) {
+									int var15 = childX + x * (32 + widget.spritePaddingX);
+									int var16 = childY + y * (32 + widget.spritePaddingY);
 									if (inventoryIndex < 20) {
 										var15 += widget.spriteX[inventoryIndex];
 										var16 += widget.spriteY[inventoryIndex];
 									}
 
-									if (var3 >= var15 && var5 >= var16 && var3 < var15 + 32 && var5 < var16 + 32) {
-										this.eo = inventoryIndex;
+									if (mouseX >= var15 && mouseY >= var16 && mouseX < var15 + 32 && mouseY < var16 + 32) {
+										this.nextInventorySlot = inventoryIndex;
 										this.ep = widget.id;
 										if (widget.itemIds[inventoryIndex] > 0) {
-											ItemDefinition var20 = ItemDefinition
+											ItemDefinition itemDef = ItemDefinition
 													.fromID(widget.itemIds[inventoryIndex] - 1);
 											if (this.itemClicked == 1 && widget.hasActions) {
 												if (widget.id != this.hG || inventoryIndex != this.hF) {
 													this.actions[this.numActions] = "Use " + this.clickedItemName + " with @lre@"
-															+ var20.itemName;
+															+ itemDef.itemName;
 													this.actionIds[this.numActions] = 870;
-													this.actionItemId[this.numActions] = var20.id;
+													this.actionItemId[this.numActions] = itemDef.id;
 													this.actionParam1[this.numActions] = inventoryIndex;
 													this.actionParam2[this.numActions] = widget.id;
 													++this.numActions;
 												}
 											} else if (this.fD == 1 && widget.hasActions) {
 												if ((this.fF & 16) == 16) {
-													this.actions[this.numActions] = this.fG + " @lre@" + var20.itemName;
+													this.actions[this.numActions] = this.fG + " @lre@" + itemDef.itemName;
 													this.actionIds[this.numActions] = 543;
-													this.actionItemId[this.numActions] = var20.id;
+													this.actionItemId[this.numActions] = itemDef.id;
 													this.actionParam1[this.numActions] = inventoryIndex;
 													this.actionParam2[this.numActions] = widget.id;
 													++this.numActions;
@@ -2750,10 +2750,10 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 											} else {
 												if (widget.hasActions) {
 													for (var16 = 4; var16 >= 3; --var16) {
-														if (var20.widgetActions != null
-																&& var20.widgetActions[var16] != null) {
-															this.actions[this.numActions] = var20.widgetActions[var16]
-																	+ " @lre@" + var20.itemName;
+														if (itemDef.widgetActions != null
+																&& itemDef.widgetActions[var16] != null) {
+															this.actions[this.numActions] = itemDef.widgetActions[var16]
+																	+ " @lre@" + itemDef.itemName;
 															if (var16 == 3) {
 																this.actionIds[this.numActions] = 493;
 															}
@@ -2762,19 +2762,19 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 																this.actionIds[this.numActions] = 847;
 															}
 
-															this.actionItemId[this.numActions] = var20.id;
+															this.actionItemId[this.numActions] = itemDef.id;
 														} else {
 															if (var16 != 4) {
 																continue;
 															}
 
 															this.actions[this.numActions] = "Drop @lre@"
-																	+ var20.itemName;
+																	+ itemDef.itemName;
 															this.actionIds[this.numActions] = 847;
-															this.actionItemId[this.numActions] = var20.id;
-															if (var20.id == 1971) {
+															this.actionItemId[this.numActions] = itemDef.id;
+															if (itemDef.id == 1971) {
 																this.actions[this.numActions] = "Remove @lre@"
-																		+ var20.itemName;
+																		+ itemDef.itemName;
 															}
 														}
 
@@ -2785,19 +2785,19 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 												}
 
 												if (widget.usableItems) {
-													this.actions[this.numActions] = "Use @lre@" + var20.itemName;
+													this.actions[this.numActions] = "Use @lre@" + itemDef.itemName;
 													this.actionIds[this.numActions] = 447;
-													this.actionItemId[this.numActions] = var20.id;
+													this.actionItemId[this.numActions] = itemDef.id;
 													this.actionParam1[this.numActions] = inventoryIndex;
 													this.actionParam2[this.numActions] = widget.id;
 													++this.numActions;
 												}
 
-												if (widget.hasActions && var20.widgetActions != null) {
+												if (widget.hasActions && itemDef.widgetActions != null) {
 													for (var16 = 2; var16 >= 0; --var16) {
-														if (var20.widgetActions[var16] != null) {
-															this.actions[this.numActions] = var20.widgetActions[var16]
-																	+ " @lre@" + var20.itemName;
+														if (itemDef.widgetActions[var16] != null) {
+															this.actions[this.numActions] = itemDef.widgetActions[var16]
+																	+ " @lre@" + itemDef.itemName;
 															if (var16 == 0) {
 																this.actionIds[this.numActions] = 74;
 															}
@@ -2810,7 +2810,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 																this.actionIds[this.numActions] = 539;
 															}
 
-															this.actionItemId[this.numActions] = var20.id;
+															this.actionItemId[this.numActions] = itemDef.id;
 															this.actionParam1[this.numActions] = inventoryIndex;
 															this.actionParam2[this.numActions] = widget.id;
 															++this.numActions;
@@ -2818,11 +2818,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 													}
 												}
 
-												if (widget.id == 1688 && var20.y != null) {
+												if (widget.id == 1688 && itemDef.y != null) {
 													for (var16 = 4; var16 >= 0; --var16) {
-														if (var20.y[var16] != null) {
-															this.actions[this.numActions] = var20.y[var16] + " @lre@"
-																	+ var20.itemName;
+														if (itemDef.y[var16] != null) {
+															this.actions[this.numActions] = itemDef.y[var16] + " @lre@"
+																	+ itemDef.itemName;
 															if (var16 == 0) {
 																this.actionIds[this.numActions] = 700;
 															}
@@ -2843,7 +2843,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 																this.actionIds[this.numActions] = 704;
 															}
 
-															this.actionItemId[this.numActions] = var20.id;
+															this.actionItemId[this.numActions] = itemDef.id;
 															this.actionParam1[this.numActions] = inventoryIndex;
 															this.actionParam2[this.numActions] = widget.id;
 															++this.numActions;
@@ -2855,7 +2855,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 													for (var16 = 4; var16 >= 0; --var16) {
 														if (widget.actions[var16] != null) {
 															this.actions[this.numActions] = widget.actions[var16]
-																	+ " @lre@" + var20.itemName;
+																	+ " @lre@" + itemDef.itemName;
 															if (var16 == 0) {
 																this.actionIds[this.numActions] = 632;
 															}
@@ -2876,7 +2876,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 																this.actionIds[this.numActions] = 53;
 															}
 
-															this.actionItemId[this.numActions] = var20.id;
+															this.actionItemId[this.numActions] = itemDef.id;
 															this.actionParam1[this.numActions] = inventoryIndex;
 															this.actionParam2[this.numActions] = widget.id;
 															++this.numActions;
@@ -2885,11 +2885,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 												}
 
 												this.actions[this.numActions] = this.accountType < 2
-														? "Examine @lre@" + var20.itemName
-														: "Examine @lre@" + var20.itemName + " @gre@(@whi@"
+														? "Examine @lre@" + itemDef.itemName
+														: "Examine @lre@" + itemDef.itemName + " @gre@(@whi@"
 																+ (widget.itemIds[inventoryIndex] - 1) + "@gre@)";
 												this.actionIds[this.numActions] = 1125;
-												this.actionItemId[this.numActions] = var20.id;
+												this.actionItemId[this.numActions] = itemDef.id;
 												this.actionParam1[this.numActions] = inventoryIndex;
 												this.actionParam2[this.numActions] = widget.id;
 												++this.numActions;
@@ -2909,8 +2909,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	}
 
 	private void a(int var1, int var2, int var3, int var4, int var5) {
-		this.dI.drawSprite(var4, var3);
-		this.dJ.drawSprite(var4, var3 + var1 - 16);
+		this.scrollbarZero.drawSprite(var4, var3);
+		this.scrollbarOne.drawSprite(var4, var3 + var1 - 16);
 		Rasterizer2D.fillRectangle(var1 - 32, var3 + 16, var4, 1, 16);
 		Rasterizer2D.fillRectangle(var1 - 32, var3 + 16, var4, 4011046, 15);
 		Rasterizer2D.fillRectangle(var1 - 32, var3 + 16, var4, 3419425, 13);
@@ -3051,7 +3051,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 			for (var6 = 0; var6 < var5; ++var6) {
 				int var7 = var4.aY[var6];
-				Npc var8 = var4.aW[var7];
+				Npc var8 = var4.npcs[var7];
 				if (var3.i(1) == 0) {
 					var4.aY[var4.aX++] = var7;
 					var8.K = tick;
@@ -3091,9 +3091,9 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			int var11;
 			for (var11 = 0; var11 < this.aZ; ++var11) {
 				int var10 = this.ba[var11];
-				if (this.aW[var10].K != tick) {
-					this.aW[var10].npcDefinition = null;
-					this.aW[var10] = null;
+				if (this.npcs[var10].K != tick) {
+					this.npcs[var10].npcDefinition = null;
+					this.npcs[var10] = null;
 				}
 			}
 
@@ -3103,7 +3103,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				throw new RuntimeException("eek");
 			} else {
 				for (var11 = 0; var11 < this.aX; ++var11) {
-					if (this.aW[this.aY[var11]] == null) {
+					if (this.npcs[this.aY[var11]] == null) {
 						SignLink.reportError(username + " null entry in npc list - pos:" + var11 + " size:" + this.aX);
 						throw new RuntimeException("eek");
 					}
@@ -3175,9 +3175,9 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 				if (playMusic != var3) {
 					if (playMusic) {
-						this.requestedSong = this.cJ;
-						this.gM = true;
-						this.resourceProvider.provide(2, this.requestedSong);
+						this.musicId = this.cJ;
+						this.fadeMusic = true;
+						this.resourceProvider.provide(2, this.musicId);
 					} else {
 						this.stopMusic();
 					}
@@ -3223,7 +3223,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 			if (var2 == 8) {
 				this.gu = var1;
-				D = true;
+				redrawDialog = true;
 			}
 
 			if (var2 == 9) {
@@ -3236,7 +3236,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 	}
 
-	private void p() {
+	private void draw2DEffects() {
 		try {
 			int var1 = 0;
 
@@ -3249,7 +3249,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				} else if (var2 < this.bM) {
 					var3 = this.players[this.bN[var2]];
 				} else {
-					var3 = this.aW[this.aY[var2 - this.bM]];
+					var3 = this.npcs[this.aY[var2 - this.bM]];
 				}
 
 				if (var3 != null && ((Actor) var3).isVisible()) {
@@ -3269,7 +3269,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						var13 = 30;
 						Player var5;
 						if ((var5 = (Player) var3).headIcon >= 0) {
-							this.a((Actor) var3, ((Actor) var3).j + 15);
+							this.actorToScreen((Actor) var3, ((Actor) var3).j + 15);
 							if (this.cP >= 0) {
 								if (var5.at < 2) {
 									this.headiconsPk[var5.at].drawSprite(this.cP - 12, this.cQ - 30);
@@ -3283,35 +3283,35 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 							}
 						}
 
-						if (var2 >= 0 && this.bm == 10 && this.cl == this.bN[var2]) {
-							this.a((Actor) var3, ((Actor) var3).j + 15);
+						if (var2 >= 0 && this.hintIconType == 10 && this.hintIconPlayer == this.bN[var2]) {
+							this.actorToScreen((Actor) var3, ((Actor) var3).j + 15);
 							if (this.cP >= 0) {
-								this.fa[var5.au].drawSprite(this.cP - 12, this.cQ - var13);
+								this.headiconHintSprites[var5.au].drawSprite(this.cP - 12, this.cQ - var13);
 							}
 						}
 					} else {
 						var4 = ((Npc) var3).npcDefinition;
 						if (((Npc) var3).npcDefinition.headIcon >= 0 && var4.headIcon < this.headiconsPrayer.length) {
-							this.a((Actor) var3, ((Actor) var3).j + 15);
+							this.actorToScreen((Actor) var3, ((Actor) var3).j + 15);
 							if (this.cP >= 0) {
 								this.headiconsPrayer[var4.headIcon].drawSprite(this.cP - 12, this.cQ - 30);
 							}
 						}
 
-						if (this.bm == 1 && this.gI == this.aY[var2 - this.bM] && tick % 20 < 10) {
-							this.a((Actor) var3, ((Actor) var3).j + 15);
+						if (this.hintIconType == 1 && this.hintIconNpc == this.aY[var2 - this.bM] && tick % 20 < 10) {
+							this.actorToScreen((Actor) var3, ((Actor) var3).j + 15);
 							if (this.cP >= 0) {
-								this.fa[0].drawSprite(this.cP - 12, this.cQ - 28);
+								this.headiconHintSprites[0].drawSprite(this.cP - 12, this.cQ - 28);
 							}
 						}
 					}
 
 					if (((Actor) var3).i != null && (var2 >= this.bM || this.G == 0 || this.G == 3
 							|| this.G == 1 && this.c(((Player) var3).name))) {
-						this.a((Actor) var3, ((Actor) var3).j);
+						this.actorToScreen((Actor) var3, ((Actor) var3).j);
 						if (this.cP >= 0 && var1 < 50) {
-							this.cY[var1] = this.b12_full.getTextWidth(((Actor) var3).i) / 2;
-							this.cX[var1] = this.b12_full.verticalSpace;
+							this.cY[var1] = this.bold.getTextWidth(((Actor) var3).i) / 2;
+							this.cX[var1] = this.bold.verticalSpace;
 							this.cV[var1] = this.cP;
 							this.cW[var1] = this.cQ;
 							this.cZ[var1] = ((Actor) var3).n;
@@ -3335,7 +3335,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 					if (((Actor) var3).G > tick) {
 						try {
-							this.a((Actor) var3, ((Actor) var3).j + 15);
+							this.actorToScreen((Actor) var3, ((Actor) var3).j + 15);
 							if (this.cP >= 0) {
 								if ((var13 = ((Actor) var3).H * 30 / ((Actor) var3).I) > 30) {
 									var13 = 30;
@@ -3351,7 +3351,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 					for (var13 = 0; var13 < 4; ++var13) {
 						if (((Actor) var3).q[var13] > tick) {
-							this.a((Actor) var3, ((Actor) var3).j / 2);
+							this.actorToScreen((Actor) var3, ((Actor) var3).j / 2);
 							if (this.cP >= 0) {
 								if (var13 == 1) {
 									this.cQ -= 20;
@@ -3368,8 +3368,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 								}
 
 								this.hitsplats[((Actor) var3).p[var13]].drawSprite(this.cP - 12, this.cQ - 12);
-								this.p11_full.a(0, String.valueOf(((Actor) var3).o[var13]), this.cQ + 4, this.cP);
-								this.p11_full.a(16777215, String.valueOf(((Actor) var3).o[var13]), this.cQ + 3,
+								this.smallFont.a(0, String.valueOf(((Actor) var3).o[var13]), this.cQ + 4, this.cP);
+								this.smallFont.a(16777215, String.valueOf(((Actor) var3).o[var13]), this.cQ + 3,
 										this.cP - 1);
 							}
 						}
@@ -3450,31 +3450,31 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					}
 
 					if (this.da[var2] == 0) {
-						this.b12_full.a(0, var14, this.cQ + 1, this.cP);
-						this.b12_full.a(var11, var14, this.cQ, this.cP);
+						this.bold.a(0, var14, this.cQ + 1, this.cP);
+						this.bold.a(var11, var14, this.cQ, this.cP);
 					}
 
 					if (this.da[var2] == 1) {
-						this.b12_full.wave(0, var14, this.cP, this.hp, this.cQ + 1);
-						this.b12_full.wave(var11, var14, this.cP, this.hp, this.cQ);
+						this.bold.wave(0, var14, this.cP, this.hp, this.cQ + 1);
+						this.bold.wave(var11, var14, this.cP, this.hp, this.cQ);
 					}
 
 					if (this.da[var2] == 2) {
-						this.b12_full.wave2(this.cP, var14, this.hp, this.cQ + 1, 0);
-						this.b12_full.wave2(this.cP, var14, this.hp, this.cQ, var11);
+						this.bold.wave2(this.cP, var14, this.hp, this.cQ + 1, 0);
+						this.bold.wave2(this.cP, var14, this.hp, this.cQ, var11);
 					}
 
 					if (this.da[var2] == 3) {
-						this.b12_full.shake(150 - this.db[var2], var14, this.hp, this.cQ + 1, this.cP, 0);
-						this.b12_full.shake(150 - this.db[var2], var14, this.hp, this.cQ, this.cP, var11);
+						this.bold.shake(150 - this.db[var2], var14, this.hp, this.cQ + 1, this.cP, 0);
+						this.bold.shake(150 - this.db[var2], var14, this.hp, this.cQ, this.cP, var11);
 					}
 
 					if (this.da[var2] == 4) {
-						var13 = this.b12_full.getTextWidth(var14);
+						var13 = this.bold.getTextWidth(var14);
 						var12 = (150 - this.db[var2]) * (var13 + 100) / 150;
 						Rasterizer2D.setBounds(334, this.cP - 50, this.cP + 50, 0);
-						this.b12_full.render(0, var14, this.cQ + 1, this.cP + 50 - var12);
-						this.b12_full.render(var11, var14, this.cQ, this.cP + 50 - var12);
+						this.bold.render(0, var14, this.cQ + 1, this.cP + 50 - var12);
+						this.bold.render(var11, var14, this.cQ, this.cP + 50 - var12);
 						Rasterizer2D.setDefaultBounds();
 					}
 
@@ -3487,14 +3487,14 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 							var12 = var13 - 125;
 						}
 
-						Rasterizer2D.setBounds(this.cQ + 5, 0, 512, this.cQ - this.b12_full.verticalSpace - 1);
-						this.b12_full.a(0, var14, this.cQ + 1 + var12, this.cP);
-						this.b12_full.a(var11, var14, this.cQ + var12, this.cP);
+						Rasterizer2D.setBounds(this.cQ + 5, 0, 512, this.cQ - this.bold.verticalSpace - 1);
+						this.bold.a(0, var14, this.cQ + 1 + var12, this.cP);
+						this.bold.a(var11, var14, this.cQ + var12, this.cP);
 						Rasterizer2D.setDefaultBounds();
 					}
 				} else {
-					this.b12_full.a(0, var14, this.cQ + 1, this.cP);
-					this.b12_full.a(16776960, var14, this.cQ, this.cP);
+					this.bold.a(0, var14, this.cQ + 1, this.cP);
+					this.bold.a(16776960, var14, this.cQ, this.cP);
 				}
 			}
 
@@ -3506,17 +3506,17 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private void a(long var1) {
 		if (var1 != 0L) {
 			try {
-				for (int var3 = 0; var3 < this.bS; ++var3) {
+				for (int var3 = 0; var3 < this.numFriends; ++var3) {
 					if (this.cG[var3] == var1) {
-						--this.bS;
+						--this.numFriends;
 
-						for (var3 = var3; var3 < this.bS; ++var3) {
+						for (var3 = var3; var3 < this.numFriends; ++var3) {
 							this.eD[var3] = this.eD[var3 + 1];
 							this.aQ[var3] = this.aQ[var3 + 1];
 							this.cG[var3] = this.cG[var3 + 1];
 						}
 
-						this.packet.writeCipheredByte(215);
+						this.packet.writeOpcode(215);
 						this.packet.writeLong(var1);
 						return;
 					}
@@ -3536,10 +3536,10 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 		if (resizeMode == 0) {
 			Animation.spriteFromGroup("tabs", 5).drawSprite(0, 0);
-			this.aJ.b(30, 37);
+			this.mascotInv.b(30, 37);
 		}
 
-		Rasterizer3D.t = this.gh;
+		Rasterizer3D.scanOffsets = this.gh;
 		int var1 = clientWidth >= this.eR ? 37 : 74;
 		if (resizeMode != 0) {
 			if (clientWidth >= this.eR) {
@@ -3553,11 +3553,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			if (clientWidth >= this.eR) {
 				Animation.spriteFromGroup("tabs", 8).drawSprite(clientWidth - 204, clientHeight - 310);
 				Rasterizer2D.fillRectangle(5260860, clientHeight - 303, 190, 260, 100, clientWidth - 197);
-				this.aJ.b(clientWidth - 198, clientHeight - 303);
+				this.mascotInv.b(clientWidth - 198, clientHeight - 303);
 			} else {
 				Animation.spriteFromGroup("tabs", 8).drawSprite(clientWidth - 222, clientHeight - 346);
 				Rasterizer2D.fillRectangle(5260860, clientHeight - 339, 190, 260, 100, clientWidth - 216);
-				this.aJ.b(clientWidth - 216, clientHeight - 339);
+				this.mascotInv.b(clientWidth - 216, clientHeight - 339);
 			}
 		}
 
@@ -3575,21 +3575,21 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			Widget var10003;
 			int var10002;
 			if (resizeMode == 0) {
-				if (this.gp != -1) {
+				if (this.altInterfaceWidget != -1) {
 					var10000 = this;
 					var10001 = 0;
 					var10002 = 32;
-					var10003 = Widget.widgets[this.gp];
+					var10003 = Widget.widgets[this.altInterfaceWidget];
 					var10004 = 36;
 				} else {
-					if (u[C] == -1) {
+					if (redStoneWidgetIds[selectedRedStoneId] == -1) {
 						break label206;
 					}
 
 					var10000 = this;
 					var10001 = 0;
 					var10002 = 32;
-					var10003 = Widget.widgets[u[C]];
+					var10003 = Widget.widgets[redStoneWidgetIds[selectedRedStoneId]];
 					var10004 = 36;
 				}
 			} else {
@@ -3597,30 +3597,30 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					break label206;
 				}
 
-				if (this.gp != -1) {
-					this.a(0, clientWidth >= this.eR ? var2 + 28 : clientWidth - 214, (Widget) Widget.widgets[this.gp],
+				if (this.altInterfaceWidget != -1) {
+					this.processWidgets(0, clientWidth >= this.eR ? var2 + 28 : clientWidth - 214, (Widget) Widget.widgets[this.altInterfaceWidget],
 							clientWidth >= this.eR ? var3 + 37 : clientHeight - var1 - 265);
 					break label206;
 				}
 
-				if (u[C] == -1) {
+				if (redStoneWidgetIds[selectedRedStoneId] == -1) {
 					break label206;
 				}
 
 				var10000 = this;
 				var10001 = 0;
 				var10002 = clientWidth >= this.eR ? var2 + 28 : clientWidth - 214;
-				var10003 = Widget.widgets[u[C]];
+				var10003 = Widget.widgets[redStoneWidgetIds[selectedRedStoneId]];
 				var10004 = clientWidth >= this.eR ? var3 + 37 : clientHeight - var1 - 265;
 			}
 
-			var10000.a(var10001, var10002, (Widget) var10003, var10004);
+			var10000.processWidgets(var10001, var10002, (Widget) var10003, var10004);
 		}
 
-		if (this.gp == -1) {
+		if (this.altInterfaceWidget == -1) {
 			if (resizeMode == 0) {
-				if (u[C] != -1) {
-					switch (C) {
+				if (redStoneWidgetIds[selectedRedStoneId] != -1) {
+					switch (selectedRedStoneId) {
 					case 0:
 						Animation.spriteFromGroup("tabs", 0).drawSprite(6, 0);
 						break;
@@ -3666,8 +3666,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				}
 			} else if (resizeMode != 0) {
 				if (clientWidth < this.eR) {
-					if (u[C] != -1 && this.eP) {
-						switch (C) {
+					if (redStoneWidgetIds[selectedRedStoneId] != -1 && this.eP) {
+						switch (selectedRedStoneId) {
 						case 0:
 							Animation.spriteFromGroup("tabs", 0).drawSprite(clientWidth - 241, clientHeight - 73);
 							break;
@@ -3711,8 +3711,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 							Animation.spriteFromGroup("tabs", 3).drawSprite(clientWidth - 38, clientHeight - 37);
 						}
 					}
-				} else if (clientWidth >= this.eR && u[C] != -1 && this.eP) {
-					switch (C) {
+				} else if (clientWidth >= this.eR && redStoneWidgetIds[selectedRedStoneId] != -1 && this.eP) {
+					switch (selectedRedStoneId) {
 					case 0:
 						Animation.spriteFromGroup("tabs", 4).drawSprite(clientWidth - 462, clientHeight - 36);
 						break;
@@ -3768,7 +3768,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				var7 = new int[] { 9, 7, 7, 5, 2, 3, 7, 303, 306, 306, 302, 304, 302, 303 };
 
 				for (var4 = 0; var4 < 14; ++var4) {
-					if (u[var5[var4]] != -1) {
+					if (redStoneWidgetIds[var5[var4]] != -1) {
 						Animation.spriteFromGroup("sideicons", var4).drawSprite(var6[var4], var7[var4]);
 					}
 				}
@@ -3779,7 +3779,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					var7 = new int[] { 65, 67, 66, 68, 71, 70, 65, 32, 30, 30, 33, 31, 32, 32 };
 
 					for (var4 = 0; var4 < 14; ++var4) {
-						if (u[var5[var4]] != -1) {
+						if (redStoneWidgetIds[var5[var4]] != -1) {
 							Animation.spriteFromGroup("sideicons", var4).drawSprite(clientWidth - var6[var4],
 									clientHeight - var7[var4]);
 						}
@@ -3790,7 +3790,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					var7 = new int[] { 29, 31, 29, 32, 34, 34, 31, 32, 30, 30, 33, 31, 32, 32 };
 
 					for (var4 = 0; var4 < 14; ++var4) {
-						if (u[var5[var4]] != -1) {
+						if (redStoneWidgetIds[var5[var4]] != -1) {
 							Animation.spriteFromGroup("sideicons", var4).drawSprite(clientWidth - var6[var4],
 									clientHeight - var7[var4]);
 						}
@@ -3800,15 +3800,15 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		}
 
 		if (this.menuShowing && resizeMode == 0) {
-			this.c(516, 168);
+			this.drawMenu(516, 168);
 		}
 
 		if (resizeMode == 0) {
-			this.fU.drawImage(168, super.frameGraphics, 516);
+			this.fU.drawImage(168, super.drawGraphics, 516);
 		}
 
 		this.fW.initializeRasterizer();
-		Rasterizer3D.t = this.gi;
+		Rasterizer3D.scanOffsets = this.gi;
 	}
 
 	private void r() {
@@ -3833,7 +3833,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		for (var1 = 0; var1 < this.aX; ++var1) {
 			var2 = this.aY[var1];
 			Npc var4;
-			if ((var4 = this.aW[var2]) != null && var4.J > 0) {
+			if ((var4 = this.npcs[var2]) != null && var4.J > 0) {
 				var4.J = var4.J - 1;
 				if (var4.J == 0) {
 					var4.i = null;
@@ -3843,52 +3843,52 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 	}
 
-	private void c(int var1, int var2) {
-		int var3 = this.cA - (var1 - 4);
-		int var4 = -var2 + 4 + this.cB;
-		int var5 = this.cC;
-		int var6 = this.cD + 1;
-		D = true;
+	private void drawMenu(int offsetX, int offsetY) {
+		int x = this.menuX - (offsetX - 4);
+		int y = -offsetY + 4 + this.menuY;
+		int width = this.menuWidth;
+		int height = this.menuHeight + 1;
+		redrawDialog = true;
 		fh = true;
-		Rasterizer2D.fillRectangle(var6 - 4, var4 + 2, var3, 7367262, var5);
-		Rasterizer2D.fillRectangle(var6 - 2, var4 + 1, var3 + 1, 7367262, var5 - 2);
-		Rasterizer2D.fillRectangle(var6, var4, var3 + 2, 7367262, var5 - 4);
-		Rasterizer2D.fillRectangle(var6 - 2, var4 + 1, var3 + 3, 2959394, var5 - 6);
-		Rasterizer2D.fillRectangle(var6 - 4, var4 + 2, var3 + 2, 2959394, var5 - 4);
-		Rasterizer2D.fillRectangle(var6 - 6, var4 + 3, var3 + 1, 2959394, var5 - 2);
-		Rasterizer2D.fillRectangle(var6 - 22, var4 + 19, var3 + 2, 5392957, var5 - 4);
-		Rasterizer2D.fillRectangle(var6 - 22, var4 + 20, var3 + 3, 5392957, var5 - 6);
-		Rasterizer2D.fillRectangle(var6 - 23, var4 + 20, var3 + 3, 2828060, var5 - 6);
-		Rasterizer2D.drawRectangle(var3 + 3, var5 - 6, 1, 2763035, var4 + 2);
-		Rasterizer2D.drawRectangle(var3 + 2, var5 - 4, 1, 2762267, var4 + 3);
-		Rasterizer2D.drawRectangle(var3 + 2, var5 - 4, 1, 2433302, var4 + 4);
-		Rasterizer2D.drawRectangle(var3 + 2, var5 - 4, 1, 2170389, var4 + 5);
-		Rasterizer2D.drawRectangle(var3 + 2, var5 - 4, 1, 1973010, var4 + 6);
-		Rasterizer2D.drawRectangle(var3 + 2, var5 - 4, 1, 1709838, var4 + 7);
-		Rasterizer2D.drawRectangle(var3 + 2, var5 - 4, 2, 1380875, var4 + 8);
-		Rasterizer2D.drawRectangle(var3 + 2, var5 - 4, 1, 1051912, var4 + 10);
-		Rasterizer2D.drawRectangle(var3 + 2, var5 - 4, 1, 592388, var4 + 11);
-		Rasterizer2D.drawRectangle(var3 + 2, var5 - 4, 1, 526083, var4 + 12);
-		Rasterizer2D.drawRectangle(var3 + 2, var5 - 4, 1, 592388, var4 + 13);
-		Rasterizer2D.drawRectangle(var3 + 2, var5 - 4, 1, 460802, var4 + 14);
-		Rasterizer2D.drawRectangle(var3 + 2, var5 - 4, 1, 592388, var4 + 15);
-		Rasterizer2D.drawRectangle(var3 + 2, var5 - 4, 1, 460802, var4 + 16);
-		Rasterizer2D.drawRectangle(var3 + 2, var5 - 4, 1, 592388, var4 + 17);
-		Rasterizer2D.drawRectangle(var3 + 2, var5 - 4, 1, 2763035, var4 + 18);
-		Rasterizer2D.drawRectangle(var3 + 3, var5 - 6, 1, 5654851, var4 + 19);
-		this.b12_full.render(13023381, "Choose Option", var4 + 14, var3 + 3);
-		var1 = super.mouseX - var1;
-		var2 = -var2 + super.mouseY;
+		Rasterizer2D.fillRectangle(height - 4, y + 2, x, 7367262, width);
+		Rasterizer2D.fillRectangle(height - 2, y + 1, x + 1, 7367262, width - 2);
+		Rasterizer2D.fillRectangle(height, y, x + 2, 7367262, width - 4);
+		Rasterizer2D.fillRectangle(height - 2, y + 1, x + 3, 2959394, width - 6);
+		Rasterizer2D.fillRectangle(height - 4, y + 2, x + 2, 2959394, width - 4);
+		Rasterizer2D.fillRectangle(height - 6, y + 3, x + 1, 2959394, width - 2);
+		Rasterizer2D.fillRectangle(height - 22, y + 19, x + 2, 5392957, width - 4);
+		Rasterizer2D.fillRectangle(height - 22, y + 20, x + 3, 5392957, width - 6);
+		Rasterizer2D.fillRectangle(height - 23, y + 20, x + 3, 2828060, width - 6);
+		Rasterizer2D.drawRectangle(x + 3, width - 6, 1, 2763035, y + 2);
+		Rasterizer2D.drawRectangle(x + 2, width - 4, 1, 2762267, y + 3);
+		Rasterizer2D.drawRectangle(x + 2, width - 4, 1, 2433302, y + 4);
+		Rasterizer2D.drawRectangle(x + 2, width - 4, 1, 2170389, y + 5);
+		Rasterizer2D.drawRectangle(x + 2, width - 4, 1, 1973010, y + 6);
+		Rasterizer2D.drawRectangle(x + 2, width - 4, 1, 1709838, y + 7);
+		Rasterizer2D.drawRectangle(x + 2, width - 4, 2, 1380875, y + 8);
+		Rasterizer2D.drawRectangle(x + 2, width - 4, 1, 1051912, y + 10);
+		Rasterizer2D.drawRectangle(x + 2, width - 4, 1, 592388, y + 11);
+		Rasterizer2D.drawRectangle(x + 2, width - 4, 1, 526083, y + 12);
+		Rasterizer2D.drawRectangle(x + 2, width - 4, 1, 592388, y + 13);
+		Rasterizer2D.drawRectangle(x + 2, width - 4, 1, 460802, y + 14);
+		Rasterizer2D.drawRectangle(x + 2, width - 4, 1, 592388, y + 15);
+		Rasterizer2D.drawRectangle(x + 2, width - 4, 1, 460802, y + 16);
+		Rasterizer2D.drawRectangle(x + 2, width - 4, 1, 592388, y + 17);
+		Rasterizer2D.drawRectangle(x + 2, width - 4, 1, 2763035, y + 18);
+		Rasterizer2D.drawRectangle(x + 3, width - 6, 1, 5654851, y + 19);
+		this.bold.render(13023381, "Choose Option", y + 14, x + 3);
+		offsetX = super.mouseX - offsetX;
+		offsetY = -offsetY + super.mouseY;
 
-		for (var6 = 0; var6 < this.numActions; ++var6) {
-			int var7 = var4 + 31 + (this.numActions - 1 - var6) * 15;
+		for (height = 0; height < this.numActions; ++height) {
+			int var7 = y + 31 + (this.numActions - 1 - height) * 15;
 			int var8 = 13023381;
-			if (var1 > var3 && var1 < var3 + var5 && var2 > var7 - 13 && var2 < var7 + 3) {
-				Rasterizer2D.fillRectangle(15, var7 - 11, var3 + 3, 7301469, this.cC - 6);
+			if (offsetX > x && offsetX < x + width && offsetY > var7 - 13 && offsetY < var7 + 3) {
+				Rasterizer2D.fillRectangle(15, var7 - 11, x + 3, 7301469, this.menuWidth - 6);
 				var8 = 15656390;
 			}
 
-			this.b12_full.shadow(true, var3 + 3, var8, this.actions[var6], var7);
+			this.bold.shadow(true, x + 3, var8, this.actions[height], var7);
 		}
 
 	}
@@ -3896,15 +3896,15 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private void b(long var1) {
 		if (var1 != 0L) {
 			try {
-				if (this.bS >= 100 && this.dX != 1) {
+				if (this.numFriends >= 100 && this.dX != 1) {
 					this.a("Your friendlist is full. Max of 100 for free users, and 200 for members", 0, "", true);
-				} else if (this.bS >= 200) {
+				} else if (this.numFriends >= 200) {
 					this.a("Your friendlist is full. Max of 100 for free users, and 200 for members", 0, "", true);
 				} else {
 					String var3 = StringUtils.formatName(StringUtils.longToName(var1));
 
 					int var4;
-					for (var4 = 0; var4 < this.bS; ++var4) {
+					for (var4 = 0; var4 < this.numFriends; ++var4) {
 						if (this.cG[var4] == var1) {
 							this.a(var3 + " is already on your friend list", 0, "", true);
 							return;
@@ -3919,11 +3919,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					}
 
 					if (!var3.equals(localPlayer.name)) {
-						this.eD[this.bS] = var3;
-						this.cG[this.bS] = var1;
-						this.aQ[this.bS] = 0;
-						++this.bS;
-						this.packet.writeCipheredByte(188);
+						this.eD[this.numFriends] = var3;
+						this.cG[this.numFriends] = var1;
+						this.aQ[this.numFriends] = 0;
+						++this.numFriends;
+						this.packet.writeOpcode(188);
 						this.packet.writeLong(var1);
 					}
 				}
@@ -3934,19 +3934,19 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		}
 	}
 
-	private int b(int var1, int var2, int var3) {
+	private int b(int plane, int var2, int var3) {
 		int var4 = var3 >> 7;
 		int var5 = var2 >> 7;
 		if (var4 >= 0 && var5 >= 0 && var4 <= 103 && var5 <= 103) {
-			if ((var1 = var1) < 3 && (this.hj[1][var4][var5] & 2) == 2) {
-				++var1;
+			if ((plane = plane) < 3 && (this.tileFlags[1][var4][var5] & 2) == 2) {
+				++plane;
 			}
 
 			var3 &= 127;
 			var2 &= 127;
-			int var6 = this.gE[var1][var4][var5] * (128 - var3) + this.gE[var1][var4 + 1][var5] * var3 >> 7;
-			var1 = this.gE[var1][var4][var5 + 1] * (128 - var3) + this.gE[var1][var4 + 1][var5 + 1] * var3 >> 7;
-			return var6 * (128 - var2) + var1 * var2 >> 7;
+			int var6 = this.tileHeights[plane][var4][var5] * (128 - var3) + this.tileHeights[plane][var4 + 1][var5] * var3 >> 7;
+			plane = this.tileHeights[plane][var4][var5 + 1] * (128 - var3) + this.tileHeights[plane][var4 + 1][var5 + 1] * var3 >> 7;
+			return var6 * (128 - var2) + plane * var2 >> 7;
 		} else {
 			return 0;
 		}
@@ -3984,17 +3984,17 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		this.scene.reset();
 
 		for (int var1 = 0; var1 < 4; ++var1) {
-			this.gQ[var1].a();
+			this.collisionMaps[var1].a();
 		}
 
 		System.gc();
 		this.stopMusic();
 		this.cJ = -1;
-		this.requestedSong = 0;
+		this.musicId = 0;
 		this.loopMusic = 0;
 		if (playLoginMusic) {
 			this.midiVolume = 256;
-			this.resourceProvider.provide(2, this.requestedSong);
+			this.resourceProvider.provide(2, this.musicId);
 		}
 
 	}
@@ -4018,11 +4018,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private void a(int var1, Buffer var2) {
 		int var3;
 		while (var2.c + 21 < var1 << 3 && (var3 = var2.i(14)) != 16383) {
-			if (this.aW[var3] == null) {
-				this.aW[var3] = new Npc();
+			if (this.npcs[var3] == null) {
+				this.npcs[var3] = new Npc();
 			}
 
-			Npc var4 = this.aW[var3];
+			Npc var4 = this.npcs[var3];
 			this.aY[this.aX++] = var3;
 			var4.K = tick;
 			int var5;
@@ -4054,29 +4054,31 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		var2.q();
 	}
 
-	public final void gameLogic() throws Throwable {
+	public final void tickUpdate() throws Throwable {
+		bot.preTick();
+		
 		if (!this.gameCrashed) {
 			++tick;
 			if (!this.loggedIn) {
 				Client client = this;
 				int var2 = clientWidth / 2;
 				int var3 = clientHeight / 2;
-				if (super.T == 1 && this.b(clientWidth - 52, 10, clientWidth - 10, 52)) {
+				if (super.lastMetaModifier == 1 && this.b(clientWidth - 52, 10, clientWidth - 10, 52)) {
 					if (playLoginMusic) {
 						playLoginMusic = false;
 						this.stopMusic();
 					} else if (!playLoginMusic) {
 						playLoginMusic = true;
 						this.midiVolume = 256;
-						this.requestedSong = 0;
+						this.musicId = 0;
 
 						try {
-							client.requestedSong = Integer.parseInt(client.getParameter("music"));
+							client.musicId = Integer.parseInt(client.getParameter("music"));
 						} catch (Exception var7) {
 							;
 						}
 
-						this.resourceProvider.provide(2, this.requestedSong);
+						this.resourceProvider.provide(2, this.musicId);
 					}
 
 					VScapeSettings.write();
@@ -4084,15 +4086,15 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 				if (this.hq.length() > 0 || this.hr.length() > 0) {
 					if (this.hq.length() > 0) {
-						this.p12_full.a(16777215, var2 + 5, this.hq, var3 + 80, true);
+						this.frameFont.a(16777215, var2 + 5, this.hq, var3 + 80, true);
 					}
 
-					this.p12_full.a(16777215, var2 + 5, this.hr, var3 + 80, true);
+					this.frameFont.a(16777215, var2 + 5, this.hr, var3 + 80, true);
 				}
 
 				if (this.aU == 2) {
 					label199: {
-						if (super.T == 1 && this.b(var2 - 108, var3 + 12, var2 - 90, var3 + 24)) {
+						if (super.lastMetaModifier == 1 && this.b(var2 - 108, var3 + 12, var2 - 90, var3 + 24)) {
 							if (c) {
 								c = false;
 							} else {
@@ -4102,17 +4104,17 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 							VScapeSettings.write();
 						}
 
-						if (super.T == 1 && this.b(var2 - 100, var3 - 64,
+						if (super.lastMetaModifier == 1 && this.b(var2 - 100, var3 - 64,
 								var2 + Animation.spriteFromGroup("login", 1).width / 2, var3 - 38)) {
 							this.gG = 0;
 						}
 
-						if (super.T == 1 && this.b(var2 - 100, var3 - 19,
+						if (super.lastMetaModifier == 1 && this.b(var2 - 100, var3 - 19,
 								var2 + Animation.spriteFromGroup("login", 1).width / 2, var3 + 7)) {
 							this.gG = 1;
 						}
 
-						if (super.T == 1 && this.b(var2 - 80, var3 + 38,
+						if (super.lastMetaModifier == 1 && this.b(var2 - 80, var3 + 38,
 								var2 + Animation.spriteFromGroup("login", 2).width / 2, var3 + 64)) {
 							if (username.length() > 0 && password.length() > 0) {
 								this.dS = 0;
@@ -4175,8 +4177,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 									password = password.substring(0, 20);
 								}
 							} else if (client.gG == 2) {
-								client.p12_full.a(16777215, var2 - 308, client.hq, var3 - 47, true);
-								client.p12_full.a(16777215, var2 + 5, client.hq, var3 - 180, true);
+								client.frameFont.a(16777215, var2 - 308, client.hq, var3 - 47, true);
+								client.frameFont.a(16777215, var2 + 5, client.hq, var3 - 180, true);
 								if (var4 == 8 && hK.length() > 0) {
 									hK = hK.substring(0, hK.length() - 1);
 								}
@@ -4194,8 +4196,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 								}
 							}
 
-							client.p12_full.a(16777215, var2 - 308, client.hq, var3 - 47, true);
-							client.p12_full.a(16777215, var2 + 5, client.hq, var3 - 180, true);
+							client.frameFont.a(16777215, var2 - 308, client.hq, var3 - 47, true);
+							client.frameFont.a(16777215, var2 + 5, client.hq, var3 - 180, true);
 						}
 					}
 				}
@@ -4205,6 +4207,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 			this.dispatchProvidedResources();
 		}
+		
+		bot.postTick();
 	}
 
 	private void b(boolean var1) {
@@ -4260,7 +4264,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		int var5 = var1.contentType;
 		if (this.bU == 2) {
 			if (var5 == 201) {
-				D = true;
+				redrawDialog = true;
 				this.gJ = 0;
 				this.hi = true;
 				this.gC = "";
@@ -4269,7 +4273,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			}
 
 			if (var5 == 202) {
-				D = true;
+				redrawDialog = true;
 				this.gJ = 0;
 				this.hi = true;
 				this.gC = "";
@@ -4283,7 +4287,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			return true;
 		} else {
 			if (var5 == 501) {
-				D = true;
+				redrawDialog = true;
 				this.gJ = 0;
 				this.hi = true;
 				this.gC = "";
@@ -4292,7 +4296,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			}
 
 			if (var5 == 502) {
-				D = true;
+				redrawDialog = true;
 				this.gJ = 0;
 				this.hi = true;
 				this.gC = "";
@@ -4301,7 +4305,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			}
 
 			if (var5 == 550) {
-				D = true;
+				redrawDialog = true;
 				this.gJ = 0;
 				this.hi = true;
 				this.gC = "";
@@ -4381,7 +4385,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				if (var5 >= 601 && var5 <= 612) {
 					this.widgetClose();
 					if (this.bE.length() > 0) {
-						this.packet.writeCipheredByte(218);
+						this.packet.writeOpcode(218);
 						this.packet.writeLong(StringUtils.nameToLong(this.bE));
 						this.packet.writeByte(var5 - 601);
 						this.packet.writeByte(this.fR ? 1 : 0);
@@ -4390,7 +4394,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 				return false;
 			} else {
-				this.packet.writeCipheredByte(101);
+				this.packet.writeOpcode(101);
 				this.packet.writeByte(this.dY ? 0 : 1);
 
 				for (var2 = 0; var2 < 7; ++var2) {
@@ -4599,7 +4603,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			ObjectDefinition var10;
 			if ((var10 = ObjectDefinition.byId(var6 >> 14 & 32767)).mapscene != -1) {
 				IndexedImage var11;
-				if ((var11 = this.ej[var10.mapscene]) != null) {
+				if ((var11 = this.mapsceneImages[var10.mapscene]) != null) {
 					var4 = ((var10.width << 2) - var11.c) / 2;
 					var6 = ((var10.length << 2) - var11.d) / 2;
 					var11.a(48 + (var3 << 2) + var4, 48 + (104 - var1 - var10.length << 2) + var6);
@@ -4674,7 +4678,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			int var18;
 			if ((var13 = ObjectDefinition.byId(var6 >> 14 & 32767)).mapscene != -1) {
 				IndexedImage var17;
-				if ((var17 = this.ej[var13.mapscene]) != null) {
+				if ((var17 = this.mapsceneImages[var13.mapscene]) != null) {
 					var6 = ((var13.width << 2) - var17.c) / 2;
 					var18 = ((var13.length << 2) - var17.d) / 2;
 					var17.a(48 + (var3 << 2) + var6, 48 + (104 - var1 - var13.length << 2) + var18);
@@ -4705,7 +4709,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		IndexedImage var16;
 		if ((var6 = this.scene.l(var5, var3, var1)) != 0
 				&& (var15 = ObjectDefinition.byId(var6 >> 14 & 32767)).mapscene != -1
-				&& (var16 = this.ej[var15.mapscene]) != null) {
+				&& (var16 = this.mapsceneImages[var15.mapscene]) != null) {
 			var2 = ((var15.width << 2) - var16.c) / 2;
 			var4 = ((var15.length << 2) - var16.d) / 2;
 			var16.a(48 + (var3 << 2) + var2, 48 + (104 - var1 - var15.length << 2) + var4);
@@ -4860,10 +4864,14 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			int var10007 = resizeMode;
 			client.scapeFrame = new ScapeFrame(client, client.width, client.height, undecorated);
 			client.scapeFrame.setFocusTraversalKeysEnabled(false);
-			client.frameGraphics = client.getFrameComponent().getGraphics();
+			client.drawGraphics = client.getDrawComponent().getGraphics();
 			client.mainImageProducer = new ProducingGraphicsBuffer(client.width, client.height,
-					client.getFrameComponent());
+					client.getDrawComponent());
 			client.startThread(client, 1);
+			
+			client.bot = new bot.Bot(client);
+			client.bot.init();
+			
 		} catch (Exception var3) {
 			;
 		}
@@ -4873,7 +4881,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		return super.getAppletContext();
 	}
 
-	private void v() {
+	private void drawTitleBackground() {
 		byte[] var1 = this.fonts.getEntry("title.dat");
 		Sprite var5 = new Sprite(var1, this);
 		this.fm.initializeRasterizer();
@@ -4952,7 +4960,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			if (var1.type == 0) {
 				Model.load(var1.data, var1.file);
 				if (this.hA != -1) {
-					D = true;
+					redrawDialog = true;
 				}
 			}
 
@@ -4960,7 +4968,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				Frame.a(var1.data, var1.file);
 			}
 
-			if (var1.type == 2 && var1.file == this.requestedSong && var1.data != null) {
+			if (var1.type == 2 && var1.file == this.musicId && var1.data != null) {
 				byte[] var2 = var1.data;
 				boolean var4 = this.loopMusic > 0;
 
@@ -4975,7 +4983,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				}
 			}
 
-			if (var1.type == 3 && this.dH == 1) {
+			if (var1.type == 3 && this.loadingStage == 1) {
 				for (int var3 = 0; var3 < this.gj.length; ++var3) {
 					if (this.gS[var3] == var1.file) {
 						this.gj[var3] = var1.data;
@@ -5003,32 +5011,32 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	}
 
 	private void m(int var1) {
-		Widget var4 = Widget.widgets[var1];
+		Widget widget = Widget.widgets[var1];
 
-		for (int var2 = 0; var2 < var4.children.length && var4.children[var2] != -1; ++var2) {
-			Widget var3;
-			if ((var3 = Widget.widgets[var4.children[var2]]).group == 1) {
-				this.m(var3.id);
+		for (int i = 0; i < widget.children.length && widget.children[i] != -1; ++i) {
+			Widget child;
+			if ((child = Widget.widgets[widget.children[i]]).group == 1) {
+				this.m(child.id);
 			}
 
-			var3.K = 0;
-			var3.c = 0;
+			child.K = 0;
+			child.c = 0;
 		}
 
 	}
 
 	private void loggedInGameLogic() throws Throwable {
 		this.a();
-		if (this.fi > 1) {
-			--this.fi;
+		if (this.systemUpdateTime > 1) {
+			--this.systemUpdateTime;
 		}
 
 		if (this.dy > 0) {
 			--this.dy;
 		}
 
-		int var1;
-		for (var1 = 0; var1 < 5 && this.processIncomingPacket(); ++var1) {
+		int times;
+		for (times = 0; times < 5 && this.processIncomingPacket(); ++times) {
 			;
 		}
 
@@ -5037,27 +5045,27 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				--this.dC;
 			}
 
-			if (super.W[1] == 1 || super.W[2] == 1 || super.W[3] == 1 || super.W[4] == 1) {
+			if (super.keyStatuses[1] == 1 || super.keyStatuses[2] == 1 || super.keyStatuses[3] == 1 || super.keyStatuses[4] == 1) {
 				this.dD = true;
 			}
 
 			if (this.dD && this.dC <= 0) {
 				this.dC = 20;
 				this.dD = false;
-				this.packet.writeCipheredByte(86);
+				this.packet.writeOpcode(86);
 				this.packet.writeShort(this.camPitch);
-				this.packet.m(this.camYaw);
+				this.packet.writeShortA(this.camYaw);
 			}
 
-			if (super.O && !this.cF) {
-				this.cF = true;
-				this.packet.writeCipheredByte(3);
+			if (super.hasFocus && !this.wasFocused) {
+				this.wasFocused = true;
+				this.packet.writeOpcode(3);
 				this.packet.writeByte(1);
 			}
 
-			if (!super.O && this.cF) {
-				this.cF = false;
-				this.packet.writeCipheredByte(3);
+			if (!super.hasFocus && this.wasFocused) {
+				this.wasFocused = false;
+				this.packet.writeOpcode(3);
 				this.packet.writeByte(0);
 			}
 
@@ -5065,7 +5073,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			int var4;
 			int var6;
 			int var7;
-			if (this.dH == 1) {
+			if (this.loadingStage == 1) {
 				Client var2 = this;
 
 				byte var10000;
@@ -5103,31 +5111,31 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					} else if (var2.eC) {
 						var10000 = -4;
 					} else {
-						var2.dH = 2;
+						var2.loadingStage = 2;
 						MapRegion.currentPlane = var2.plane;
 						var2.n();
-						var2.packet.writeCipheredByte(121);
+						var2.packet.writeOpcode(121);
 						var10000 = 0;
 					}
 				}
 
 				byte var14 = var10000;
-				if (var10000 != 0 && System.currentTimeMillis() - this.aO > 360000L) {
-					SignLink.reportError(username + " glcfb " + this.gF + "," + var14 + ",false" + "," + this.indices[0]
-							+ "," + this.resourceProvider.b() + "," + this.plane + "," + this.eq + "," + this.er);
-					this.aO = System.currentTimeMillis();
+				if (var10000 != 0 && System.currentTimeMillis() - this.loadingStartTime > 360000L) {
+					SignLink.reportError(username + " glcfb " + this.serverSeed + "," + var14 + ",false" + "," + this.indices[0]
+							+ "," + this.resourceProvider.remaining() + "," + this.plane + "," + this.eq + "," + this.er);
+					this.loadingStartTime = System.currentTimeMillis();
 				}
 			}
 
-			if (this.dH == 2 && this.plane != this.de) {
+			if (this.loadingStage == 2 && this.plane != this.de) {
 				this.de = this.plane;
 				this.i(this.plane);
 			}
 
 			this.P();
 			this.G();
-			++this.dw;
-			if (this.dw > 750) {
+			++this.timeoutCounter;
+			if (this.timeoutCounter > 750) {
 				this.A();
 			}
 
@@ -5146,7 +5154,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				++this.gW;
 				if (this.gW >= 15) {
 					if (this.gZ == 3) {
-						D = true;
+						redrawDialog = true;
 					}
 
 					this.gZ = 0;
@@ -5163,7 +5171,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 				if (super.Q == 0) {
 					if (this.eH == 3) {
-						D = true;
+						redrawDialog = true;
 					}
 
 					this.eH = 0;
@@ -5172,101 +5180,101 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						this.F();
 						var4 = resizeMode == 0 ? 0 : clientWidth / 2 - 356;
 						var11 = resizeMode == 0 ? 0 : clientHeight / 2 - 230;
-						if (this.eF == 5382 && super.mouseY >= var11 + 40 && super.mouseY <= var11 + 77) {
+						if (this.modifiedWidgetId == 5382 && super.mouseY >= var11 + 40 && super.mouseY <= var11 + 77) {
 							if (super.mouseX >= var4 + 28 && super.mouseX <= var4 + 74) {
-								this.packet.writeCipheredByte(214);
-								this.packet.n('썩');
-								this.packet.writeLowByteAfterNegation(0);
-								this.packet.n(this.eG);
-								this.packet.l(this.eo);
+								this.packet.writeOpcode(214);
+								this.packet.writeLEShortA('썩');
+								this.packet.writeNegatedByte(0);
+								this.packet.writeLEShortA(this.selectedInventorySlot);
+								this.packet.writeLEShort(this.nextInventorySlot);
 							}
 
 							if (super.mouseX >= var4 + 75 && super.mouseX <= var4 + 121) {
-								this.packet.writeCipheredByte(214);
-								this.packet.n('썪');
-								this.packet.writeLowByteAfterNegation(0);
-								this.packet.n(this.eG);
-								this.packet.l(this.eo);
+								this.packet.writeOpcode(214);
+								this.packet.writeLEShortA('썪');
+								this.packet.writeNegatedByte(0);
+								this.packet.writeLEShortA(this.selectedInventorySlot);
+								this.packet.writeLEShort(this.nextInventorySlot);
 							}
 
 							if (super.mouseX >= var4 + 122 && super.mouseX <= var4 + 168) {
-								this.packet.writeCipheredByte(214);
-								this.packet.n('썫');
-								this.packet.writeLowByteAfterNegation(0);
-								this.packet.n(this.eG);
-								this.packet.l(this.eo);
+								this.packet.writeOpcode(214);
+								this.packet.writeLEShortA('썫');
+								this.packet.writeNegatedByte(0);
+								this.packet.writeLEShortA(this.selectedInventorySlot);
+								this.packet.writeLEShort(this.nextInventorySlot);
 							}
 
 							if (super.mouseX >= var4 + 169 && super.mouseX <= var4 + 215) {
-								this.packet.writeCipheredByte(214);
-								this.packet.n('썬');
-								this.packet.writeLowByteAfterNegation(0);
-								this.packet.n(this.eG);
-								this.packet.l(this.eo);
+								this.packet.writeOpcode(214);
+								this.packet.writeLEShortA('썬');
+								this.packet.writeNegatedByte(0);
+								this.packet.writeLEShortA(this.selectedInventorySlot);
+								this.packet.writeLEShort(this.nextInventorySlot);
 							}
 
 							if (super.mouseX >= var4 + 216 && super.mouseX <= var4 + 262) {
-								this.packet.writeCipheredByte(214);
-								this.packet.n('썭');
-								this.packet.writeLowByteAfterNegation(0);
-								this.packet.n(this.eG);
-								this.packet.l(this.eo);
+								this.packet.writeOpcode(214);
+								this.packet.writeLEShortA('썭');
+								this.packet.writeNegatedByte(0);
+								this.packet.writeLEShortA(this.selectedInventorySlot);
+								this.packet.writeLEShort(this.nextInventorySlot);
 							}
 
 							if (super.mouseX >= var4 + 263 && super.mouseX <= var4 + 309) {
-								this.packet.writeCipheredByte(214);
-								this.packet.n('썮');
-								this.packet.writeLowByteAfterNegation(0);
-								this.packet.n(this.eG);
-								this.packet.l(this.eo);
+								this.packet.writeOpcode(214);
+								this.packet.writeLEShortA('썮');
+								this.packet.writeNegatedByte(0);
+								this.packet.writeLEShortA(this.selectedInventorySlot);
+								this.packet.writeLEShort(this.nextInventorySlot);
 							}
 
 							if (super.mouseX >= var4 + 310 && super.mouseX <= var4 + 356) {
-								this.packet.writeCipheredByte(214);
-								this.packet.n('썯');
-								this.packet.writeLowByteAfterNegation(0);
-								this.packet.n(this.eG);
-								this.packet.l(this.eo);
+								this.packet.writeOpcode(214);
+								this.packet.writeLEShortA('썯');
+								this.packet.writeNegatedByte(0);
+								this.packet.writeLEShortA(this.selectedInventorySlot);
+								this.packet.writeLEShort(this.nextInventorySlot);
 							}
 
 							if (super.mouseX >= var4 + 357 && super.mouseX <= var4 + 403) {
-								this.packet.writeCipheredByte(214);
-								this.packet.n('썰');
-								this.packet.writeLowByteAfterNegation(0);
-								this.packet.n(this.eG);
-								this.packet.l(this.eo);
+								this.packet.writeOpcode(214);
+								this.packet.writeLEShortA('썰');
+								this.packet.writeNegatedByte(0);
+								this.packet.writeLEShortA(this.selectedInventorySlot);
+								this.packet.writeLEShort(this.nextInventorySlot);
 							}
 
 							if (super.mouseX >= var4 + 404 && super.mouseX <= var4 + 450) {
-								this.packet.writeCipheredByte(214);
-								this.packet.n('썱');
-								this.packet.writeLowByteAfterNegation(0);
-								this.packet.n(this.eG);
-								this.packet.l(this.eo);
+								this.packet.writeOpcode(214);
+								this.packet.writeLEShortA('썱');
+								this.packet.writeNegatedByte(0);
+								this.packet.writeLEShortA(this.selectedInventorySlot);
+								this.packet.writeLEShort(this.nextInventorySlot);
 							}
 						}
 
-						if (this.ep == this.eF && this.eo != this.eG) {
-							Widget var10 = Widget.widgets[this.eF];
-							byte var15 = 0;
+						if (this.ep == this.modifiedWidgetId && this.nextInventorySlot != this.selectedInventorySlot) {
+							Widget var10 = Widget.widgets[this.modifiedWidgetId];
+							byte insertionMode = 0;
 							if (this.bX == 1 && var10.contentType == 206) {
-								var15 = 1;
+								insertionMode = 1;
 							}
 
-							if (var10.itemIds[this.eo] <= 0) {
-								var15 = 0;
+							if (var10.itemIds[this.nextInventorySlot] <= 0) {
+								insertionMode = 0;
 							}
 
 							if (var10.replaceItems) {
-								var11 = this.eG;
-								var3 = this.eo;
+								var11 = this.selectedInventorySlot;
+								var3 = this.nextInventorySlot;
 								var10.itemIds[var3] = var10.itemIds[var11];
 								var10.itemAmounts[var3] = var10.itemAmounts[var11];
 								var10.itemIds[var11] = -1;
 								var10.itemAmounts[var11] = 0;
-							} else if (var15 == 1) {
-								var11 = this.eG;
-								var3 = this.eo;
+							} else if (insertionMode == 1) {
+								var11 = this.selectedInventorySlot;
+								var3 = this.nextInventorySlot;
 
 								while (var11 != var3) {
 									if (var11 > var3) {
@@ -5278,47 +5286,47 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 									}
 								}
 							} else {
-								var10.swapInventoryItems(this.eG, this.eo);
+								var10.swapInventoryItems(this.selectedInventorySlot, this.nextInventorySlot);
 							}
 
-							this.packet.writeCipheredByte(214);
-							this.packet.n(this.eF);
-							this.packet.writeLowByteAfterNegation(var15);
-							this.packet.n(this.eG);
-							this.packet.l(this.eo);
+							this.packet.writeOpcode(214);
+							this.packet.writeLEShortA(this.modifiedWidgetId);
+							this.packet.writeNegatedByte(insertionMode);
+							this.packet.writeLEShortA(this.selectedInventorySlot);
+							this.packet.writeLEShort(this.nextInventorySlot);
 						}
 					} else if ((this.hg == 1 || this.g(this.numActions - 1)) && this.numActions > 2) {
-						this.Q();
+						this.openMenu();
 					} else if (this.numActions > 0) {
 						this.performMenuAction(this.numActions - 1);
 					}
 
 					this.gW = 10;
-					super.T = 0;
+					super.lastMetaModifier = 0;
 				}
 			}
 
 			if (SceneGraph.b != -1) {
-				var1 = SceneGraph.b;
+				times = SceneGraph.b;
 				var4 = SceneGraph.c;
-				boolean var13 = this.a(0, 0, 0, 0, localPlayer.pathY[0], 0, 0, var4, localPlayer.pathX[0], true, var1);
+				boolean flag = this.walk(0, 0, 0, 0, localPlayer.pathY[0], 0, 0, var4, localPlayer.pathX[0], true, times);
 				SceneGraph.b = -1;
-				if (var13) {
-					this.bY = super.U;
-					this.bZ = super.V;
+				if (flag) {
+					this.bY = super.lastClickX;
+					this.bZ = super.lastClickY;
 					this.cb = 1;
 					this.ca = 0;
 				}
 			}
 
-			if (super.T == 1 && this.be != null) {
-				this.be = null;
-				D = true;
-				super.T = 0;
+			if (super.lastMetaModifier == 1 && this.clickToContinueString != null) {
+				this.clickToContinueString = null;
+				redrawDialog = true;
+				super.lastMetaModifier = 0;
 			}
 
 			this.m();
-			if (super.Q == 1 || super.T == 1) {
+			if (super.Q == 1 || super.lastMetaModifier == 1) {
 				++this.gD;
 			}
 
@@ -5329,66 +5337,66 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			} else if (this.hR < 0 && !this.menuShowing) {
 				++this.hR;
 				if (this.hR == 0 && this.hQ != 0) {
-					D = true;
+					redrawDialog = true;
 				}
 			}
 
-			if (this.dH == 2) {
+			if (this.loadingStage == 2) {
 				this.K();
 			}
 
-			if (this.dH == 2 && this.fT) {
+			if (this.loadingStage == 2 && this.oriented) {
 				var4 = (this.fc << 7) + 64;
 				var11 = (this.fd << 7) + 64;
 				var3 = this.b(this.plane, var11, var4) - this.fe;
-				if (this.bn < var4) {
-					this.bn += this.ff + (var4 - this.bn) * this.fg / 1000;
-					if (this.bn > var4) {
-						this.bn = var4;
+				if (this.offsetX < var4) {
+					this.offsetX += this.ff + (var4 - this.offsetX) * this.fg / 1000;
+					if (this.offsetX > var4) {
+						this.offsetX = var4;
 					}
 				}
 
-				if (this.bn > var4) {
-					this.bn -= this.ff + (this.bn - var4) * this.fg / 1000;
-					if (this.bn < var4) {
-						this.bn = var4;
+				if (this.offsetX > var4) {
+					this.offsetX -= this.ff + (this.offsetX - var4) * this.fg / 1000;
+					if (this.offsetX < var4) {
+						this.offsetX = var4;
 					}
 				}
 
-				if (this.bo < var3) {
-					this.bo += this.ff + (var3 - this.bo) * this.fg / 1000;
-					if (this.bo > var3) {
-						this.bo = var3;
+				if (this.offsetHeight < var3) {
+					this.offsetHeight += this.ff + (var3 - this.offsetHeight) * this.fg / 1000;
+					if (this.offsetHeight > var3) {
+						this.offsetHeight = var3;
 					}
 				}
 
-				if (this.bo > var3) {
-					this.bo -= this.ff + (this.bo - var3) * this.fg / 1000;
-					if (this.bo < var3) {
-						this.bo = var3;
+				if (this.offsetHeight > var3) {
+					this.offsetHeight -= this.ff + (this.offsetHeight - var3) * this.fg / 1000;
+					if (this.offsetHeight < var3) {
+						this.offsetHeight = var3;
 					}
 				}
 
-				if (this.bp < var11) {
-					this.bp += this.ff + (var11 - this.bp) * this.fg / 1000;
-					if (this.bp > var11) {
-						this.bp = var11;
+				if (this.offsetY < var11) {
+					this.offsetY += this.ff + (var11 - this.offsetY) * this.fg / 1000;
+					if (this.offsetY > var11) {
+						this.offsetY = var11;
 					}
 				}
 
-				if (this.bp > var11) {
-					this.bp -= this.ff + (this.bp - var11) * this.fg / 1000;
-					if (this.bp < var11) {
-						this.bp = var11;
+				if (this.offsetY > var11) {
+					this.offsetY -= this.ff + (this.offsetY - var11) * this.fg / 1000;
+					if (this.offsetY < var11) {
+						this.offsetY = var11;
 					}
 				}
 
 				var4 = (this.dk << 7) + 64;
 				var11 = (this.dl << 7) + 64;
 				var3 = this.b(this.plane, var11, var4) - this.dm;
-				var4 -= this.bn;
-				int var16 = var3 - this.bo;
-				var6 = var11 - this.bp;
+				var4 -= this.offsetX;
+				int var16 = var3 - this.offsetHeight;
+				var6 = var11 - this.offsetY;
 				var7 = (int) Math.sqrt((double) (var4 * var4 + var6 * var6));
 				var11 = (int) (Math.atan2((double) var16, (double) var7) * 325.949D) & 2047;
 				var4 = (int) (Math.atan2((double) var4, (double) var6) * -325.949D) & 2047;
@@ -5400,21 +5408,21 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					var11 = 383;
 				}
 
-				if (this.bq < var11) {
-					this.bq += this.dn + (var11 - this.bq) * this.do_ / 1000;
-					if (this.bq > var11) {
-						this.bq = var11;
+				if (this.pitch < var11) {
+					this.pitch += this.dn + (var11 - this.pitch) * this.do_ / 1000;
+					if (this.pitch > var11) {
+						this.pitch = var11;
 					}
 				}
 
-				if (this.bq > var11) {
-					this.bq -= this.dn + (this.bq - var11) * this.do_ / 1000;
-					if (this.bq < var11) {
-						this.bq = var11;
+				if (this.pitch > var11) {
+					this.pitch -= this.dn + (this.pitch - var11) * this.do_ / 1000;
+					if (this.pitch < var11) {
+						this.pitch = var11;
 					}
 				}
 
-				if ((var11 = var4 - this.br) > 1024) {
+				if ((var11 = var4 - this.yaw) > 1024) {
 					var11 -= 2048;
 				}
 
@@ -5423,16 +5431,16 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				}
 
 				if (var11 > 0) {
-					this.br += this.dn + var11 * this.do_ / 1000;
-					this.br &= 2047;
+					this.yaw += this.dn + var11 * this.do_ / 1000;
+					this.yaw &= 2047;
 				}
 
 				if (var11 < 0) {
-					this.br -= this.dn + -var11 * this.do_ / 1000;
-					this.br &= 2047;
+					this.yaw -= this.dn + -var11 * this.do_ / 1000;
+					this.yaw &= 2047;
 				}
 
-				if ((var3 = var4 - this.br) > 1024) {
+				if ((var3 = var4 - this.yaw) > 1024) {
 					var3 -= 2048;
 				}
 
@@ -5441,12 +5449,12 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				}
 
 				if (var3 < 0 && var11 > 0 || var3 > 0 && var11 < 0) {
-					this.br = var4;
+					this.yaw = var4;
 				}
 			}
 
-			for (var1 = 0; var1 < 5; ++var1) {
-				++this.dL[var1];
+			for (times = 0; times < 5; ++times) {
+				++this.dL[times];
 			}
 
 			this.D();
@@ -5454,12 +5462,12 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			if (super.P > 20000) {
 				this.dy = 250;
 				super.P -= 2000;
-				this.packet.writeCipheredByte(202);
+				this.packet.writeOpcode(202);
 			}
 
 			++this.dx;
 			if (this.dx > 50) {
-				this.packet.writeCipheredByte(0);
+				this.packet.writeOpcode(0);
 			}
 
 			try {
@@ -5501,26 +5509,26 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			this.fU = null;
 			this.fW = null;
 			this.fw = null;
-			this.fm = new ProducingGraphicsBuffer(128, 265, this.getFrameComponent());
+			this.fm = new ProducingGraphicsBuffer(128, 265, this.getDrawComponent());
 			Rasterizer2D.reset();
-			this.fn = new ProducingGraphicsBuffer(128, 265, this.getFrameComponent());
+			this.fn = new ProducingGraphicsBuffer(128, 265, this.getDrawComponent());
 			Rasterizer2D.reset();
-			this.fj = new ProducingGraphicsBuffer(509, 171, this.getFrameComponent());
+			this.fj = new ProducingGraphicsBuffer(509, 171, this.getDrawComponent());
 			Rasterizer2D.reset();
-			this.fk = new ProducingGraphicsBuffer(360, 132, this.getFrameComponent());
+			this.fk = new ProducingGraphicsBuffer(360, 132, this.getDrawComponent());
 			Rasterizer2D.reset();
-			this.loginScreen = new ProducingGraphicsBuffer(360, 200, this.getFrameComponent());
+			this.loginScreen = new ProducingGraphicsBuffer(360, 200, this.getDrawComponent());
 			Rasterizer2D.reset();
-			this.fo = new ProducingGraphicsBuffer(202, 238, this.getFrameComponent());
+			this.fo = new ProducingGraphicsBuffer(202, 238, this.getDrawComponent());
 			Rasterizer2D.reset();
-			this.fp = new ProducingGraphicsBuffer(203, 238, this.getFrameComponent());
+			this.fp = new ProducingGraphicsBuffer(203, 238, this.getDrawComponent());
 			Rasterizer2D.reset();
-			this.fq = new ProducingGraphicsBuffer(74, 94, this.getFrameComponent());
+			this.fq = new ProducingGraphicsBuffer(74, 94, this.getDrawComponent());
 			Rasterizer2D.reset();
-			this.fr = new ProducingGraphicsBuffer(75, 94, this.getFrameComponent());
+			this.fr = new ProducingGraphicsBuffer(75, 94, this.getDrawComponent());
 			Rasterizer2D.reset();
 			if (this.fonts != null) {
-				this.v();
+				this.drawTitleBackground();
 				this.u();
 			}
 
@@ -5533,14 +5541,14 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			this.prepareRasterizerForLoginScreen();
 			int var3 = clientWidth / 2;
 			int var4 = clientHeight / 2;
-			this.b12_full.a(16777215, var3, "vscape is loading - please wait...", var4 - 23 - 20, true);
+			this.bold.a(16777215, var3, "vscape is loading - please wait...", var4 - 23 - 20, true);
 			int var5 = var4 - 18 - 20;
 			Rasterizer2D.drawRectangle(var3 - 152, 304, 34, 9179409, var5);
 			Rasterizer2D.drawRectangle(var3 - 151, 302, 32, 0, var5 + 1);
 			Rasterizer2D.fillRectangle(30, var5 + 2, var3 - 150, 9179409, var1 * 3);
 			Rasterizer2D.fillRectangle(30, var5 + 2, var3 - 150 + var1 * 3, 0, 300 - var1 * 3);
-			this.b12_full.a(16777215, var2, var4 + 4 - 20, var3);
-			this.loginScreen.drawImage(0, super.frameGraphics, 0);
+			this.bold.a(16777215, var2, var4 + 4 - 20, var3);
+			this.loginScreen.drawImage(0, super.drawGraphics, 0);
 			if (this.hh) {
 				this.hh = false;
 			}
@@ -5589,7 +5597,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			int var5 = hash & 31;
 			hash = hash >> 6 & 3;
 			if (var5 != 10 && var5 != 11 && var5 != 22) {
-				this.a(2, hash, 0, var5 + 1, localPlayer.pathY[0], 0, 0, y, localPlayer.pathX[0], false, x);
+				this.walk(2, hash, 0, var5 + 1, localPlayer.pathY[0], 0, 0, y, localPlayer.pathX[0], false, x);
 			} else {
 				ObjectDefinition var7 = ObjectDefinition.byId(var4);
 				int var6;
@@ -5606,24 +5614,24 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					var4 = (var4 << hash & 15) + (var4 >> 4 - hash);
 				}
 
-				this.a(2, 0, var6, 0, localPlayer.pathY[0], var5, var4, y, localPlayer.pathX[0], false, x);
+				this.walk(2, 0, var6, 0, localPlayer.pathY[0], var5, var4, y, localPlayer.pathX[0], false, x);
 			}
 
-			this.bY = super.U;
-			this.bZ = super.V;
+			this.bY = super.lastClickX;
+			this.bZ = super.lastClickY;
 			this.cb = 2;
 			this.ca = 0;
 			return true;
 		}
 	}
 
-	private Archive getArchive(int var1, String var2, String var3, int var4, int var5) throws Throwable {
+	private Archive getArchive(int indexFile, String displayName, String assetName, int var4, int var5) throws Throwable {
 		byte[] var6 = null;
 		int var7 = 5;
 
 		try {
 			if (this.indices[0] != null) {
-				var6 = this.indices[0].decompress(var1);
+				var6 = this.indices[0].decompress(indexFile);
 			}
 		} catch (Exception var16) {
 			;
@@ -5634,12 +5642,12 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		} else {
 			while (var6 == null) {
 				String var8 = "Unknown error";
-				this.statusText(var5, "Requesting " + var2);
+				this.statusText(var5, "Requesting " + displayName);
 
 				int var9;
 				try {
 					var9 = 0;
-					DataInputStream var10 = this.d(var3 + var4);
+					DataInputStream var10 = this.jaggrabInputStream(assetName + var4);
 					byte[] var11 = new byte[6];
 					var10.readFully(var11, 0, 6);
 					Buffer var21;
@@ -5661,7 +5669,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						}
 
 						if ((var22 = (var13 += var22) * 100 / var12) != var9) {
-							this.statusText(var5, "Loading " + var2 + " - " + var22 + "%");
+							this.statusText(var5, "Loading " + displayName + " - " + var22 + "%");
 						}
 					}
 
@@ -5669,7 +5677,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 					try {
 						if (this.indices[0] != null) {
-							this.indices[0].put(var6.length, var6, var1);
+							this.indices[0].put(var6.length, var6, indexFile);
 						}
 					} catch (Exception var15) {
 						this.indices[0] = null;
@@ -5728,11 +5736,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			this.s();
 		} else {
 			this.fW.initializeRasterizer();
-			this.p12_full.a(0, "Connection lost", 144, 257);
-			this.p12_full.a(16777215, "Connection lost", 143, 256);
-			this.p12_full.a(0, "Please wait - attempting to reestablish", 159, 257);
-			this.p12_full.a(16777215, "Please wait - attempting to reestablish", 158, 256);
-			this.fW.drawImage(4, super.frameGraphics, 4);
+			this.frameFont.a(0, "Connection lost", 144, 257);
+			this.frameFont.a(16777215, "Connection lost", 143, 256);
+			this.frameFont.a(0, "Please wait - attempting to reestablish", 159, 257);
+			this.frameFont.a(16777215, "Please wait - attempting to reestablish", 158, 256);
+			this.fW.drawImage(4, super.drawGraphics, 4);
 			this.dG = 0;
 			this.hl = 0;
 			BufferedConnection var1 = this.bufferedConnection;
@@ -5764,7 +5772,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		if (var1 >= 0) {
 			if (this.gJ != 0 && this.gJ != 3 && this.gJ != 4) {
 				this.gJ = 0;
-				D = true;
+				redrawDialog = true;
 			}
 
 			int param1 = this.actionParam1[var1];
@@ -5785,84 +5793,84 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				if (!this.aB) {
 					this.aB = true;
 					this.aH = var6.id;
-					this.packet.writeCipheredByte(185);
+					this.packet.writeOpcode(185);
 					this.packet.writeShort(var6.id);
 				} else if (this.aH == var6.id) {
 					this.aB = false;
 					this.aH = 0;
-					this.packet.writeCipheredByte(185);
+					this.packet.writeOpcode(185);
 					this.packet.writeShort(var6.id);
 				} else if (this.aH != var6.id) {
 					this.aB = true;
 					this.aH = var6.id;
-					this.packet.writeCipheredByte(185);
+					this.packet.writeOpcode(185);
 					this.packet.writeShort(var6.id);
 				}
 			}
 
 			Npc var12;
-			if (actionId == 582 && (var12 = this.aW[itemId]) != null) {
-				this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var12.pathY[0], localPlayer.pathX[0], false,
+			if (actionId == 582 && (var12 = this.npcs[itemId]) != null) {
+				this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var12.pathY[0], localPlayer.pathX[0], false,
 						var12.pathX[0]);
-				this.bY = super.U;
-				this.bZ = super.V;
+				this.bY = super.lastClickX;
+				this.bZ = super.lastClickY;
 				this.cb = 2;
 				this.ca = 0;
-				this.packet.writeCipheredByte(57);
-				this.packet.m(this.hH);
-				this.packet.m(itemId);
-				this.packet.l(this.hF);
-				this.packet.m(this.hG);
+				this.packet.writeOpcode(57);
+				this.packet.writeShortA(this.hH);
+				this.packet.writeShortA(itemId);
+				this.packet.writeLEShort(this.hF);
+				this.packet.writeShortA(this.hG);
 			}
 
 			if (actionId == 234) {
-				if (!this.a(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, param2, localPlayer.pathX[0], false, param1)) {
-					this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, param2, localPlayer.pathX[0], false, param1);
+				if (!this.walk(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, param2, localPlayer.pathX[0], false, param1)) {
+					this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, param2, localPlayer.pathX[0], false, param1);
 				}
 
-				this.bY = super.U;
-				this.bZ = super.V;
+				this.bY = super.lastClickX;
+				this.bZ = super.lastClickY;
 				this.cb = 2;
 				this.ca = 0;
-				this.packet.writeCipheredByte(236);
-				this.packet.l(param2 + this.sceneY);
+				this.packet.writeOpcode(236);
+				this.packet.writeLEShort(param2 + this.sceneY);
 				this.packet.writeShort(itemId);
-				this.packet.l(param1 + this.sceneX);
+				this.packet.writeLEShort(param1 + this.sceneX);
 			}
 
 			if (actionId == 62 && this.c(itemId, param2, param1)) {
-				this.packet.writeCipheredByte(192);
+				this.packet.writeOpcode(192);
 				this.packet.writeShort(this.hG);
-				this.packet.l(itemId >> 14 & 32767);
-				this.packet.n(param2 + this.sceneY);
-				this.packet.l(this.hF);
-				this.packet.n(param1 + this.sceneX);
+				this.packet.writeLEShort(itemId >> 14 & 32767);
+				this.packet.writeLEShortA(param2 + this.sceneY);
+				this.packet.writeLEShort(this.hF);
+				this.packet.writeLEShortA(param1 + this.sceneX);
 				this.packet.writeShort(this.hH);
 			}
 
 			if (actionId == 511) {
-				if (!this.a(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, param2, localPlayer.pathX[0], false, param1)) {
-					this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, param2, localPlayer.pathX[0], false, param1);
+				if (!this.walk(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, param2, localPlayer.pathX[0], false, param1)) {
+					this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, param2, localPlayer.pathX[0], false, param1);
 				}
 
-				this.bY = super.U;
-				this.bZ = super.V;
+				this.bY = super.lastClickX;
+				this.bZ = super.lastClickY;
 				this.cb = 2;
 				this.ca = 0;
-				this.packet.writeCipheredByte(25);
-				this.packet.l(this.hG);
-				this.packet.m(this.hH);
+				this.packet.writeOpcode(25);
+				this.packet.writeLEShort(this.hG);
+				this.packet.writeShortA(this.hH);
 				this.packet.writeShort(itemId);
-				this.packet.m(param2 + this.sceneY);
-				this.packet.n(this.hF);
+				this.packet.writeShortA(param2 + this.sceneY);
+				this.packet.writeLEShortA(this.hF);
 				this.packet.writeShort(param1 + this.sceneX);
 			}
 
 			if (actionId == 74) {
-				this.packet.writeCipheredByte(122);
-				this.packet.n(param2);
-				this.packet.m(param1);
-				this.packet.l(itemId);
+				this.packet.writeOpcode(122);
+				this.packet.writeLEShortA(param2);
+				this.packet.writeShortA(param1);
+				this.packet.writeLEShort(itemId);
 				this.gW = 0;
 				this.gX = param2;
 				this.gY = param1;
@@ -5901,7 +5909,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						this.e(2);
 						break;
 					default:
-						this.packet.writeCipheredByte(185);
+						this.packet.writeOpcode(185);
 						this.packet.writeShort(param2);
 					}
 				}
@@ -5909,46 +5917,46 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 			Player var13;
 			if (actionId == 561 && (var13 = this.players[itemId]) != null) {
-				this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var13.pathY[0], localPlayer.pathX[0], false,
+				this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var13.pathY[0], localPlayer.pathX[0], false,
 						var13.pathX[0]);
-				this.bY = super.U;
-				this.bZ = super.V;
+				this.bY = super.lastClickX;
+				this.bZ = super.lastClickY;
 				this.cb = 2;
 				this.ca = 0;
 				if ((go += itemId) >= 90) {
-					this.packet.writeCipheredByte(136);
+					this.packet.writeOpcode(136);
 					go = 0;
 				}
 
-				this.packet.writeCipheredByte(128);
+				this.packet.writeOpcode(128);
 				this.packet.writeShort(itemId);
 			}
 
-			if (actionId == 20 && (var12 = this.aW[itemId]) != null) {
-				this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var12.pathY[0], localPlayer.pathX[0], false,
+			if (actionId == 20 && (var12 = this.npcs[itemId]) != null) {
+				this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var12.pathY[0], localPlayer.pathX[0], false,
 						var12.pathX[0]);
-				this.bY = super.U;
-				this.bZ = super.V;
+				this.bY = super.lastClickX;
+				this.bZ = super.lastClickY;
 				this.cb = 2;
 				this.ca = 0;
-				this.packet.writeCipheredByte(155);
-				this.packet.l(itemId);
+				this.packet.writeOpcode(155);
+				this.packet.writeLEShort(itemId);
 			}
 
 			if (actionId == 779 && (var13 = this.players[itemId]) != null) {
-				this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var13.pathY[0], localPlayer.pathX[0], false,
+				this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var13.pathY[0], localPlayer.pathX[0], false,
 						var13.pathX[0]);
-				this.bY = super.U;
-				this.bZ = super.V;
+				this.bY = super.lastClickX;
+				this.bZ = super.lastClickY;
 				this.cb = 2;
 				this.ca = 0;
-				this.packet.writeCipheredByte(153);
-				this.packet.l(itemId);
+				this.packet.writeOpcode(153);
+				this.packet.writeLEShort(itemId);
 			}
 
 			if (actionId == 519) {
 				if (!this.menuShowing) {
-					SceneGraph.b(super.V - 4, super.U - 4);
+					SceneGraph.b(super.lastClickY - 4, super.lastClickX - 4);
 				} else {
 					SceneGraph.b(param2 - 4, param1 - 4);
 				}
@@ -5956,29 +5964,29 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 			if (actionId == 1062) {
 				if ((ce += this.sceneX) >= 113) {
-					this.packet.writeCipheredByte(183);
+					this.packet.writeOpcode(183);
 					this.packet.e(15086193);
 					ce = 0;
 				}
 
 				this.c(itemId, param2, param1);
-				this.packet.writeCipheredByte(228);
-				this.packet.m(itemId >> 14 & 32767);
-				this.packet.m(param2 + this.sceneY);
+				this.packet.writeOpcode(228);
+				this.packet.writeShortA(itemId >> 14 & 32767);
+				this.packet.writeShortA(param2 + this.sceneY);
 				this.packet.writeShort(param1 + this.sceneX);
 			}
 
 			if (actionId == 679 && !this.fK) {
-				this.packet.writeCipheredByte(40);
+				this.packet.writeOpcode(40);
 				this.packet.writeShort(param2);
 				this.fK = true;
 			}
 
 			if (actionId == 431) {
-				this.packet.writeCipheredByte(129);
-				this.packet.m(param1);
+				this.packet.writeOpcode(129);
+				this.packet.writeShortA(param1);
 				this.packet.writeShort(param2);
-				this.packet.m(itemId);
+				this.packet.writeShortA(itemId);
 				this.gW = 0;
 				this.gX = param2;
 				this.gY = param1;
@@ -6032,10 +6040,10 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			}
 
 			if (actionId == 53) {
-				this.packet.writeCipheredByte(135);
-				this.packet.l(param1);
-				this.packet.m(param2);
-				this.packet.l(itemId);
+				this.packet.writeOpcode(135);
+				this.packet.writeLEShort(param1);
+				this.packet.writeShortA(param2);
+				this.packet.writeLEShort(itemId);
 				this.gW = 0;
 				this.gX = param2;
 				this.gY = param1;
@@ -6050,10 +6058,10 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			}
 
 			if (actionId == 539) {
-				this.packet.writeCipheredByte(16);
-				this.packet.m(itemId);
-				this.packet.n(param1);
-				this.packet.n(param2);
+				this.packet.writeOpcode(16);
+				this.packet.writeShortA(itemId);
+				this.packet.writeLEShortA(param1);
+				this.packet.writeLEShortA(param2);
 				this.gW = 0;
 				this.gX = param2;
 				this.gY = param1;
@@ -6085,20 +6093,20 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					Player var16;
 					if ((var16 = this.players[this.bN[var18]]) != null && var16.name != null
 							&& var16.name.equalsIgnoreCase(var10)) {
-						this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var16.pathY[0], localPlayer.pathX[0], false,
+						this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var16.pathY[0], localPlayer.pathX[0], false,
 								var16.pathX[0]);
 						if (actionId == 484) {
-							this.packet.writeCipheredByte(139);
-							this.packet.l(this.bN[var18]);
+							this.packet.writeOpcode(139);
+							this.packet.writeLEShort(this.bN[var18]);
 						}
 
 						if (actionId == 6) {
 							if ((go += itemId) >= 90) {
-								this.packet.writeCipheredByte(136);
+								this.packet.writeOpcode(136);
 								go = 0;
 							}
 
-							this.packet.writeCipheredByte(128);
+							this.packet.writeOpcode(128);
 							this.packet.writeShort(this.bN[var18]);
 						}
 
@@ -6113,12 +6121,12 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			}
 
 			if (actionId == 870) {
-				this.packet.writeCipheredByte(53);
+				this.packet.writeOpcode(53);
 				this.packet.writeShort(param1);
-				this.packet.m(this.hF);
-				this.packet.n(itemId);
+				this.packet.writeShortA(this.hF);
+				this.packet.writeLEShortA(itemId);
 				this.packet.writeShort(this.hG);
-				this.packet.l(this.hH);
+				this.packet.writeLEShort(this.hH);
 				this.packet.writeShort(param2);
 				this.gW = 0;
 				this.gX = param2;
@@ -6134,10 +6142,10 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			}
 			/* drop inventory item */
 			if (actionId == 847) {
-				this.packet.writeCipheredByte(87);
-				this.packet.m(itemId);
+				this.packet.writeOpcode(87);
+				this.packet.writeShortA(itemId);
 				this.packet.writeShort(param2); // widget id
-				this.packet.m(param1); // inventory index
+				this.packet.writeShortA(param1); // inventory index
 
 				this.gW = 0;
 				this.gX = param2;
@@ -6172,16 +6180,16 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 				this.fG = var22 + " " + var6.optionText + " " + var10;
 				if (this.fF == 16) {
-					C = 3;
+					selectedRedStoneId = 3;
 					fh = true;
 				}
 
 			} else {
 				if (actionId == 78) {
-					this.packet.writeCipheredByte(117);
-					this.packet.n(param2);
-					this.packet.n(itemId);
-					this.packet.l(param1);
+					this.packet.writeOpcode(117);
+					this.packet.writeLEShortA(param2);
+					this.packet.writeLEShortA(itemId);
+					this.packet.writeLEShort(param1);
 					this.gW = 0;
 					this.gX = param2;
 					this.gY = param1;
@@ -6196,42 +6204,42 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				}
 
 				if (actionId == 27 && (var13 = this.players[itemId]) != null) {
-					this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var13.pathY[0], localPlayer.pathX[0], false,
+					this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var13.pathY[0], localPlayer.pathX[0], false,
 							var13.pathX[0]);
-					this.bY = super.U;
-					this.bZ = super.V;
+					this.bY = super.lastClickX;
+					this.bZ = super.lastClickY;
 					this.cb = 2;
 					this.ca = 0;
 					if ((df += itemId) >= 54) {
-						this.packet.writeCipheredByte(189);
+						this.packet.writeOpcode(189);
 						this.packet.writeByte(234);
 						df = 0;
 					}
 
-					this.packet.writeCipheredByte(73);
-					this.packet.l(itemId);
+					this.packet.writeOpcode(73);
+					this.packet.writeLEShort(itemId);
 				}
 
 				if (actionId == 213) {
-					if (!this.a(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, param2, localPlayer.pathX[0], false, param1)) {
-						this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, param2, localPlayer.pathX[0], false, param1);
+					if (!this.walk(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, param2, localPlayer.pathX[0], false, param1)) {
+						this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, param2, localPlayer.pathX[0], false, param1);
 					}
 
-					this.bY = super.U;
-					this.bZ = super.V;
+					this.bY = super.lastClickX;
+					this.bZ = super.lastClickY;
 					this.cb = 2;
 					this.ca = 0;
-					this.packet.writeCipheredByte(79);
-					this.packet.l(param2 + this.sceneY);
+					this.packet.writeOpcode(79);
+					this.packet.writeLEShort(param2 + this.sceneY);
 					this.packet.writeShort(itemId);
-					this.packet.m(param1 + this.sceneX);
+					this.packet.writeShortA(param1 + this.sceneX);
 				}
 
 				if (actionId == 632) {
-					this.packet.writeCipheredByte(145);
-					this.packet.m(param2);
-					this.packet.m(param1);
-					this.packet.m(itemId);
+					this.packet.writeOpcode(145);
+					this.packet.writeShortA(param2);
+					this.packet.writeShortA(param1);
+					this.packet.writeShortA(itemId);
 					this.gW = 0;
 					this.gX = param2;
 					this.gY = param1;
@@ -6247,10 +6255,10 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 				if (actionId >= 700 && actionId <= 705) {
 					var18 = 110 + (actionId - 700);
-					this.packet.writeCipheredByte(var18);
-					this.packet.n(param2);
-					this.packet.n(itemId);
-					this.packet.l(param1);
+					this.packet.writeOpcode(var18);
+					this.packet.writeLEShortA(param2);
+					this.packet.writeLEShortA(itemId);
+					this.packet.writeLEShort(param1);
 					this.gW = 0;
 					this.gX = param2;
 					this.gY = param1;
@@ -6272,12 +6280,12 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					if (!this.ay) {
 						this.ay = true;
 						this.h(429, 1);
-						this.packet.writeCipheredByte(185);
+						this.packet.writeOpcode(185);
 						this.packet.writeShort(153);
 					} else {
 						this.ay = false;
 						this.h(429, 0);
-						this.packet.writeCipheredByte(185);
+						this.packet.writeOpcode(185);
 						this.packet.writeShort(152);
 					}
 
@@ -6286,170 +6294,170 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 				if (actionId == 1008) {
 					this.g = 2;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 1007) {
 					this.g = 1;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 1006) {
 					this.g = 0;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 1005) {
 					this.ah = 0;
 					this.aG = 9;
-					D = true;
+					redrawDialog = true;
 				}
 
-				if (actionId == 1004 && u[10] != -1) {
-					C = 10;
+				if (actionId == 1004 && redStoneWidgetIds[10] != -1) {
+					selectedRedStoneId = 10;
 					fh = true;
 				}
 
 				if (actionId == 1002) {
 					this.h = 2;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 1001) {
 					this.h = 1;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 1000) {
 					this.h = 0;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 999) {
 					this.ah = 0;
 					this.aG = 0;
-					D = true;
+					redrawDialog = true;
 				}
 
 				if (actionId == 998) {
 					this.ah = 1;
 					this.aG = 5;
-					D = true;
+					redrawDialog = true;
 				}
 
 				if (actionId == 997) {
 					this.G = 3;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 996) {
 					this.G = 2;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 995) {
 					this.G = 1;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 994) {
 					this.G = 0;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 993) {
 					this.ah = 2;
 					this.aG = 1;
-					D = true;
+					redrawDialog = true;
 				}
 
 				if (actionId == 992) {
 					this.i = 2;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 991) {
 					this.i = 1;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 990) {
 					this.i = 0;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 989) {
 					this.ah = 3;
 					this.aG = 2;
-					D = true;
+					redrawDialog = true;
 				}
 
 				if (actionId == 987) {
 					this.F = 2;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 986) {
 					this.F = 1;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 985) {
 					this.F = 0;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 984) {
 					this.ah = 5;
 					this.aG = 3;
-					D = true;
+					redrawDialog = true;
 				}
 
 				if (actionId == 983) {
 					this.f = 2;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 982) {
 					this.f = 1;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 981) {
 					this.f = 0;
-					D = true;
+					redrawDialog = true;
 					VScapeSettings.write();
 				}
 
 				if (actionId == 980) {
 					this.ah = 6;
 					this.aG = 16;
-					D = true;
+					redrawDialog = true;
 				}
 
 				if (actionId == 493) {
-					this.packet.writeCipheredByte(75);
-					this.packet.n(param2);
-					this.packet.l(param1);
-					this.packet.m(itemId);
+					this.packet.writeOpcode(75);
+					this.packet.writeLEShortA(param2);
+					this.packet.writeLEShort(param1);
+					this.packet.writeShortA(itemId);
 					this.gW = 0;
 					this.gX = param2;
 					this.gY = param1;
@@ -6464,38 +6472,38 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				}
 
 				if (actionId == 652) {
-					if (!this.a(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, param2, localPlayer.pathX[0], false, param1)) {
-						this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, param2, localPlayer.pathX[0], false, param1);
+					if (!this.walk(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, param2, localPlayer.pathX[0], false, param1)) {
+						this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, param2, localPlayer.pathX[0], false, param1);
 					}
 
-					this.bY = super.U;
-					this.bZ = super.V;
+					this.bY = super.lastClickX;
+					this.bZ = super.lastClickY;
 					this.cb = 2;
 					this.ca = 0;
-					this.packet.writeCipheredByte(156);
-					this.packet.m(param1 + this.sceneX);
-					this.packet.l(param2 + this.sceneY);
-					this.packet.n(itemId);
+					this.packet.writeOpcode(156);
+					this.packet.writeShortA(param1 + this.sceneX);
+					this.packet.writeLEShort(param2 + this.sceneY);
+					this.packet.writeLEShortA(itemId);
 				}
 
 				if (actionId == 94) {
-					if (!this.a(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, param2, localPlayer.pathX[0], false, param1)) {
-						this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, param2, localPlayer.pathX[0], false, param1);
+					if (!this.walk(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, param2, localPlayer.pathX[0], false, param1)) {
+						this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, param2, localPlayer.pathX[0], false, param1);
 					}
 
-					this.bY = super.U;
-					this.bZ = super.V;
+					this.bY = super.lastClickX;
+					this.bZ = super.lastClickY;
 					this.cb = 2;
 					this.ca = 0;
-					this.packet.writeCipheredByte(181);
-					this.packet.l(param2 + this.sceneY);
+					this.packet.writeOpcode(181);
+					this.packet.writeLEShort(param2 + this.sceneY);
 					this.packet.writeShort(itemId);
-					this.packet.l(param1 + this.sceneX);
-					this.packet.m(this.fE);
+					this.packet.writeLEShort(param1 + this.sceneX);
+					this.packet.writeShortA(this.fE);
 				}
 
 				if (actionId == 646) {
-					this.packet.writeCipheredByte(185);
+					this.packet.writeOpcode(185);
 					this.packet.writeShort(param2);
 					if ((var6 = Widget.widgets[param2]).s != null && var6.s[0][0] == 5) {
 						var14 = var6.s[0][1];
@@ -6506,144 +6514,144 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					}
 				}
 
-				if (actionId == 225 && (var12 = this.aW[itemId]) != null) {
-					this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var12.pathY[0], localPlayer.pathX[0], false,
+				if (actionId == 225 && (var12 = this.npcs[itemId]) != null) {
+					this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var12.pathY[0], localPlayer.pathX[0], false,
 							var12.pathX[0]);
-					this.bY = super.U;
-					this.bZ = super.V;
+					this.bY = super.lastClickX;
+					this.bZ = super.lastClickY;
 					this.cb = 2;
 					this.ca = 0;
 					if ((gK += itemId) >= 85) {
-						this.packet.writeCipheredByte(230);
+						this.packet.writeOpcode(230);
 						this.packet.writeByte(239);
 						gK = 0;
 					}
 
-					this.packet.writeCipheredByte(17);
-					this.packet.n(itemId);
+					this.packet.writeOpcode(17);
+					this.packet.writeLEShortA(itemId);
 				}
 
-				if (actionId == 965 && (var12 = this.aW[itemId]) != null) {
-					this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var12.pathY[0], localPlayer.pathX[0], false,
+				if (actionId == 965 && (var12 = this.npcs[itemId]) != null) {
+					this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var12.pathY[0], localPlayer.pathX[0], false,
 							var12.pathX[0]);
-					this.bY = super.U;
-					this.bZ = super.V;
+					this.bY = super.lastClickX;
+					this.bZ = super.lastClickY;
 					this.cb = 2;
 					this.ca = 0;
 					if (++fC >= 96) {
-						this.packet.writeCipheredByte(152);
+						this.packet.writeOpcode(152);
 						this.packet.writeByte(88);
 						fC = 0;
 					}
 
-					this.packet.writeCipheredByte(21);
+					this.packet.writeOpcode(21);
 					this.packet.writeShort(itemId);
 				}
 
-				if (actionId == 413 && (var12 = this.aW[itemId]) != null) {
-					this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var12.pathY[0], localPlayer.pathX[0], false,
+				if (actionId == 413 && (var12 = this.npcs[itemId]) != null) {
+					this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var12.pathY[0], localPlayer.pathX[0], false,
 							var12.pathX[0]);
-					this.bY = super.U;
-					this.bZ = super.V;
+					this.bY = super.lastClickX;
+					this.bZ = super.lastClickY;
 					this.cb = 2;
 					this.ca = 0;
-					this.packet.writeCipheredByte(131);
-					this.packet.n(itemId);
-					this.packet.m(this.fE);
+					this.packet.writeOpcode(131);
+					this.packet.writeLEShortA(itemId);
+					this.packet.writeShortA(this.fE);
 				}
 
 				if (actionId == 200) {
 					this.widgetClose();
 				}
 
-				if (actionId == 1025 && (var12 = this.aW[itemId]) != null) {
+				if (actionId == 1025 && (var12 = this.npcs[itemId]) != null) {
 					ActorDefinition var17 = var12.npcDefinition;
 					if (var12.npcDefinition.morphisms != null) {
 						var17 = var17.morph();
 					}
 
 					if (var17 != null) {
-						this.packet.writeCipheredByte(222);
+						this.packet.writeOpcode(222);
 						this.packet.writeShort(var17.b);
 					}
 				}
 
 				if (actionId == 900) {
-					System.out.println("id="+itemId + ", param1="+param1 + ", param2="+param2);
-					System.out.println("x="+(itemId&127)+", y="+((itemId>>7)&127)+", dP="+sceneY+", dO="+sceneX);
+					System.out.println("objectId="+itemId + ", param1="+param1 + ", param2="+param2);
+					System.out.println("sceneY="+sceneY+", sceneX="+sceneX);
 					this.c(itemId, param2, param1);
-					this.packet.writeCipheredByte(252);
-					this.packet.n(itemId >> 14 & 32767); // send object x y
-					this.packet.l(param2 + this.sceneY);
-					this.packet.m(param1 + this.sceneX);
+					this.packet.writeOpcode(252);
+					this.packet.writeLEShortA(itemId >> 14 & 32767); // send object x y
+					this.packet.writeLEShort(param2 + this.sceneY);
+					this.packet.writeShortA(param1 + this.sceneX);
 				}
 
-				if (actionId == 412 && (var12 = this.aW[itemId]) != null) {
-					this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var12.pathY[0], localPlayer.pathX[0], false,
+				if (actionId == 412 && (var12 = this.npcs[itemId]) != null) {
+					this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var12.pathY[0], localPlayer.pathX[0], false,
 							var12.pathX[0]);
-					this.bY = super.U;
-					this.bZ = super.V;
+					this.bY = super.lastClickX;
+					this.bZ = super.lastClickY;
 					this.cb = 2;
 					this.ca = 0;
-					this.packet.writeCipheredByte(72);
-					this.packet.m(itemId);
+					this.packet.writeOpcode(72);
+					this.packet.writeShortA(itemId);
 				}
 
 				if (actionId == 365 && (var13 = this.players[itemId]) != null) {
-					this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var13.pathY[0], localPlayer.pathX[0], false,
+					this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var13.pathY[0], localPlayer.pathX[0], false,
 							var13.pathX[0]);
-					this.bY = super.U;
-					this.bZ = super.V;
+					this.bY = super.lastClickX;
+					this.bZ = super.lastClickY;
 					this.cb = 2;
 					this.ca = 0;
-					this.packet.writeCipheredByte(249);
-					this.packet.m(itemId);
-					this.packet.l(this.fE);
+					this.packet.writeOpcode(249);
+					this.packet.writeShortA(itemId);
+					this.packet.writeLEShort(this.fE);
 				}
 
 				if (actionId == 729 && (var13 = this.players[itemId]) != null) {
-					this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var13.pathY[0], localPlayer.pathX[0], false,
+					this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var13.pathY[0], localPlayer.pathX[0], false,
 							var13.pathX[0]);
-					this.bY = super.U;
-					this.bZ = super.V;
+					this.bY = super.lastClickX;
+					this.bZ = super.lastClickY;
 					this.cb = 2;
 					this.ca = 0;
-					this.packet.writeCipheredByte(39);
-					this.packet.l(itemId);
+					this.packet.writeOpcode(39);
+					this.packet.writeLEShort(itemId);
 				}
 
 				if (actionId == 577 && (var13 = this.players[itemId]) != null) {
-					this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var13.pathY[0], localPlayer.pathX[0], false,
+					this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var13.pathY[0], localPlayer.pathX[0], false,
 							var13.pathX[0]);
-					this.bY = super.U;
-					this.bZ = super.V;
+					this.bY = super.lastClickX;
+					this.bZ = super.lastClickY;
 					this.cb = 2;
 					this.ca = 0;
-					this.packet.writeCipheredByte(139);
-					this.packet.l(itemId);
+					this.packet.writeOpcode(139);
+					this.packet.writeLEShort(itemId);
 				}
 
 				if (actionId == 956 && this.c(itemId, param2, param1)) {
-					this.packet.writeCipheredByte(35);
-					this.packet.l(param1 + this.sceneX);
-					this.packet.m(this.fE);
-					this.packet.m(param2 + this.sceneY);
-					this.packet.l(itemId >> 14 & 32767);
+					this.packet.writeOpcode(35);
+					this.packet.writeLEShort(param1 + this.sceneX);
+					this.packet.writeShortA(this.fE);
+					this.packet.writeShortA(param2 + this.sceneY);
+					this.packet.writeLEShort(itemId >> 14 & 32767);
 				}
 
 				if (actionId == 567) {
-					if (!this.a(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, param2, localPlayer.pathX[0], false, param1)) {
-						this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, param2, localPlayer.pathX[0], false, param1);
+					if (!this.walk(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, param2, localPlayer.pathX[0], false, param1)) {
+						this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, param2, localPlayer.pathX[0], false, param1);
 					}
 
-					this.bY = super.U;
-					this.bZ = super.V;
+					this.bY = super.lastClickX;
+					this.bZ = super.lastClickY;
 					this.cb = 2;
 					this.ca = 0;
-					this.packet.writeCipheredByte(23);
-					this.packet.l(param2 + this.sceneY);
-					this.packet.l(itemId);
-					this.packet.l(param1 + this.sceneX);
+					this.packet.writeOpcode(23);
+					this.packet.writeLEShort(param2 + this.sceneY);
+					this.packet.writeLEShort(itemId);
+					this.packet.writeLEShort(param1 + this.sceneX);
 				}
 
 				if (actionId == 867) {
@@ -6652,15 +6660,15 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					}
 
 					if (gb >= 59) {
-						this.packet.writeCipheredByte(200);
+						this.packet.writeOpcode(200);
 						this.packet.writeShort(25501);
 						gb = 0;
 					}
 
-					this.packet.writeCipheredByte(43);
-					this.packet.l(param2);
-					this.packet.m(itemId);
-					this.packet.m(param1);
+					this.packet.writeOpcode(43);
+					this.packet.writeLEShort(param2);
+					this.packet.writeShortA(itemId);
+					this.packet.writeShortA(param1);
 					this.gW = 0;
 					this.gX = param2;
 					this.gY = param1;
@@ -6675,11 +6683,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				}
 
 				if (actionId == 543) {
-					this.packet.writeCipheredByte(237);
+					this.packet.writeOpcode(237);
 					this.packet.writeShort(param1);
-					this.packet.m(itemId);
+					this.packet.writeShortA(itemId);
 					this.packet.writeShort(param2);
-					this.packet.m(this.fE);
+					this.packet.writeShortA(this.fE);
 					this.gW = 0;
 					this.gX = param2;
 					this.gY = param1;
@@ -6711,22 +6719,22 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				}
 
 				if (actionId == 491 && (var13 = this.players[itemId]) != null) {
-					this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var13.pathY[0], localPlayer.pathX[0], false,
+					this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var13.pathY[0], localPlayer.pathX[0], false,
 							var13.pathX[0]);
-					this.bY = super.U;
-					this.bZ = super.V;
+					this.bY = super.lastClickX;
+					this.bZ = super.lastClickY;
 					this.cb = 2;
 					this.ca = 0;
-					this.packet.writeCipheredByte(14);
+					this.packet.writeOpcode(14);
 					this.packet.writeShort(itemId);
-					this.packet.l(this.hF);
+					this.packet.writeLEShort(this.hF);
 				}
 
 				if (actionId == 639 && (var14 = (var15 = this.actions[var1]).indexOf("@whi@")) != -1) {
 					var8 = StringUtils.nameToLong(var15.substring(var14 + 5).trim());
 					var18 = -1;
 
-					for (var14 = 0; var14 < this.bS; ++var14) {
+					for (var14 = 0; var14 < this.numFriends; ++var14) {
 						if (this.cG[var14] == var8) {
 							var18 = var14;
 							break;
@@ -6734,7 +6742,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					}
 
 					if (var18 != -1 && this.aQ[var18] > 0) {
-						D = true;
+						redrawDialog = true;
 						this.gJ = 0;
 						this.hi = true;
 						this.gC = "";
@@ -6745,10 +6753,10 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				}
 
 				if (actionId == 454) {
-					this.packet.writeCipheredByte(41);
+					this.packet.writeOpcode(41);
 					this.packet.writeShort(itemId);
-					this.packet.m(param1);
-					this.packet.m(param2);
+					this.packet.writeShortA(param1);
+					this.packet.writeShortA(param2);
 					this.gW = 0;
 					this.gX = param2;
 					this.gY = param1;
@@ -6762,11 +6770,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					}
 				}
 
-				if (actionId == 478 && (var12 = this.aW[itemId]) != null) {
-					this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var12.pathY[0], localPlayer.pathX[0], false,
+				if (actionId == 478 && (var12 = this.npcs[itemId]) != null) {
+					this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, var12.pathY[0], localPlayer.pathX[0], false,
 							var12.pathX[0]);
-					this.bY = super.U;
-					this.bZ = super.V;
+					this.bY = super.lastClickX;
+					this.bZ = super.lastClickY;
 					this.cb = 2;
 					this.ca = 0;
 					if ((itemId & 3) == 0) {
@@ -6774,37 +6782,37 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					}
 
 					if (fP >= 53) {
-						this.packet.writeCipheredByte(85);
+						this.packet.writeOpcode(85);
 						this.packet.writeByte(66);
 						fP = 0;
 					}
 
-					this.packet.writeCipheredByte(18);
-					this.packet.l(itemId);
+					this.packet.writeOpcode(18);
+					this.packet.writeLEShort(itemId);
 				}
 
 				if (actionId == 113) {
 					this.c(itemId, param2, param1);
-					this.packet.writeCipheredByte(70);
-					this.packet.l(param1 + this.sceneX);
+					this.packet.writeOpcode(70);
+					this.packet.writeLEShort(param1 + this.sceneX);
 					this.packet.writeShort(param2 + this.sceneY);
-					this.packet.n(itemId >> 14 & 32767);
+					this.packet.writeLEShortA(itemId >> 14 & 32767);
 				}
 
 				if (actionId == 872) {
 					this.c(itemId, param2, param1);
-					this.packet.writeCipheredByte(234);
-					this.packet.n(param1 + this.sceneX);
-					this.packet.m(itemId >> 14 & 32767);
-					this.packet.n(param2 + this.sceneY);
+					this.packet.writeOpcode(234);
+					this.packet.writeLEShortA(param1 + this.sceneX);
+					this.packet.writeShortA(itemId >> 14 & 32767);
+					this.packet.writeLEShortA(param2 + this.sceneY);
 				}
 
 				if (actionId == 502) {
 					this.c(itemId, param2, param1);
-					this.packet.writeCipheredByte(132);
-					this.packet.n(param1 + this.sceneX);
+					this.packet.writeOpcode(132);
+					this.packet.writeLEShortA(param1 + this.sceneX);
 					this.packet.writeShort(itemId >> 14 & 32767);
-					this.packet.m(param2 + this.sceneY);
+					this.packet.writeShortA(param2 + this.sceneY);
 				}
 
 				ItemDefinition var23;
@@ -6823,7 +6831,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				}
 
 				if (actionId == 169) {
-					this.packet.writeCipheredByte(185);
+					this.packet.writeOpcode(185);
 					this.packet.writeShort(param2);
 					if ((var6 = Widget.widgets[param2]).s != null && var6.s[0][0] == 5) {
 						var14 = var6.s[0][1];
@@ -6852,19 +6860,19 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					}
 
 					if (actionId == 244) {
-						if (!this.a(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, param2, localPlayer.pathX[0], false,
+						if (!this.walk(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, param2, localPlayer.pathX[0], false,
 								param1)) {
-							this.a(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, param2, localPlayer.pathX[0], false, param1);
+							this.walk(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, param2, localPlayer.pathX[0], false, param1);
 						}
 
-						this.bY = super.U;
-						this.bZ = super.V;
+						this.bY = super.lastClickX;
+						this.bZ = super.lastClickY;
 						this.cb = 2;
 						this.ca = 0;
-						this.packet.writeCipheredByte(253);
-						this.packet.l(param1 + this.sceneX);
-						this.packet.n(param2 + this.sceneY);
-						this.packet.m(itemId);
+						this.packet.writeOpcode(253);
+						this.packet.writeLEShort(param1 + this.sceneX);
+						this.packet.writeLEShortA(param2 + this.sceneY);
+						this.packet.writeShortA(itemId);
 					}
 
 					if (actionId == 1448) {
@@ -6997,12 +7005,12 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				Npc var14;
 				Player var15;
 				if (var6 == 1) {
-					Npc var19 = this.aW[var7];
+					Npc var19 = this.npcs[var7];
 
 					try {
 						if (var19.npcDefinition.size == 1 && (var19.X & 127) == 64 && (var19.Y & 127) == 64) {
 							for (high = 0; high < this.aX; ++high) {
-								if ((var14 = this.aW[this.aY[high]]) != null && var14 != var19
+								if ((var14 = this.npcs[this.aY[high]]) != null && var14 != var19
 										&& var14.npcDefinition.size == 1 && var14.X == var19.X && var14.Y == var19.Y) {
 									this.a(var14.npcDefinition, this.aY[high], y, x);
 								}
@@ -7028,7 +7036,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					try {
 						if ((var18.X & 127) == 64 && (var18.Y & 127) == 64) {
 							for (high = 0; high < this.aX; ++high) {
-								if ((var14 = this.aW[this.aY[high]]) != null && var14.npcDefinition.size == 1
+								if ((var14 = this.npcs[this.aY[high]]) != null && var14.npcDefinition.size == 1
 										&& var14.X == var18.X && var14.Y == var18.Y) {
 									this.a(var14.npcDefinition, this.aY[high], y, x);
 								}
@@ -7142,8 +7150,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		this.stopMusic();
 		this.L();
 		this.e(0, 0);
-		if (this.bC != null) {
-			this.bC.a = false;
+		if (this.mouseMonitor != null) {
+			this.mouseMonitor.a = false;
 		}
 
 		if (this.aq != null) {
@@ -7151,22 +7159,22 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			this.av = 0;
 		}
 
-		this.bC = null;
+		this.mouseMonitor = null;
 		this.resourceProvider.c();
 		this.resourceProvider = null;
 		this.aV = null;
 		this.packet = null;
 		this.bf = null;
-		this.eE = null;
+		this.incoming = null;
 		this.gR = null;
 		this.gj = null;
 		this.ha = null;
 		this.gS = null;
 		this.gT = null;
-		this.gE = null;
-		this.hj = null;
+		this.tileHeights = null;
+		this.tileFlags = null;
 		this.scene = null;
-		this.gQ = null;
+		this.collisionMaps = null;
 		this.bV = null;
 		this.aP = null;
 		this.hC = null;
@@ -7179,37 +7187,37 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		this.fW = null;
 		this.fX = null;
 		this.fw = null;
-		this.aI = null;
-		this.aJ = null;
-		this.aK = null;
-		this.gv = null;
-		this.cx = null;
-		this.cy = null;
+		this.background = null;
+		this.mascotInv = null;
+		this.mascotChat = null;
+		this.mapbackImage = null;
+		this.sideicon = null;
+		this.staticons = null;
 		this.compassSprite = null;
 		this.hitsplats = null;
 		this.headiconsPrayer = null;
 		this.headiconsPk = null;
-		this.fa = null;
+		this.headiconHintSprites = null;
 		this.fL = null;
-		this.ev = null;
-		this.ew = null;
-		this.ex = null;
-		this.ey = null;
-		this.ez = null;
-		this.ej = null;
-		this.dN = null;
+		this.mapdotZero = null;
+		this.mapdotOne = null;
+		this.mapdotTwo = null;
+		this.mapdotThree = null;
+		this.mapdotFour = null;
+		this.mapsceneImages = null;
+		this.mapFunctionSprites = null;
 		this.ci = null;
 		this.players = null;
 		this.bN = null;
 		this.bP = null;
 		this.bQ = null;
 		this.ba = null;
-		this.aW = null;
+		this.npcs = null;
 		this.aY = null;
 		this.aR = null;
 		this.gf = null;
 		this.projectiles = null;
-		this.eg = null;
+		this.animableObjects = null;
 		this.actionParam1 = null;
 		this.actionParam2 = null;
 		this.actionIds = null;
@@ -7255,7 +7263,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		System.gc();
 	}
 
-	final Component getFrameComponent() {
+	final Component getDrawComponent() {
 		return (Component) (super.scapeFrame != null ? super.scapeFrame : this);
 	}
 
@@ -7276,30 +7284,30 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				if (this.hi) {
 					if (var1 >= 32 && var1 <= 126 && this.gC.length() < 80) {
 						this.gC = this.gC + (char) var1;
-						D = true;
+						redrawDialog = true;
 					}
 
 					if (var1 == 8 && this.gC.length() > 0) {
 						this.gC = this.gC.substring(0, this.gC.length() - 1);
-						D = true;
+						redrawDialog = true;
 					}
 
 					if (var1 == 13 || var1 == 10) {
 						this.hi = false;
-						D = true;
+						redrawDialog = true;
 						long var2;
 						if (this.em == 1) {
 							var2 = StringUtils.nameToLong(this.gC);
 							this.b(var2);
 						}
 
-						if (this.em == 2 && this.bS > 0) {
+						if (this.em == 2 && this.numFriends > 0) {
 							var2 = StringUtils.nameToLong(this.gC);
 							this.a(var2);
 						}
 
 						if (this.em == 3 && this.gC.length() > 0) {
-							this.packet.writeCipheredByte(126);
+							this.packet.writeOpcode(126);
 							this.packet.writeByte(0);
 							var12 = this.packet.position;
 							this.packet.writeLong(this.cE);
@@ -7309,7 +7317,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 							this.a(this.gC, 6, StringUtils.formatName(StringUtils.longToName(this.cE)));
 							if (this.i == 2) {
 								this.i = 1;
-								this.packet.writeCipheredByte(95);
+								this.packet.writeOpcode(95);
 								this.packet.writeByte(this.G);
 								this.packet.writeByte(this.i);
 								this.packet.writeByte(this.F);
@@ -7332,7 +7340,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 							Client var11 = this;
 							if (var2 != 0L) {
 								try {
-									var11.packet.writeCipheredByte(60);
+									var11.packet.writeOpcode(60);
 									var11.packet.writeLong(var5);
 								} catch (RuntimeException var8) {
 									SignLink.reportError("47229, 3, " + var2 + ", " + var8.toString());
@@ -7344,18 +7352,18 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				} else if (this.gJ == 1) {
 					if (var1 >= 48 && var1 <= 57 && this.dr.length() < 10) {
 						this.dr = this.dr + (char) var1;
-						D = true;
+						redrawDialog = true;
 					}
 
 					if (!this.dr.toLowerCase().contains("k") && !this.dr.toLowerCase().contains("m")
 							&& !this.dr.toLowerCase().contains("b") && (var1 == 107 || var1 == 109) || var1 == 98) {
 						this.dr = this.dr + (char) var1;
-						D = true;
+						redrawDialog = true;
 					}
 
 					if (var1 == 8 && this.dr.length() > 0) {
 						this.dr = this.dr.substring(0, this.dr.length() - 1);
-						D = true;
+						redrawDialog = true;
 					}
 
 					if (var1 == 13 || var1 == 10) {
@@ -7374,43 +7382,43 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 								var12 = Integer.MAX_VALUE;
 							}
 
-							this.packet.writeCipheredByte(208);
+							this.packet.writeOpcode(208);
 							this.packet.writeInt(var12);
 						}
 
 						this.gJ = 0;
-						D = true;
+						redrawDialog = true;
 					}
 				} else if (this.gJ == 2) {
 					if (var1 >= 32 && var1 <= 126 && this.dr.length() < 12) {
 						this.dr = this.dr + (char) var1;
-						D = true;
+						redrawDialog = true;
 					}
 
 					if (var1 == 8 && this.dr.length() > 0) {
 						this.dr = this.dr.substring(0, this.dr.length() - 1);
-						D = true;
+						redrawDialog = true;
 					}
 
 					if (var1 == 13 || var1 == 10) {
 						if (this.dr.length() > 0) {
-							this.packet.writeCipheredByte(60);
+							this.packet.writeOpcode(60);
 							this.packet.writeLong(StringUtils.nameToLong(this.dr));
 						}
 
 						this.gJ = 0;
-						D = true;
+						redrawDialog = true;
 					}
 				} else if (this.gJ != 3 && this.gJ != 4) {
 					if (this.hA == -1) {
 						if (var1 >= 32 && var1 <= 126 && this.bI.length() < 80) {
 							this.bI = this.bI + (char) var1;
-							D = true;
+							redrawDialog = true;
 						}
 
 						if (var1 == 8 && this.bI.length() > 0) {
 							this.bI = this.bI.substring(0, this.bI.length() - 1);
-							D = true;
+							redrawDialog = true;
 						}
 
 						if (var1 == 9) {
@@ -7442,7 +7450,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 									this.fK = false;
 								j = -1;
 								this.hM = -1;*/
-								gp=5063;
+								altInterfaceWidget=5063;
 								j=5292;
 								//System.out.println("gp=" + gp + ", fK=" + fK + ", fh=" + fh + ", hA=" + hA + ", D=" + D + ", j=" + j + ", hM=" + hM);
 							}
@@ -7495,7 +7503,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 							if (this.bI.startsWith("::")) {
 								if(sendCommand) {
-									this.packet.writeCipheredByte(103);
+									this.packet.writeOpcode(103);
 									this.packet.writeByte(this.bI.length() - 1);
 									this.packet.writeString(this.bI.substring(2));
 								}
@@ -7561,7 +7569,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 									this.bI = this.bI.substring(6);
 								}
 
-								this.packet.writeCipheredByte(4);
+								this.packet.writeOpcode(4);
 								this.packet.writeByte(0);
 								var12 = this.packet.position;
 								this.packet.k(var10);
@@ -7583,7 +7591,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 								if (this.G == 2) {
 									this.G = 3;
-									this.packet.writeCipheredByte(95);
+									this.packet.writeOpcode(95);
 									this.packet.writeByte(this.G);
 									this.packet.writeByte(this.i);
 									this.packet.writeByte(this.F);
@@ -7591,23 +7599,23 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 							}
 
 							this.bI = "";
-							D = true;
+							redrawDialog = true;
 						}
 					}
 				} else {
 					if (var1 == 13 || var1 == 10) {
 						this.gJ = 0;
-						D = true;
+						redrawDialog = true;
 					}
 
 					if (var1 >= 32 && var1 <= 126 && this.dr.length() < 40) {
 						this.dr = this.dr + (char) var1;
-						D = true;
+						redrawDialog = true;
 					}
 
 					if (var1 == 8 && this.dr.length() > 0) {
 						this.dr = this.dr.substring(0, this.dr.length() - 1);
-						D = true;
+						redrawDialog = true;
 					}
 				}
 			}
@@ -7968,12 +7976,12 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 	private void a(String var1, int var2, String var3, int var4, boolean var5) {
 		if (var2 == 0 && this.dU != -1) {
-			this.be = var1;
-			super.T = 0;
+			this.clickToContinueString = var1;
+			super.lastMetaModifier = 0;
 		}
 
 		if (this.hA == -1) {
-			D = true;
+			redrawDialog = true;
 		}
 
 		for (int var6 = 499; var6 > 0; --var6) {
@@ -7994,7 +8002,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	}
 
 	public static void b(int var0) {
-		C = var0;
+		selectedRedStoneId = var0;
 		fh = true;
 	}
 
@@ -8011,16 +8019,16 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			this.fp = null;
 			this.fq = null;
 			this.fr = null;
-			this.fX = new ProducingGraphicsBuffer(516, 165, this.getFrameComponent());
-			this.fV = new ProducingGraphicsBuffer(249, 168, this.getFrameComponent());
+			this.fX = new ProducingGraphicsBuffer(516, 165, this.getDrawComponent());
+			this.fV = new ProducingGraphicsBuffer(249, 168, this.getDrawComponent());
 			Rasterizer2D.reset();
 			Animation.spriteFromGroup("map", 0).drawSprite(0, 0);
-			this.fU = new ProducingGraphicsBuffer(250, 335, this.getFrameComponent());
-			this.fW = new ProducingGraphicsBuffer(512, 334, this.getFrameComponent());
+			this.fU = new ProducingGraphicsBuffer(250, 335, this.getDrawComponent());
+			this.fW = new ProducingGraphicsBuffer(512, 334, this.getDrawComponent());
 			Rasterizer2D.reset();
-			new ProducingGraphicsBuffer(496, 50, this.getFrameComponent());
-			new ProducingGraphicsBuffer(269, 37, this.getFrameComponent());
-			this.fw = new ProducingGraphicsBuffer(249, 45, this.getFrameComponent());
+			new ProducingGraphicsBuffer(496, 50, this.getDrawComponent());
+			new ProducingGraphicsBuffer(269, 37, this.getDrawComponent());
+			this.fw = new ProducingGraphicsBuffer(249, 45, this.getDrawComponent());
 			this.hh = true;
 		}
 	}
@@ -8042,7 +8050,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			var3 = (resizeMode == 0 ? 131 : clientWidth + 131 - 238) + var18 - 10 - 5;
 			double var8 = var6;
 			var2 = var10001;
-			var1 = this.dq;
+			var1 = this.mapedgeSprite;
 
 			try {
 				var4 = (int) (Math.sin(var8) * 65536.0D);
@@ -8089,11 +8097,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			this.actionIds[0] = 1107;
 			this.numActions = 1;
 			if (this.hM != -1) {
-				this.bH = 0;
+				this.hoveredWidgetId = 0;
 				this.hP = 0;
-				this.a(8, Widget.widgets[this.hM], super.mouseX, 8, super.mouseY, 0);
-				if (this.bH != this.dK) {
-					this.dK = this.bH;
+				this.processWidget(8, Widget.widgets[this.hM], super.mouseX, 8, super.mouseY, 0);
+				if (this.hoveredWidgetId != this.dK) {
+					this.dK = this.hoveredWidgetId;
 				}
 
 				if (this.hP != this.hO) {
@@ -8107,7 +8115,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				int var4;
 				if (this.gu != 0) {
 					var2 = 0;
-					if (this.fi != 0) {
+					if (this.systemUpdateTime != 0) {
 						var2 = 1;
 					}
 
@@ -8122,7 +8130,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 							if ((var4 == 3 || var4 == 7) && (var4 == 7 || var1.i == 0 || var1.i == 1 && var1.c(var5))) {
 								int var6 = 329 - var2 * 13;
 								if (var1.mouseX > 4 && var1.mouseY - 4 > var6 - 10 && var1.mouseY - 4 <= var6 + 3) {
-									if ((var6 = var1.p12_full.getColoredTextWidth("From:  " + var5 + var1.ct[var3])
+									if ((var6 = var1.frameFont.getColoredTextWidth("From:  " + var5 + var1.ct[var3])
 											+ 25) > 450) {
 										var6 = 450;
 									}
@@ -8159,13 +8167,13 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					}
 				}
 
-				this.bH = 0;
+				this.hoveredWidgetId = 0;
 				this.hP = 0;
 				int var10001;
 				if (resizeMode == 0) {
 					if (super.mouseX > 4 && super.mouseY > 4 && super.mouseX < 516 && super.mouseY < 338) {
 						if (j != -1) {
-							this.a(4, Widget.widgets[j], super.mouseX, 4, super.mouseY, 0);
+							this.processWidget(4, Widget.widgets[j], super.mouseX, 4, super.mouseY, 0);
 						} else {
 							this.C();
 						}
@@ -8219,7 +8227,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						if (super.mouseX > clientWidth / 2 - 356 && super.mouseY > clientHeight / 2 - 230
 								&& super.mouseX < clientWidth / 2 + 356 && super.mouseY < clientHeight / 2 + 230
 								&& j != -1) {
-							this.a(clientWidth / 2 - 356, Widget.widgets[j], super.mouseX, clientHeight / 2 - 230,
+							this.processWidget(clientWidth / 2 - 356, Widget.widgets[j], super.mouseX, clientHeight / 2 - 230,
 									super.mouseY, 0);
 						} else {
 							this.C();
@@ -8227,25 +8235,25 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					}
 				}
 
-				if (this.bH != this.dK) {
-					this.dK = this.bH;
+				if (this.hoveredWidgetId != this.dK) {
+					this.dK = this.hoveredWidgetId;
 				}
 
 				if (this.hP != this.hO) {
 					this.hO = this.hP;
 				}
 
-				this.bH = 0;
+				this.hoveredWidgetId = 0;
 				this.hP = 0;
 				int var7;
 				if (resizeMode == 0) {
 					if (super.mouseX > clientWidth - 218 && super.mouseY > clientHeight - 298
 							&& super.mouseX < clientWidth - 25 && super.mouseY < clientHeight - 35) {
-						if (this.gp != -1) {
-							this.a(clientWidth - 218, Widget.widgets[this.gp], super.mouseX, clientHeight - 298,
+						if (this.altInterfaceWidget != -1) {
+							this.processWidget(clientWidth - 218, Widget.widgets[this.altInterfaceWidget], super.mouseX, clientHeight - 298,
 									super.mouseY, 0);
-						} else if (u[C] != -1) {
-							this.a(clientWidth - 218, Widget.widgets[u[C]], super.mouseX, clientHeight - 298,
+						} else if (redStoneWidgetIds[selectedRedStoneId] != -1) {
+							this.processWidget(clientWidth - 218, Widget.widgets[redStoneWidgetIds[selectedRedStoneId]], super.mouseX, clientHeight - 298,
 									super.mouseY, 0);
 						}
 					}
@@ -8254,11 +8262,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					if (clientWidth > 1000 && super.mouseX > clientWidth - 197
 							&& super.mouseY > clientHeight - var7 - 267 && super.mouseX < clientWidth - 7
 							&& super.mouseY < clientHeight - var7 - 7 && this.eP) {
-						if (this.gp != -1) {
-							this.a(clientWidth - 197, Widget.widgets[this.gp], super.mouseX, clientHeight - 304,
+						if (this.altInterfaceWidget != -1) {
+							this.processWidget(clientWidth - 197, Widget.widgets[this.altInterfaceWidget], super.mouseX, clientHeight - 304,
 									super.mouseY, 0);
-						} else if (u[C] != -1) {
-							this.a(clientWidth - 197, Widget.widgets[u[C]], super.mouseX, clientHeight - 304,
+						} else if (redStoneWidgetIds[selectedRedStoneId] != -1) {
+							this.processWidget(clientWidth - 197, Widget.widgets[redStoneWidgetIds[selectedRedStoneId]], super.mouseX, clientHeight - 304,
 									super.mouseY, 0);
 						}
 					}
@@ -8266,19 +8274,19 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					if (clientWidth <= 1000 && super.mouseX > clientWidth - 211
 							&& super.mouseY > clientHeight - var7 - 267 && super.mouseX < clientWidth - 7
 							&& super.mouseY < clientHeight - var7 - 7 && this.eP) {
-						if (this.gp != -1) {
-							this.a(clientWidth - 211, Widget.widgets[this.gp], super.mouseX, clientHeight - var7 - 267,
+						if (this.altInterfaceWidget != -1) {
+							this.processWidget(clientWidth - 211, Widget.widgets[this.altInterfaceWidget], super.mouseX, clientHeight - var7 - 267,
 									super.mouseY, 0);
-						} else if (u[C] != -1) {
-							this.a(clientWidth - 211, Widget.widgets[u[C]], super.mouseX, clientHeight - var7 - 267,
+						} else if (redStoneWidgetIds[selectedRedStoneId] != -1) {
+							this.processWidget(clientWidth - 211, Widget.widgets[redStoneWidgetIds[selectedRedStoneId]], super.mouseX, clientHeight - var7 - 267,
 									super.mouseY, 0);
 						}
 					}
 				}
 
-				if (this.bH != this.dZ) {
+				if (this.hoveredWidgetId != this.dZ) {
 					fh = true;
-					this.dZ = this.bH;
+					this.dZ = this.hoveredWidgetId;
 				}
 
 				if (this.hP != this.hN) {
@@ -8286,25 +8294,25 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.hN = this.hP;
 				}
 
-				this.bH = 0;
+				this.hoveredWidgetId = 0;
 				this.hP = 0;
 				if (super.mouseX > 0 && super.mouseY > (resizeMode == 0 ? 338 : clientHeight - 165)
 						&& super.mouseX < 490 && super.mouseY < (resizeMode == 0 ? 463 : clientHeight - 40) && eQ) {
 					if (this.hA != -1) {
-						this.a(20, Widget.widgets[this.hA], super.mouseX, resizeMode == 0 ? 358 : clientHeight - 145,
+						this.processWidget(20, Widget.widgets[this.hA], super.mouseX, resizeMode == 0 ? 358 : clientHeight - 145,
 								super.mouseY, 0);
 					} else if (super.mouseY < (resizeMode == 0 ? 463 : clientHeight - 40) && super.mouseX < 490) {
 						this.r(super.mouseY - (resizeMode == 0 ? 338 : clientHeight - 165));
 					}
 				}
 
-				if (this.hA != -1 && this.bH != this.dT) {
-					D = true;
-					this.dT = this.bH;
+				if (this.hA != -1 && this.hoveredWidgetId != this.dT) {
+					redrawDialog = true;
+					this.dT = this.hoveredWidgetId;
 				}
 
 				if (this.hA != -1 && this.hP != this.hQ) {
-					D = true;
+					redrawDialog = true;
 					this.hQ = this.hP;
 				}
 
@@ -8469,14 +8477,14 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			int var7 = var6 = this.bufferedConnection.readByte();
 			int var9;
 			if (var6 == 0) {
-				this.bufferedConnection.read(this.eE.buf, 8);
-				this.eE.position = 0;
-				this.gF = this.eE.readLong();
+				this.bufferedConnection.read(this.incoming.buf, 8);
+				this.incoming.position = 0;
+				this.serverSeed = this.incoming.readLong();
 				int[] var14;
 				(var14 = new int[4])[0] = (int) (Math.random() * 9.9999999E7D);
 				var14[1] = (int) (Math.random() * 9.9999999E7D);
-				var14[2] = (int) (this.gF >> 32);
-				var14[3] = (int) this.gF;
+				var14[2] = (int) (this.serverSeed >> 32);
+				var14[3] = (int) this.serverSeed;
 				this.packet.position = 0;
 				this.packet.writeByte(10);
 				this.packet.writeInt(var14[0]);
@@ -8501,8 +8509,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				
 				String computerId;
 				
-				if(allowMultilog) {
-					/* Send random MAC address to the server... */
+				/*if(allowMultilog) {
+					// Send random MAC address to the server... 
 					StringBuilder sb = new StringBuilder();
 					
 					Random rnd = new Random();
@@ -8525,6 +8533,10 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					if ((computerId = j()).equals("00-00-00-00-00-00-00-E0") || computerId.equals("00:00:00:00:00:00")) {
 						computerId = System.getenv("USERNAME") + "@" + System.getenv("COMPUTERNAME");
 					}
+				}*/
+				
+				if ((computerId = j()).equals("00-00-00-00-00-00-00-E0") || computerId.equals("00:00:00:00:00:00")) {
+					computerId = System.getenv("USERNAME") + "@" + System.getenv("COMPUTERNAME");
 				}
 
 				this.bf.writeString(computerId);
@@ -8540,7 +8552,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					var14[var9] += 50;
 				}
 
-				this.dp = new IsaacCipher(var14);
+				this.decryption = new IsaacCipher(var14);
 				this.bufferedConnection.startWriterThread(this.bf.position, this.bf.buf);
 				var6 = this.bufferedConnection.readByte();
 			}
@@ -8561,21 +8573,21 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.accountType = this.bufferedConnection.readByte();
 				}
 				this.bufferedConnection.readByte();
-				this.bC.b = 0;
-				super.O = true;
-				this.cF = true;
+				this.mouseMonitor.b = 0;
+				super.hasFocus = true;
+				this.wasFocused = true;
 				this.loggedIn = true;
 				this.packet.position = 0;
-				this.eE.position = 0;
+				this.incoming.position = 0;
 				this.serverPacketOpcode = -1;
-				this.bb = -1;
-				this.bc = -1;
-				this.bd = -1;
-				this.du = 0;
-				this.dw = 0;
-				this.fi = 0;
+				this.lastOpcode = -1;
+				this.secondLastOpcode = -1;
+				this.thirdLastOpcode = -1;
+				this.packetSize = 0;
+				this.timeoutCounter = 0;
+				this.systemUpdateTime = 0;
 				this.dy = 0;
-				this.bm = 0;
+				this.hintIconType = 0;
 				this.numActions = 0;
 				this.menuShowing = false;
 				super.P = 0;
@@ -8586,7 +8598,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 				this.itemClicked = 0;
 				this.fD = 0;
-				this.dH = 0;
+				this.loadingStage = 0;
 				this.ek = 0;
 				this.hB = (int) (Math.random() * 100.0D) - 50;
 				this.fA = (int) (Math.random() * 110.0D) - 55;
@@ -8607,12 +8619,12 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				}
 
 				for (var6 = 0; var6 < 16384; ++var6) {
-					this.aW[var6] = null;
+					this.npcs[var6] = null;
 				}
 
 				localPlayer = this.players[2047] = new Player();
 				this.projectiles.clear();
-				this.eg.clear();
+				this.animableObjects.clear();
 
 				for (var6 = 0; var6 < 4; ++var6) {
 					for (int var15 = 0; var15 < 104; ++var15) {
@@ -8624,20 +8636,20 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 				this.gf = new LinkedList();
 				this.bU = 0;
-				this.bS = 0;
+				this.numFriends = 0;
 				this.aN = 0;
 				this.bT = 0;
 				this.dU = -1;
 				this.hA = -1;
 				j = -1;
-				this.gp = -1;
+				this.altInterfaceWidget = -1;
 				this.dE = -1;
 				this.fK = false;
-				C = 3;
+				selectedRedStoneId = 3;
 				this.gJ = 0;
 				this.menuShowing = false;
 				this.hi = false;
-				this.be = null;
+				this.clickToContinueString = null;
 				this.ef = 0;
 				this.ee = -1;
 				this.dY = true;
@@ -8701,17 +8713,17 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			} else if (var6 == 15) {
 				this.loggedIn = true;
 				this.packet.position = 0;
-				this.eE.position = 0;
+				this.incoming.position = 0;
 				this.serverPacketOpcode = -1;
-				this.bb = -1;
-				this.bc = -1;
-				this.bd = -1;
-				this.du = 0;
-				this.dw = 0;
-				this.fi = 0;
+				this.lastOpcode = -1;
+				this.secondLastOpcode = -1;
+				this.thirdLastOpcode = -1;
+				this.packetSize = 0;
+				this.timeoutCounter = 0;
+				this.systemUpdateTime = 0;
 				this.numActions = 0;
 				this.menuShowing = false;
-				this.aO = System.currentTimeMillis();
+				this.loadingStartTime = System.currentTimeMillis();
 			} else if (var6 == 16) {
 				this.hq = "Login attempts exceeded.";
 				this.hr = "Please wait 1 minute and try again.";
@@ -8767,7 +8779,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		}
 	}
 
-	private boolean a(int var1, int var2, int var3, int var4, int var5, int var6, int var7, int var8, int var9,
+	private boolean walk(int var1, int var2, int var3, int var4, int var5, int var6, int var7, int var8, int var9,
 			boolean var10, int var11) {
 		int var12;
 		int var13;
@@ -8789,7 +8801,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		this.hD[0] = var5;
 		boolean var16 = false;
 		int var17 = this.hC.length;
-		int[][] var18 = this.gQ[this.plane].adjacencies;
+		int[][] var18 = this.collisionMaps[this.plane].adjacencies;
 
 		int var29;
 		while (var15 != var27) {
@@ -8808,7 +8820,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				int var20;
 				boolean var30;
 				if (var4 < 5 || var4 == 10) {
-					var10000 = this.gQ[this.plane];
+					var10000 = this.collisionMaps[this.plane];
 					var20 = var4 - 1;
 					var25 = var10000;
 					if (var12 == var11 && var13 == var8) {
@@ -9014,7 +9026,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				}
 
 				if (var4 < 10) {
-					var10000 = this.gQ[this.plane];
+					var10000 = this.collisionMaps[this.plane];
 					int var10004 = var4 - 1;
 					var20 = var2;
 					var21 = var10004;
@@ -9115,7 +9127,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			}
 
 			if (var6 != 0 && var3 != 0) {
-				var25 = this.gQ[this.plane];
+				var25 = this.collisionMaps[this.plane];
 				int var19 = var11 + var6 - 1;
 				var21 = var8 + var3 - 1;
 				if (var12 >= var11 && var12 <= var19 && var13 >= var8 && var13 <= var21
@@ -9276,27 +9288,27 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			var3 = this.hC[var15];
 			var4 = this.hD[var15];
 			if ((hJ += var2) >= 92) {
-				this.packet.writeCipheredByte(36);
+				this.packet.writeOpcode(36);
 				this.packet.writeInt(0);
 				hJ = 0;
 			}
 
 			if (var1 == 0) {
-				this.packet.writeCipheredByte(164);
+				this.packet.writeOpcode(164);
 				this.packet.writeByte(var2 + var2 + 3);
 			}
 
 			if (var1 == 1) {
-				this.packet.writeCipheredByte(248);
+				this.packet.writeOpcode(248);
 				this.packet.writeByte(var2 + var2 + 3 + 14);
 			}
 
 			if (var1 == 2) {
-				this.packet.writeCipheredByte(98);
+				this.packet.writeOpcode(98);
 				this.packet.writeByte(var2 + var2 + 3);
 			}
 
-			this.packet.n(var3 + this.sceneX);
+			this.packet.writeLEShortA(var3 + this.sceneX);
 			this.hl = this.hC[0];
 			this.hm = this.hD[0];
 
@@ -9306,8 +9318,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				this.packet.writeByte(this.hD[var15] - var4);
 			}
 
-			this.packet.l(var4 + this.sceneY);
-			this.packet.writeLowByteAfterNegation(super.W[5] != 1 ? 0 : 1);
+			this.packet.writeLEShort(var4 + this.sceneY);
+			this.packet.writeNegatedByte(super.keyStatuses[5] != 1 ? 0 : 1);
 			return true;
 		}
 	}
@@ -9315,7 +9327,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private void b(Buffer var1) {
 		for (int var2 = 0; var2 < this.bO; ++var2) {
 			int var3 = this.bP[var2];
-			Npc var7 = this.aW[var3];
+			Npc var7 = this.npcs[var3];
 			int var4;
 			int var5;
 			int var6;
@@ -9681,33 +9693,33 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			}
 
 			if (this.loopMusic == 0 && playMusic) {
-				this.requestedSong = this.cJ;
-				this.gM = true;
-				this.resourceProvider.provide(2, this.requestedSong);
+				this.musicId = this.cJ;
+				this.fadeMusic = true;
+				this.resourceProvider.provide(2, this.musicId);
 			}
 		}
 
 	}
 
-	final void f() throws Throwable {
+	final void loadAssets() throws Throwable {
 		this.statusText(20, (String) "Starting up");
 		(new VScapeCacheUpdater(this)).update();
 
 		try {
-			Client var1 = this;
-			String var2 = "https://dl.dropboxusercontent.com/u/31306161/vscape/clientVersion.dat";
-			BufferedReader var27 = new BufferedReader(new InputStreamReader((new URL(var2)).openStream()));
+			Client client = this;
+			String address = "https://dl.dropboxusercontent.com/u/31306161/vscape/clientVersion.dat";
+			BufferedReader br = new BufferedReader(new InputStreamReader((new URL(address)).openStream()));
 
 			try {
 				String var3;
-				if ((var3 = var27.readLine()) != null) {
-					var1.clientOutOfDate = !var3.equalsIgnoreCase("4.0");
+				if ((var3 = br.readLine()) != null) {
+					client.clientOutOfDate = !var3.equalsIgnoreCase("4.0");
 				}
 
-				var27.close();
+				br.close();
 			} catch (IOException var17) {
 				System.out.println("problem reading remote client version");
-				var27.close();
+				br.close();
 			}
 		} catch (Exception var18) {
 			;
@@ -9719,27 +9731,27 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			;
 		}
 
-		int var25;
-		if (SignLink.a != null) {
-			for (var25 = 0; var25 < 5; ++var25) {
-				this.indices[var25] = new Index(SignLink.a, SignLink.b[var25], var25 + 1);
+		int i;
+		if (SignLink.data != null) {
+			for (i = 0; i < 5; ++i) {
+				this.indices[i] = new Index(SignLink.data, SignLink.indices[i], i + 1);
 			}
 		}
 
 		try {
 			this.fonts = this.getArchive(1, "title screen", "title", this.eS[1], 25);
-			this.p11_full = new RSFont(false, "p11_full", this.fonts);
-			this.p12_full = new RSFont(false, "p12_full", this.fonts);
-			this.b12_full = new RSFont(false, "b12_full", this.fonts);
-			RSFont var26 = new RSFont(true, "q8_full", this.fonts);
-			this.hx = new Class71(false, "p11_full", this.fonts);
-			this.hy = new Class71(false, "p12_full", this.fonts);
-			this.hz = new Class71(true, "b12_full", this.fonts);
-			this.v();
+			this.smallFont = new RSFont(false, "p11_full", this.fonts);
+			this.frameFont = new RSFont(false, "p12_full", this.fonts);
+			this.bold = new RSFont(false, "b12_full", this.fonts);
+			RSFont q8_full = new RSFont(true, "q8_full", this.fonts);
+			this.smallFontVscape = new VScapeFont(false, "p11_full", this.fonts);
+			this.frameFontVscape = new VScapeFont(false, "p12_full", this.fonts);
+			this.boldFontVscape = new VScapeFont(true, "b12_full", this.fonts);
+			this.drawTitleBackground();
 			this.u();
 			Archive config = this.getArchive(2, "config", "config", this.eS[2], 30);
 			Archive interfaces = this.getArchive(3, "interface", "interface", this.eS[3], 35);
-			Archive var4 = this.getArchive(4, "2d graphics", "media", this.eS[4], 40);
+			Archive media = this.getArchive(4, "2d graphics", "media", this.eS[4], 40);
 
 			try {
 				Animation.loadSpriteGroups();
@@ -9748,36 +9760,36 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			}
 
 			Archive textures = this.getArchive(6, "textures", "textures", this.eS[6], 45);
-			Archive var6 = this.getArchive(7, "chat system", "wordenc", this.eS[7], 50);
+			Archive chat = this.getArchive(7, "chat system", "wordenc", this.eS[7], 50);
 			Archive var7 = this.getArchive(8, "sound effects", "sounds", this.eS[8], 55);
-			this.hj = new byte[4][104][104];
-			this.gE = new int[4][105][105];
-			this.scene = new SceneGraph(this.gE);
+			this.tileFlags = new byte[4][104][104];
+			this.tileHeights = new int[4][105][105];
+			this.scene = new SceneGraph(this.tileHeights);
 
 			int var8;
 			for (var8 = 0; var8 < 4; ++var8) {
-				this.gQ[var8] = new CollisionMap();
+				this.collisionMaps[var8] = new CollisionMap();
 			}
 
 			this.hn = new Sprite(512, 512);
-			Archive var34 = this.getArchive(5, "update list", "versionlist", this.eS[5], 60);
+			Archive version = this.getArchive(5, "update list", "versionlist", this.eS[5], 60);
 			this.statusText(60, (String) "Connecting to update server");
 			this.resourceProvider = new ResourceProvider();
-			this.resourceProvider.init(var34, this);
-			Model.a(this.resourceProvider);
+			this.resourceProvider.init(version, this);
+			Model.init(this.resourceProvider);
 			if (playLoginMusic) {
-				this.requestedSong = 0;
+				this.musicId = 0;
 
 				try {
-					this.requestedSong = Integer.parseInt(this.getParameter("music"));
+					this.musicId = Integer.parseInt(this.getParameter("music"));
 				} catch (Exception var14) {
 					;
 				}
 
-				this.gM = true;
-				this.resourceProvider.provide(2, this.requestedSong);
+				this.fadeMusic = true;
+				this.resourceProvider.provide(2, this.musicId);
 
-				while (this.resourceProvider.b() > 0) {
+				while (this.resourceProvider.remaining() > 0) {
 					this.dispatchProvidedResources();
 
 					try {
@@ -9786,38 +9798,38 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						;
 					}
 
-					if (this.resourceProvider.a > 3) {
+					if (this.resourceProvider.errors > 3) {
 						return;
 					}
 				}
 			}
 
 			this.statusText(80, (String) "Unpacking media");
-			this.aI = new Sprite("background");
-			this.aJ = new Sprite("mascot_inv");
-			this.aK = new Sprite("mascot_chat");
-			new Sprite(var4, "overlay_multiway", 0);
-			this.gv = new IndexedImage(var4, "mapback", 0);
+			this.background = new Sprite("background");
+			this.mascotInv = new Sprite("mascot_inv");
+			this.mascotChat = new Sprite("mascot_chat");
+			new Sprite(media, "overlay_multiway", 0);
+			this.mapbackImage = new IndexedImage(media, "mapback", 0);
 
 			for (var8 = 0; var8 <= 14; ++var8) {
-				this.cx[var8] = new Sprite(var4, "sideicons", var8);
+				this.sideicon[var8] = new Sprite(media, "sideicons", var8);
 			}
 
 			for (var8 = 0; var8 <= 17; ++var8) {
-				this.cy[var8] = new Sprite(var4, "staticons", var8);
+				this.staticons[var8] = new Sprite(media, "staticons", var8);
 			}
 
 			for (var8 = 0; var8 <= 2; ++var8) {
-				this.cy[var8 + 18] = new Sprite(var4, "staticons2", var8);
+				this.staticons[var8 + 18] = new Sprite(media, "staticons2", var8);
 			}
 
-			this.compassSprite = new Sprite(var4, "compass", 0);
-			this.dq = new Sprite(var4, "mapedge", 0);
-			this.dq.resize();
+			this.compassSprite = new Sprite(media, "compass", 0);
+			this.mapedgeSprite = new Sprite(media, "mapedge", 0);
+			this.mapedgeSprite.resize();
 
 			try {
 				for (var8 = 0; var8 < 100; ++var8) {
-					this.ej[var8] = new IndexedImage(var4, "mapscene", var8);
+					this.mapsceneImages[var8] = new IndexedImage(media, "mapscene", var8);
 				}
 			} catch (Exception var23) {
 				;
@@ -9825,7 +9837,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 			try {
 				for (var8 = 0; var8 < 100; ++var8) {
-					this.dN[var8] = new Sprite(var4, "mapfunction", var8);
+					this.mapFunctionSprites[var8] = new Sprite(media, "mapfunction", var8);
 				}
 			} catch (Exception var22) {
 				;
@@ -9833,7 +9845,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 			try {
 				for (var8 = 0; var8 < 20; ++var8) {
-					this.hitsplats[var8] = new Sprite(var4, "hitmarks", var8);
+					this.hitsplats[var8] = new Sprite(media, "hitmarks", var8);
 				}
 			} catch (Exception var21) {
 				;
@@ -9841,7 +9853,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 			try {
 				for (var8 = 0; var8 < 6; ++var8) {
-					this.fa[var8] = new Sprite(var4, "headicons_hint", var8);
+					this.headiconHintSprites[var8] = new Sprite(media, "headicons_hint", var8);
 				}
 			} catch (Exception var20) {
 				;
@@ -9849,58 +9861,58 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 			try {
 				for (var8 = 0; var8 < 8; ++var8) {
-					this.headiconsPrayer[var8] = new Sprite(var4, "headicons_prayer", var8);
+					this.headiconsPrayer[var8] = new Sprite(media, "headicons_prayer", var8);
 				}
 
 				for (var8 = 0; var8 < 3; ++var8) {
-					this.headiconsPk[var8] = new Sprite(var4, "headicons_pk", var8);
+					this.headiconsPk[var8] = new Sprite(media, "headicons_pk", var8);
 				}
 			} catch (Exception var19) {
 				;
 			}
 
-			this.bu = new Sprite(var4, "mapmarker", 0);
-			this.bv = new Sprite(var4, "mapmarker", 1);
+			this.mapmarkerZero = new Sprite(media, "mapmarker", 0);
+			this.mapmarkerOne = new Sprite(media, "mapmarker", 1);
 
 			for (var8 = 0; var8 < 8; ++var8) {
-				this.fL[var8] = new Sprite(var4, "cross", var8);
+				this.fL[var8] = new Sprite(media, "cross", var8);
 			}
 
-			this.ev = new Sprite(var4, "mapdots", 0);
-			this.eX = new Sprite(var4, "Overlay_multiway", 0);
-			this.ew = new Sprite(var4, "mapdots", 1);
-			this.ex = new Sprite(var4, "mapdots", 2);
-			this.ey = new Sprite(var4, "mapdots", 3);
-			this.ez = new Sprite(var4, "mapdots", 4);
+			this.mapdotZero = new Sprite(media, "mapdots", 0);
+			this.overlayMultiway = new Sprite(media, "Overlay_multiway", 0);
+			this.mapdotOne = new Sprite(media, "mapdots", 1);
+			this.mapdotTwo = new Sprite(media, "mapdots", 2);
+			this.mapdotThree = new Sprite(media, "mapdots", 3);
+			this.mapdotFour = new Sprite(media, "mapdots", 4);
 			this.clanChatSprite = Animation.spriteFromGroup("clanchat", 7);
-			this.dI = new Sprite(var4, "scrollbar", 0);
-			this.dJ = new Sprite(var4, "scrollbar", 1);
+			this.scrollbarZero = new Sprite(media, "scrollbar", 0);
+			this.scrollbarOne = new Sprite(media, "scrollbar", 1);
 
 			for (var8 = 0; var8 < 2; ++var8) {
-				this.gH[var8] = new IndexedImage(var4, "mod_icons", var8);
+				this.modIcons[var8] = new IndexedImage(media, "mod_icons", var8);
 			}
 
-			Sprite var37 = new Sprite(var4, "screenframe", 0);
-			this.aL = new ProducingGraphicsBuffer(var37.width, var37.height, this.getFrameComponent());
-			var37.c(0, 0);
-			var37 = new Sprite(var4, "screenframe", 1);
-			this.aM = new ProducingGraphicsBuffer(var37.width, var37.height, this.getFrameComponent());
-			var37.c(0, 0);
-			var37 = new Sprite(var4, "mapedge", 0);
-			new ProducingGraphicsBuffer(var37.width, var37.height, this.getFrameComponent());
-			var37.c(0, 0);
+			Sprite screenFrame = new Sprite(media, "screenframe", 0);
+			this.aL = new ProducingGraphicsBuffer(screenFrame.width, screenFrame.height, this.getDrawComponent());
+			screenFrame.c(0, 0);
+			screenFrame = new Sprite(media, "screenframe", 1);
+			this.aM = new ProducingGraphicsBuffer(screenFrame.width, screenFrame.height, this.getDrawComponent());
+			screenFrame.c(0, 0);
+			screenFrame = new Sprite(media, "mapedge", 0);
+			new ProducingGraphicsBuffer(screenFrame.width, screenFrame.height, this.getDrawComponent());
+			screenFrame.c(0, 0);
 			var8 = (int) (Math.random() * 21.0D) - 10;
 			int var9 = (int) (Math.random() * 21.0D) - 10;
 			int var10 = (int) (Math.random() * 21.0D) - 10;
 			int var11 = (int) (Math.random() * 41.0D) - 20;
 
 			for (int var12 = 0; var12 < 100; ++var12) {
-				if (this.dN[var12] != null) {
-					this.dN[var12].recolor(var8 + var11, var9 + var11, var10 + var11);
+				if (this.mapFunctionSprites[var12] != null) {
+					this.mapFunctionSprites[var12].recolor(var8 + var11, var9 + var11, var10 + var11);
 				}
 
-				if (this.ej[var12] != null) {
-					this.ej[var12].a(var8 + var11, var9 + var11, var10 + var11);
+				if (this.mapsceneImages[var12] != null) {
+					this.mapsceneImages[var12].a(var8 + var11, var9 + var11, var10 + var11);
 				}
 			}
 
@@ -9925,72 +9937,72 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			byte[] var35 = var7.getEntry("sounds.dat");
 			Track.a(new Buffer(var35));
 			this.statusText(95, (String) "Unpacking interfaces");
-			RSFont[] var36 = new RSFont[] { this.p11_full, this.p12_full, this.b12_full, var26 };
-			Widget.load(interfaces, var36, var4);
+			RSFont[] fonts = new RSFont[] { this.smallFont, this.frameFont, this.bold, q8_full };
+			Widget.load(interfaces, fonts, media);
 			this.statusText(100, (String) "Preparing game engine");
 
 			int var29;
 			int var31;
 			int var32;
 			for (var29 = 0; var29 < 33; ++var29) {
-				var25 = 999;
+				i = 999;
 				var31 = 0;
 
 				for (var32 = 0; var32 < 34; ++var32) {
-					if (this.gv.a[var32 + var29 * this.gv.c] == 0) {
-						if (var25 == 999) {
-							var25 = var32;
+					if (this.mapbackImage.raster[var32 + var29 * this.mapbackImage.c] == 0) {
+						if (i == 999) {
+							i = var32;
 						}
-					} else if (var25 != 999) {
+					} else if (i != 999) {
 						var31 = var32;
 						break;
 					}
 				}
 
-				this.cS[var29] = var25;
-				this.eh[var29] = var31 - var25;
+				this.cS[var29] = i;
+				this.eh[var29] = var31 - i;
 			}
 
 			for (var29 = 1; var29 < 153; ++var29) {
-				var25 = 999;
+				i = 999;
 				var31 = 0;
 
 				for (var32 = 24; var32 < 177; ++var32) {
-					if (this.gv.a[var32 + var29 * this.gv.c] != 0 || var32 <= 34 && var29 <= 34) {
-						if (var25 != 999) {
+					if (this.mapbackImage.raster[var32 + var29 * this.mapbackImage.c] != 0 || var32 <= 34 && var29 <= 34) {
+						if (i != 999) {
 							var31 = var32;
 							break;
 						}
-					} else if (var25 == 999) {
-						var25 = var32;
+					} else if (i == 999) {
+						i = var32;
 					}
 				}
 
-				this.ec[var29 - 1] = var25 - 24;
-				this.gP[var29 - 1] = var31 - var25;
+				this.ec[var29 - 1] = i - 24;
+				this.gP[var29 - 1] = var31 - i;
 			}
 
-			Rasterizer3D.a(765, 503);
-			this.hS = Rasterizer3D.t;
-			Rasterizer3D.a(516, 165);
-			this.gg = Rasterizer3D.t;
-			Rasterizer3D.a(250, 335);
-			this.gh = Rasterizer3D.t;
-			Rasterizer3D.a(512, 334);
-			this.gi = Rasterizer3D.t;
+			Rasterizer3D.reposition(765, 503);
+			this.hS = Rasterizer3D.scanOffsets;
+			Rasterizer3D.reposition(516, 165);
+			this.gg = Rasterizer3D.scanOffsets;
+			Rasterizer3D.reposition(250, 335);
+			this.gh = Rasterizer3D.scanOffsets;
+			Rasterizer3D.reposition(512, 334);
+			this.gi = Rasterizer3D.scanOffsets;
 			int[] var33 = new int[9];
 
-			for (var25 = 0; var25 < 9; ++var25) {
-				var31 = 128 + (var25 << 5) + 15;
+			for (i = 0; i < 9; ++i) {
+				var31 = 128 + (i << 5) + 15;
 				var32 = 600 + var31 * 3;
 				var31 = Rasterizer3D.SINE[var31];
-				var33[var25] = var32 * var31 >> 16;
+				var33[i] = var32 * var31 >> 16;
 			}
 
 			SceneGraph.a(500, 800, 512, 334, var33);
-			MessageCensor.a(var6);
-			this.bC = new MouseMonitor(this);
-			this.startThread((Runnable) this.bC, 10);
+			MessageCensor.init(chat);
+			this.mouseMonitor = new MouseMonitor(this);
+			this.startThread((Runnable) this.mouseMonitor, 10);
 			RenderableObject.client = this;
 			ObjectDefinition.client = this;
 			ActorDefinition.client = this;
@@ -10050,7 +10062,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		for (int var1 = 0; var1 < this.aX; ++var1) {
 			int var2 = this.aY[var1];
 			Npc var3;
-			if ((var3 = this.aW[var2]) != null) {
+			if ((var3 = this.npcs[var2]) != null) {
 				this.a((Actor) var3);
 			}
 		}
@@ -10271,7 +10283,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		if (var1.g != 0) {
 			Npc var10;
 			if (var1.interactingEntity != -1 && var1.interactingEntity < '耀'
-					&& (var10 = this.aW[var1.interactingEntity]) != null) {
+					&& (var10 = this.npcs[var1.interactingEntity]) != null) {
 				var4 = var1.X - var10.X;
 				var5 = var1.Y - var10.Y;
 				if (var4 != 0 || var5 != 0) {
@@ -10397,7 +10409,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	}
 
 	private void frameUpdate() {
-		if (this.hM == -1 || this.dH != 2 && super.mainImageProducer == null) {
+		if (this.hM == -1 || this.loadingStage != 2 && super.mainImageProducer == null) {
 			if (this.hL != 0) {
 				this.E();
 			}
@@ -10405,18 +10417,18 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			if (this.hh) {
 				this.hh = false;
 				if (resizeMode == 0) {
-					this.aM.drawImage(0, super.frameGraphics, 0);
-					this.aL.drawImage(4, super.frameGraphics, 0);
+					this.aM.drawImage(0, super.drawGraphics, 0);
+					this.aL.drawImage(4, super.drawGraphics, 0);
 				}
 
-				D = true;
+				redrawDialog = true;
 				fh = true;
-				if (this.dH != 2) {
+				if (this.loadingStage != 2) {
 					if (resizeMode == 0) {
-						this.fW.drawImage(4, super.frameGraphics, 4);
-						this.fV.drawImage(0, super.frameGraphics, 516);
+						this.fW.drawImage(4, super.drawGraphics, 4);
+						this.fV.drawImage(0, super.drawGraphics, 516);
 					} else {
-						this.fW.drawImage(0, super.frameGraphics, 0);
+						this.fW.drawImage(0, super.drawGraphics, 0);
 					}
 				}
 			}
@@ -10425,27 +10437,27 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				this.F();
 				this.T();
 			} else {
-				this.c(4, 4);
+				this.drawMenu(4, 4);
 			}
 
-			if (this.gp != -1) {
-				this.g(this.cv, this.gp);
+			if (this.altInterfaceWidget != -1) {
+				this.g(this.cv, this.altInterfaceWidget);
 			}
 
 			this.q();
 			int var21;
 			if (this.hA == -1) {
-				this.ei.q = (short) (B - p - 114);
+				this.widget.q = (short) (B - p - 114);
 				if (resizeMode == 0) {
 					if (super.mouseX > 478 && super.mouseX < 580 && super.mouseY > 342) {
-						this.a(494, 110, super.mouseX, super.mouseY - 348, this.ei, 0, false, B);
+						this.a(494, 110, super.mouseX, super.mouseY - 348, this.widget, 0, false, B);
 					}
 				} else if (super.mouseX >= 460 && super.mouseX <= 513 && super.mouseY >= clientHeight - 158
 						&& super.mouseY <= clientHeight - 44) {
-					this.a(480, 114, super.mouseX - 16, super.mouseY, this.ei, clientHeight - 158, false, B);
+					this.a(480, 114, super.mouseX - 16, super.mouseY, this.widget, clientHeight - 158, false, B);
 				}
 
-				if ((var21 = B - 114 - this.ei.q) < 0) {
+				if ((var21 = B - 114 - this.widget.q) < 0) {
 					var21 = 0;
 				}
 
@@ -10455,25 +10467,25 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 				if (p != var21) {
 					p = var21;
-					D = true;
+					redrawDialog = true;
 				}
 			}
 
 			int var2;
 			if (this.hA == -1 && (this.gJ == 3 || this.gJ == 4)) {
 				var21 = this.ac * 14 + 7;
-				this.ei.q = this.af;
+				this.widget.q = this.af;
 				if (resizeMode == 0) {
 					if (super.mouseX > 478 && super.mouseX < 580 && super.mouseY > 342) {
-						this.a(494, 110, super.mouseX, super.mouseY - 348, this.ei, 0, false, var21);
+						this.a(494, 110, super.mouseX, super.mouseY - 348, this.widget, 0, false, var21);
 					}
 				} else if (super.mouseX >= 460 && super.mouseX <= 513 && super.mouseY >= clientHeight - 158
 						&& super.mouseY <= clientHeight - 44) {
-					this.a(480, 114, super.mouseX - 16, super.mouseY, this.ei, clientHeight - 158, false, var21);
+					this.a(480, 114, super.mouseX - 16, super.mouseY, this.widget, clientHeight - 158, false, var21);
 				}
 
-				var2 = this.ei.q;
-				if (this.ei.q < 0) {
+				var2 = this.widget.q;
+				if (this.widget.q < 0) {
 					var2 = 0;
 				}
 
@@ -10483,31 +10495,31 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 				if (this.af != var2) {
 					this.af = var2;
-					D = true;
+					redrawDialog = true;
 				}
 			}
 
 			if (this.hA != -1 && this.g(this.cv, this.hA)) {
-				D = true;
+				redrawDialog = true;
 			}
 
 			if (this.gZ == 3) {
-				D = true;
+				redrawDialog = true;
 			}
 
 			if (this.eH == 3) {
-				D = true;
+				redrawDialog = true;
 			}
 
-			if (this.be != null) {
-				D = true;
+			if (this.clickToContinueString != null) {
+				redrawDialog = true;
 			}
 
-			if (D) {
-				this.l();
+			if (redrawDialog) {
+				this.drawGameFrame();
 			}
 
-			if (this.dH == 2) {
+			if (this.loadingStage == 2) {
 				Client var22 = this;
 				++this.hp;
 				this.b(true);
@@ -10522,7 +10534,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					if (var3.sceneId == client.plane && tick <= var3.endCycle) {
 						if (tick >= var3.delay) {
 							Npc var4;
-							if (var3.targetedEntityId > 0 && (var4 = client.aW[var3.targetedEntityId - 1]) != null
+							if (var3.targetedEntityId > 0 && (var4 = client.npcs[var3.targetedEntityId - 1]) != null
 									&& var4.X >= 0 && var4.X < 13312 && var4.Y >= 0 && var4.Y < 13312) {
 								var3.trackTarget(tick, var4.Y, client.b(var3.sceneId, var4.Y, var4.X) - var3.endHeight,
 										var4.X);
@@ -10553,15 +10565,15 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 				client = this;
 
-				for (GameAnimableObject var24 = (GameAnimableObject) this.eg
-						.getBack(); var24 != null; var24 = (GameAnimableObject) client.eg.getPrevious()) {
-					if (var24.c == client.plane && !var24.transformCompleted) {
+				for (GameAnimableObject var24 = (GameAnimableObject) this.animableObjects
+						.getBack(); var24 != null; var24 = (GameAnimableObject) client.animableObjects.getPrevious()) {
+					if (var24.plane == client.plane && !var24.transformCompleted) {
 						if (tick >= var24.g) {
 							var24.nextFrame(client.cv);
 							if (var24.transformCompleted) {
 								var24.unlink();
 							} else {
-								client.scene.addEntity(var24.c, 0, var24.f, -1, var24.e, 60, var24.d, var24, false);
+								client.scene.addEntity(var24.plane, 0, var24.height, -1, var24.y, 60, var24.x, var24, false);
 							}
 						}
 					} else {
@@ -10580,7 +10592,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				int var27;
 				int var26;
 				int var10004;
-				if (!this.fT) {
+				if (!this.oriented) {
 					var2 = this.camPitch;
 					if (this.dd / 256 > var2) {
 						var2 = this.dd / 256;
@@ -10621,27 +10633,27 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						var12 = var16;
 					}
 
-					this.bn = var27 - var12;
-					this.bo = var9 - var13;
-					this.bp = var7 - var26;
-					this.bq = var2;
-					this.br = var6;
+					this.offsetX = var27 - var12;
+					this.offsetHeight = var9 - var13;
+					this.offsetY = var7 - var26;
+					this.pitch = var2;
+					this.yaw = var6;
 				}
 
 				int var8;
-				if (!this.fT) {
+				if (!this.oriented) {
 					client = this;
 					int var10000;
 					if (this.showRoofs) {
 						var10000 = this.plane;
 					} else {
 						var26 = 3;
-						if (this.bq < 310) {
-							var25 = this.bn >> 7;
-							var27 = this.bp >> 7;
+						if (this.pitch < 310) {
+							var25 = this.offsetX >> 7;
+							var27 = this.offsetY >> 7;
 							var9 = localPlayer.X >> 7;
 							var8 = localPlayer.Y >> 7;
-							if ((this.hj[this.plane][var25][var27] & 4) != 0) {
+							if ((this.tileFlags[this.plane][var25][var27] & 4) != 0) {
 								var26 = this.plane;
 							}
 
@@ -10668,7 +10680,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 										--var25;
 									}
 
-									if ((client.hj[client.plane][var25][var27] & 4) != 0) {
+									if ((client.tileFlags[client.plane][var25][var27] & 4) != 0) {
 										var26 = client.plane;
 									}
 
@@ -10680,7 +10692,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 											--var27;
 										}
 
-										if ((client.hj[client.plane][var25][var27] & 4) != 0) {
+										if ((client.tileFlags[client.plane][var25][var27] & 4) != 0) {
 											var26 = client.plane;
 										}
 									}
@@ -10696,7 +10708,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 										--var27;
 									}
 
-									if ((client.hj[client.plane][var25][var27] & 4) != 0) {
+									if ((client.tileFlags[client.plane][var25][var27] & 4) != 0) {
 										var26 = client.plane;
 									}
 
@@ -10708,7 +10720,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 											--var25;
 										}
 
-										if ((client.hj[client.plane][var25][var27] & 4) != 0) {
+										if ((client.tileFlags[client.plane][var25][var27] & 4) != 0) {
 											var26 = client.plane;
 										}
 									}
@@ -10716,7 +10728,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 							}
 						}
 
-						if ((client.hj[client.plane][localPlayer.X >> 7][localPlayer.Y >> 7] & 4) != 0) {
+						if ((client.tileFlags[client.plane][localPlayer.X >> 7][localPlayer.Y >> 7] & 4) != 0) {
 							var26 = client.plane;
 						}
 
@@ -10726,15 +10738,15 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					var2 = var10000;
 				} else {
 					var2 = this.showRoofs ? this.plane
-							: (this.b(this.plane, this.bp, this.bn) - this.bo < 800
-									&& (this.hj[this.plane][this.bn >> 7][this.bp >> 7] & 4) != 0 ? this.plane : 3);
+							: (this.b(this.plane, this.offsetY, this.offsetX) - this.offsetHeight < 800
+									&& (this.tileFlags[this.plane][this.offsetX >> 7][this.offsetY >> 7] & 4) != 0 ? this.plane : 3);
 				}
 
-				var6 = this.bn;
-				int var17 = this.bo;
-				int var18 = this.bp;
-				int var19 = this.bq;
-				int var20 = this.br;
+				var6 = this.offsetX;
+				int var17 = this.offsetHeight;
+				int var18 = this.offsetY;
+				int var19 = this.pitch;
+				int var20 = this.yaw;
 
 				for (var26 = 0; var26 < 5; ++var26) {
 					if (var22.by[var26]) {
@@ -10742,29 +10754,29 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 								+ Math.sin((double) var22.dL[var26] * ((double) var22.ch[var26] / 100.0D))
 										* (double) var22.gz[var26]);
 						if (var26 == 0) {
-							var22.bn += var25;
+							var22.offsetX += var25;
 						}
 
 						if (var26 == 1) {
-							var22.bo += var25;
+							var22.offsetHeight += var25;
 						}
 
 						if (var26 == 2) {
-							var22.bp += var25;
+							var22.offsetY += var25;
 						}
 
 						if (var26 == 3) {
-							var22.br = var22.br + var25 & 2047;
+							var22.yaw = var22.yaw + var25 & 2047;
 						}
 
 						if (var26 == 4) {
-							var22.bq += var25;
-							if (var22.bq < 128) {
-								var22.bq = 128;
+							var22.pitch += var25;
+							if (var22.pitch < 128) {
+								var22.pitch = 128;
 							}
 
-							if (var22.bq > 383) {
-								var22.bq = 383;
+							if (var22.pitch > 383) {
+								var22.pitch = 383;
 							}
 						}
 					}
@@ -10776,14 +10788,14 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				Model.mouseX = var22.mouseX - 4;
 				Model.mouseY = var22.mouseY - 4;
 				Rasterizer2D.reset();
-				var22.scene.a(var22.bn, var22.bp, var22.br, var22.bo, var2, var22.bq);
-				var22.scene.c();
-				var22.p();
-				if (var22.bm == 2) {
-					var22.d((var22.cm - var22.sceneX << 7) + var22.cp, var22.co << 1,
-							(var22.cn - var22.sceneY << 7) + var22.cq);
+				var22.scene.positionCamera(var22.offsetX, var22.offsetY, var22.yaw, var22.offsetHeight, var2, var22.pitch);
+				var22.scene.removeTemporaryEntities();
+				var22.draw2DEffects();
+				if (var22.hintIconType == 2) {
+					var22.worldToScreen((var22.hintIconX - var22.sceneX << 7) + var22.cp, var22.hintIconHeight << 1,
+							(var22.hintIconY - var22.sceneY << 7) + var22.cq);
 					if (var22.cP >= 0 && tick % 20 < 10) {
-						var22.fa[0].drawSprite(var22.cP - 12, var22.cQ - 28);
+						var22.headiconHintSprites[0].drawSprite(var22.cP - 12, var22.cQ - 28);
 					}
 				}
 
@@ -10821,19 +10833,19 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				if (Rasterizer3D.v[17] >= var26) {
 					var27 = (var28 = Rasterizer3D.u[17]).c * var28.d - 1;
 					var9 = var28.c * var22.cv << 1;
-					var30 = var28.a;
+					var30 = var28.raster;
 					var29 = var22.bW;
 
 					for (var10 = 0; var10 <= var27; ++var10) {
 						var29[var10] = var30[var10 - var9 & var27];
 					}
 
-					var28.a = var29;
+					var28.raster = var29;
 					var22.bW = var30;
 					Rasterizer3D.b(17);
 					if (++bl > 1235) {
 						bl = 0;
-						var22.packet.writeCipheredByte(226);
+						var22.packet.writeOpcode(226);
 						var22.packet.writeByte(0);
 						var10 = var22.packet.position;
 						var22.packet.writeShort('\ue562');
@@ -10856,14 +10868,14 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				if (Rasterizer3D.v[24] >= var26) {
 					var27 = (var28 = Rasterizer3D.u[24]).c * var28.d - 1;
 					var9 = var28.c * var22.cv << 1;
-					var30 = var28.a;
+					var30 = var28.raster;
 					var29 = var22.bW;
 
 					for (var10 = 0; var10 <= var27; ++var10) {
 						var29[var10] = var30[var10 - var9 & var27];
 					}
 
-					var28.a = var29;
+					var28.raster = var29;
 					var22.bW = var30;
 					Rasterizer3D.b(24);
 				}
@@ -10871,14 +10883,14 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				if (Rasterizer3D.v[34] >= var26) {
 					var27 = (var28 = Rasterizer3D.u[34]).c * var28.d - 1;
 					var9 = var28.c * var22.cv << 1;
-					var30 = var28.a;
+					var30 = var28.raster;
 					var29 = var22.bW;
 
 					for (var10 = 0; var10 <= var27; ++var10) {
 						var29[var10] = var30[var10 - var9 & var27];
 					}
 
-					var28.a = var29;
+					var28.raster = var29;
 					var22.bW = var30;
 					Rasterizer3D.b(34);
 				}
@@ -10886,19 +10898,19 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				int[] var40 = Rasterizer3D.v;
 				var27 = (var28 = Rasterizer3D.u[40]).c * var28.d - 1;
 				var9 = var28.c * var22.cv << 1;
-				var30 = var28.a;
+				var30 = var28.raster;
 				var29 = var22.bW;
 
 				for (var10 = 0; var10 <= var27; ++var10) {
 					var29[var10] = var30[var10 - var9 & var27];
 				}
 
-				var28.a = var29;
+				var28.raster = var29;
 				var22.bW = var30;
 				Rasterizer3D.b(40);
 				if (var22.loggedIn) {
 					if (resizeMode != 0) {
-						var22.l();
+						var22.drawGameFrame();
 						var22.q();
 						var22.minimap();
 					}
@@ -10907,9 +10919,9 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					if (eQ) {
 						Client var36 = var22;
 						if (var22.gu != 0) {
-							RSFont var34 = var22.p12_full;
+							RSFont var34 = var22.frameFont;
 							var12 = 0;
-							if (var22.fi != 0) {
+							if (var22.systemUpdateTime != 0) {
 								var12 = 1;
 							}
 
@@ -10993,7 +11005,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					}
 
 					if (var22.ef == 1) {
-						var22.eX.drawSprite(
+						var22.overlayMultiway.drawSprite(
 								resizeMode == 0 ? 472 : (var22.dE == 197 ? clientWidth - 268 : clientWidth - 255),
 								resizeMode == 0 ? 296 : (var22.dE == 197 ? 48 : 20));
 					}
@@ -11064,7 +11076,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 								var10004 = resizeMode == 0 ? 0 : clientHeight / 2 - 550;
 							}
 
-							var41.a(var42, var10002, (Widget) var39, var10004);
+							var41.processWidgets(var42, var10002, (Widget) var39, var10004);
 						}
 					}
 
@@ -11087,7 +11099,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 								var22.e(200, 0);
 							}
 						} else {
-							var22.a(0, resizeMode == 0 ? 0 : clientWidth / 2 - 356, (Widget) Widget.widgets[j],
+							var22.processWidgets(0, resizeMode == 0 ? 0 : clientWidth / 2 - 356, (Widget) Widget.widgets[j],
 									resizeMode == 0 ? 0 : clientHeight / 2 - 230);
 						}
 					}
@@ -11111,7 +11123,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						var22.F();
 						var22.T();
 					} else {
-						var22.c(resizeMode == 0 ? 4 : 0, resizeMode == 0 ? 4 : 0);
+						var22.drawMenu(resizeMode == 0 ? 4 : 0, resizeMode == 0 ? 4 : 0);
 					}
 
 					if (fQ) {
@@ -11120,10 +11132,10 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 							var27 = 16711680;
 						}
 
-						var22.p12_full.a("Fps:" + var22.I, 507, var27, 20);
+						var22.frameFont.a("Fps:" + var22.I, 507, var27, 20);
 						Runtime var32;
 						var8 = (int) (((var32 = Runtime.getRuntime()).totalMemory() - var32.freeMemory()) / 1024L);
-						var22.p12_full.a("Mem:" + var8 + "k", 507, 16776960, 35);
+						var22.frameFont.a("Mem:" + var8 + "k", 507, 16776960, 35);
 					}
 
 					var26 = var22.sceneX + (localPlayer.X - 6 >> 7);
@@ -11131,48 +11143,48 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					if (cL) {
 						var27 = clientWidth - var22.mouseX;
 						var9 = clientHeight - var22.mouseY;
-						var22.p12_full.render(16776960, "Dimensions: " + clientWidth + " x " + clientHeight,
+						var22.frameFont.render(16776960, "Dimensions: " + clientWidth + " x " + clientHeight,
 								resizeMode == 0 ? 225 : (eQ ? clientHeight - 277 : clientHeight - 140), 5);
-						var22.p12_full.render(16776960,
+						var22.frameFont.render(16776960,
 								"Mouse Positions: clientWidth - " + var27 + ", clientHeight - " + var9,
 								resizeMode == 0 ? 240 : (eQ ? clientHeight - 262 : clientHeight - 125), 5);
 
 						int[] var31;
 						for (var8 = 0; var8 < client.gS.length; ++var8) {
 							var31 = client.gS;
-							client.p12_full.render(16776960, "Floor Map Array: " + Arrays.toString(var31),
+							client.frameFont.render(16776960, "Floor Map Array: " + Arrays.toString(var31),
 									resizeMode == 0 ? 255 : (eQ ? clientHeight - 247 : clientHeight - 110), 5);
 						}
 
 						for (var8 = 0; var8 < client.gT.length; ++var8) {
 							var31 = client.gT;
-							client.p12_full.render(16776960, "Object Map Array: " + Arrays.toString(var31),
+							client.frameFont.render(16776960, "Object Map Array: " + Arrays.toString(var31),
 									resizeMode == 0 ? 270 : (eQ ? clientHeight - 232 : clientHeight - 95), 5);
 						}
 
-						client.p12_full.render(16776960, "Fps: " + client.I,
+						client.frameFont.render(16776960, "Fps: " + client.I,
 								resizeMode == 0 ? 285 : (eQ ? clientHeight - 217 : clientHeight - 80), 5);
 						Runtime var33;
 						var7 = (int) (((var33 = Runtime.getRuntime()).totalMemory() - var33.freeMemory()) / 1024L);
-						client.p12_full.render(16776960, "Mem: " + var7 + "k",
+						client.frameFont.render(16776960, "Mem: " + var7 + "k",
 								resizeMode == 0 ? 299 : (eQ ? clientHeight - 202 : clientHeight - 65), 5);
-						client.p12_full.render(16776960, "Mouse X: " + client.mouseX + " , Mouse Y: " + client.mouseY,
+						client.frameFont.render(16776960, "Mouse X: " + client.mouseX + " , Mouse Y: " + client.mouseY,
 								resizeMode == 0 ? 314 : (eQ ? clientHeight - 187 : clientHeight - 50), 5);
-						client.p12_full.render(16776960, "Coords: " + var26 + ", " + var25,
+						client.frameFont.render(16776960, "Coords: " + var26 + ", " + var25,
 								resizeMode == 0 ? 329 : (eQ ? clientHeight - 172 : clientHeight - 35), 5);
 					}
 
-					if (client.fi != 0) {
-						var9 = (var27 = client.fi / 50) / 60;
+					if (client.systemUpdateTime != 0) {
+						var9 = (var27 = client.systemUpdateTime / 50) / 60;
 						if ((var27 %= 60) < 10) {
-							client.p12_full.render(16776960, "System update in: " + var9 + ":0" + var27, 329, 4);
+							client.frameFont.render(16776960, "System update in: " + var9 + ":0" + var27, 329, 4);
 						} else {
-							client.p12_full.render(16776960, "System update in: " + var9 + ":" + var27, 329, 4);
+							client.frameFont.render(16776960, "System update in: " + var9 + ":" + var27, 329, 4);
 						}
 
 						if (++bh > 75) {
 							bh = 0;
-							client.packet.writeCipheredByte(148);
+							client.packet.writeOpcode(148);
 						}
 					}
 
@@ -11182,14 +11194,14 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						}
 
 						if (client.av > 0 || client.aq.size() > 0) {
-							String var35 = "Overall XP: " + client.aj.format(client.N());
-							var9 = client.hx.a(var35);
+							String var35 = "Overall XP: " + client.aj.format(client.overallXp());
+							var9 = client.smallFontVscape.a(var35);
 							var8 = client.as;
 							if (client.as + var9 > client.as) {
 								var8 -= var9 + 20;
 							}
 
-							client.hy.a(var35, var8, client.au + 8, 16777215, 0);
+							client.frameFontVscape.a(var35, var8, client.au + 8, 16777215, 0);
 							if (client.aq.size() <= 0) {
 								--client.av;
 							}
@@ -11198,19 +11210,19 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				}
 
 				if (var22.loggedIn) {
-					var22.fW.drawImage(resizeMode == 0 ? 4 : 0, var22.frameGraphics, resizeMode == 0 ? 4 : 0);
+					var22.fW.drawImage(resizeMode == 0 ? 4 : 0, var22.drawGraphics, resizeMode == 0 ? 4 : 0);
 				}
 
-				var22.bn = var6;
-				var22.bo = var17;
-				var22.bp = var18;
-				var22.bq = var19;
-				var22.br = var20;
+				var22.offsetX = var6;
+				var22.offsetHeight = var17;
+				var22.offsetY = var18;
+				var22.pitch = var19;
+				var22.yaw = var20;
 			}
 
-			if (this.dH == 2 && resizeMode == 0) {
+			if (this.loadingStage == 2 && resizeMode == 0) {
 				this.minimap();
-				this.fV.drawImage(0, super.frameGraphics, 516);
+				this.fV.drawImage(0, super.drawGraphics, 516);
 			}
 
 			if (this.ee != -1) {
@@ -11218,10 +11230,10 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			}
 
 			if (fh) {
-				if (this.ee != -1 && this.ee == C) {
+				if (this.ee != -1 && this.ee == selectedRedStoneId) {
 					this.ee = -1;
-					this.packet.writeCipheredByte(120);
-					this.packet.writeByte(C);
+					this.packet.writeOpcode(120);
+					this.packet.writeByte(selectedRedStoneId);
 				}
 
 				fh = false;
@@ -11231,7 +11243,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 			this.cv = 0;
 		} else {
-			if (this.dH == 2) {
+			if (this.loadingStage == 2) {
 				this.g(this.cv, this.hM);
 				if (j != -1) {
 					this.g(this.cv, j);
@@ -11240,7 +11252,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				this.cv = 0;
 				this.Z();
 				super.mainImageProducer.initializeRasterizer();
-				Rasterizer3D.t = this.hS;
+				Rasterizer3D.scanOffsets = this.hS;
 				Rasterizer2D.reset();
 				this.hh = true;
 				Widget var1;
@@ -11250,7 +11262,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						var1.height = resizeMode == 0 ? 503 : clientHeight;
 					}
 
-					this.a(0, resizeMode == 0 ? 0 : clientWidth / 2 - 382, (Widget) var1,
+					this.processWidgets(0, resizeMode == 0 ? 0 : clientWidth / 2 - 382, (Widget) var1,
 							resizeMode == 0 ? 8 : clientHeight / 2 - 251);
 				}
 
@@ -11259,12 +11271,12 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					var1.height = resizeMode == 0 ? 503 : clientHeight;
 				}
 
-				this.a(0, resizeMode == 0 ? 0 : clientWidth / 2 - 382, (Widget) var1,
+				this.processWidgets(0, resizeMode == 0 ? 0 : clientWidth / 2 - 382, (Widget) var1,
 						resizeMode == 0 ? 8 : clientHeight / 2 - 251);
 			}
 
 			++this.hL;
-			super.mainImageProducer.drawImage(0, super.frameGraphics, 0);
+			super.mainImageProducer.drawImage(0, super.drawGraphics, 0);
 		}
 	}
 
@@ -11306,7 +11318,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 	}
 
-	private void a(int var1, int var2, Widget var3, int var4) {
+	private void processWidgets(int var1, int var2, Widget var3, int var4) {
 		if (var3.parent == 197 && resizeMode != 0) {
 			var2 = clientWidth - 120;
 			var4 = 170;
@@ -11325,8 +11337,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					int var11 = var3.childX[var10] + var2;
 					int var12 = var3.childY[var10] + var4 - var1;
 					Widget var13 = Widget.widgets[var3.children[var10]];
-					var11 += var13.Y;
-					var12 += var13.Z;
+					var11 += var13.drawOffsetX;
+					var12 += var13.drawOffsetY;
 					int var14;
 					String var17;
 					int var16;
@@ -11347,7 +11359,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 								var13.defaultText = "Please wait...";
 								var13.optionType = 0;
 							} else {
-								var34 = this.bS;
+								var34 = this.numFriends;
 								if (this.bU != 2) {
 									var34 = 0;
 								}
@@ -11367,7 +11379,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 								}
 							}
 						} else if (var16 >= 101 && var16 <= 200 || var16 >= 801 && var16 <= 900) {
-							var34 = this.bS;
+							var34 = this.numFriends;
 							if (this.bU != 2) {
 								var34 = 0;
 							}
@@ -11391,7 +11403,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 								var13.optionType = 1;
 							}
 						} else if (var16 == 203) {
-							var34 = this.bS;
+							var34 = this.numFriends;
 							if (this.bU != 2) {
 								var34 = 0;
 							}
@@ -11630,17 +11642,17 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 											8, 20, 18, 19 };
 									var24 = var24 + StringUtils.formatName(SkillConstants.SKILL_NAMES[var33[var16]])
 											+ ": " + this.cd[var33[var16]] + "/" + this.dV[var33[var16]] + "\\n";
-									var24 = var24 + "Current XP: " + this.aj.format((long) this.bt[var33[var16]])
+									var24 = var24 + "Current XP: " + this.aj.format((long) this.skillXp[var33[var16]])
 											+ "\\n";
 									if (this.dV[var33[var16]] < 99) {
 										var24 = var24 + "Next level: "
 												+ this.aj.format((long) s(this.dV[var33[var16]] + 1)) + "\\n";
 										var24 = var24 + "Remainder: " + this.aj
-												.format((long) (s(this.dV[var33[var16]] + 1) - this.bt[var33[var16]]));
+												.format((long) (s(this.dV[var33[var16]] + 1) - this.skillXp[var33[var16]]));
 									} else {
-										if (this.bt[var33[var16]] < 200000000) {
+										if (this.skillXp[var33[var16]] < 200000000) {
 											var24 = var24 + "Remainder: "
-													+ this.aj.format((long) (200000000 - this.bt[var33[var16]]))
+													+ this.aj.format((long) (200000000 - this.skillXp[var33[var16]]))
 													+ "\\n";
 										} else {
 											var24 = var24 + "Max EXP Reached\\n";
@@ -11708,7 +11720,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 							var13.q = 0;
 						}
 
-						this.a(var13.q, var11, var13, var12);
+						this.processWidgets(var13.q, var11, var13, var12);
 						if (var13.W > var13.height) {
 							this.a(var13.height, var13.q, var12, var11 + var13.width, var13.W);
 						}
@@ -11740,7 +11752,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 										itemId = var13.itemIds[var23] - 1;
 										if (var34 > Rasterizer2D.clipLeft - 32 && var34 < Rasterizer2D.clipRight
 												&& var28 > Rasterizer2D.clipBottom - 32 && var28 < Rasterizer2D.clipTop
-												|| this.eH != 0 && this.eG == var23) {
+												|| this.eH != 0 && this.selectedInventorySlot == var23) {
 											int var43 = 0;
 											if (this.itemClicked == 1 && this.hF == var23 && this.hG == var13.id) {
 												var43 = 16777215;
@@ -11749,7 +11761,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 											Sprite var44;
 											if ((var44 = ItemDefinition.sprite(itemId, var13.itemAmounts[var23],
 													var43)) != null) {
-												if (this.eH != 0 && this.eG == var23 && this.eF == var13.id) {
+												if (this.eH != 0 && this.selectedInventorySlot == var23 && this.modifiedWidgetId == var13.id) {
 													var19 = super.mouseX - this.eI;
 													var20 = super.mouseY - this.eJ;
 													if (var19 < 5 && var19 > -5) {
@@ -11810,9 +11822,9 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 												if (var44.resizeWidth == 33 || var13.itemAmounts[var23] != 1) {
 													var43 = var13.itemAmounts[var23];
-													this.p11_full.render(0, k(var43), var28 + 10 + var20,
+													this.smallFont.render(0, k(var43), var28 + 10 + var20,
 															var34 + 1 + var19);
-													this.p11_full.render(16776960, k(var43), var28 + 9 + var20,
+													this.smallFont.render(16776960, k(var43), var28 + 9 + var20,
 															var34 + var19);
 
 												}
@@ -11957,10 +11969,10 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 									}
 								}
 							} else if (var13.group == 6) {
-								var23 = Rasterizer3D.e;
-								var14 = Rasterizer3D.f;
-								Rasterizer3D.e = var11 + var13.width / 2;
-								Rasterizer3D.f = var12 + var13.height / 2;
+								var23 = Rasterizer3D.originViewX;
+								var14 = Rasterizer3D.originViewY;
+								Rasterizer3D.originViewX = var11 + var13.width / 2;
+								Rasterizer3D.originViewY = var12 + var13.height / 2;
 								var16 = Rasterizer3D.SINE[var13.spritePitch] * var13.spriteScale >> 16;
 								var34 = Rasterizer3D.COSINE[var13.spritePitch] * var13.spriteScale >> 16;
 								boolean var38;
@@ -11983,8 +11995,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 									var40.render(var13.spriteRoll, 0, var13.spritePitch, 0, var16, var34);
 								}
 
-								Rasterizer3D.e = var23;
-								Rasterizer3D.f = var14;
+								Rasterizer3D.originViewX = var23;
+								Rasterizer3D.originViewY = var14;
 							} else {
 								String var30;
 								if (var13.group == 7) {
@@ -12020,7 +12032,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 										&& this.hR == 0 && !this.menuShowing) {
 									var23 = 0;
 									var14 = 0;
-									RSFont var45 = this.p12_full;
+									RSFont var45 = this.frameFont;
 
 									for (var17 = var13.defaultText; var17.length() > 0; var14 += var45.verticalSpace
 											+ 1) {
@@ -12190,17 +12202,17 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				this.dB += (var2 - this.dB) / 16;
 			}
 
-			if (super.W[1] == 1) {
+			if (super.keyStatuses[1] == 1) {
 				this.camYawDelta += (-24 - this.camYawDelta) / 2;
-			} else if (super.W[2] == 1) {
+			} else if (super.keyStatuses[2] == 1) {
 				this.camYawDelta += (24 - this.camYawDelta) / 2;
 			} else {
 				this.camYawDelta /= 2;
 			}
 
-			if (super.W[3] == 1) {
+			if (super.keyStatuses[3] == 1) {
 				this.camPitchDelta += (12 - this.camPitchDelta) / 2;
-			} else if (super.W[4] == 1) {
+			} else if (super.keyStatuses[4] == 1) {
 				this.camPitchDelta += (-12 - this.camPitchDelta) / 2;
 			} else {
 				this.camPitchDelta /= 2;
@@ -12227,11 +12239,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				for (var5 = var1 - 4; var5 <= var1 + 4; ++var5) {
 					for (int var6 = var2 - 4; var6 <= var2 + 4; ++var6) {
 						int var7 = this.plane;
-						if (this.plane < 3 && (this.hj[1][var5][var6] & 2) == 2) {
+						if (this.plane < 3 && (this.tileFlags[1][var5][var6] & 2) == 2) {
 							++var7;
 						}
 
-						if ((var7 = var3 - this.gE[var7][var5][var6]) > var4) {
+						if ((var7 = var3 - this.tileHeights[var7][var5][var6]) > var4) {
 							var4 = var7;
 						}
 					}
@@ -12240,7 +12252,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 			if (++ds > 1512) {
 				ds = 0;
-				this.packet.writeCipheredByte(77);
+				this.packet.writeOpcode(77);
 				this.packet.writeByte(0);
 				var5 = this.packet.position;
 				this.packet.writeByte((int) (Math.random() * 256.0D));
@@ -12280,9 +12292,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	}
 
 	public final void frame() {
+		bot.preFrame();
+		
 		if (this.gameCrashed) {
 			Graphics var2;
-			(var2 = this.getFrameComponent().getGraphics()).setColor(Color.black);
+			(var2 = this.getDrawComponent().getGraphics()).setColor(Color.black);
 			var2.fillRect(0, 0, 765, 503);
 			this.c(1);
 			if (this.gameCrashed) {
@@ -12310,13 +12324,15 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 			this.gD = 0;
 		}
+		
+		bot.postFrame();
 	}
 
 	private boolean c(String var1) {
 		if (var1 == null) {
 			return false;
 		} else {
-			for (int var2 = 0; var2 < this.bS; ++var2) {
+			for (int var2 = 0; var2 < this.numFriends; ++var2) {
 				if (var1.equalsIgnoreCase(this.eD[var2])) {
 					return true;
 				}
@@ -12391,10 +12407,10 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 						int var11;
 						if ((var11 = Math.abs(var5 - this.au)) > 2 && var5 <= this.au) {
-							Sprite var9 = this.cy[this.ar[var3]];
+							Sprite var9 = this.staticons[this.ar[var3]];
 							var3 = var11 >= 255 ? 255 : var11;
 							String var10 = "+" + this.aj.format((long) var4);
-							var11 = this.hx.a(var10);
+							var11 = this.smallFontVscape.a(var10);
 							int var7 = this.as;
 							if (var9 != null) {
 								if (var7 + var9.width + var11 > this.as) {
@@ -12402,14 +12418,14 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 								}
 
 								var9.a(var7, var5, var3);
-								this.hx.a("<trans=" + var3 + ">" + var10 + "</tans>", var7 + var9.width + 4, var5 + 16,
+								this.smallFontVscape.a("<trans=" + var3 + ">" + var10 + "</tans>", var7 + var9.width + 4, var5 + 16,
 										16777215, 0);
 							} else {
 								if (var7 + var11 > this.as) {
 									var7 -= var11 + 12;
 								}
 
-								this.hx.a("<trans=" + var3 + ">" + var10 + "</tans>", var7, var5 + 16, 16777215, 0);
+								this.smallFontVscape.a("<trans=" + var3 + ">" + var10 + "</tans>", var7, var5 + 16, 16777215, 0);
 							}
 						} else {
 							this.aq.remove(var1);
@@ -12423,14 +12439,14 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		}
 	}
 
-	private long N() {
-		long var1 = 0L;
+	private long overallXp() {
+		long xp = 0L;
 
-		for (int var3 = 0; var3 < 25; ++var3) {
-			var1 += (long) this.bt[var3];
+		for (int i = 0; i < 25; ++i) {
+			xp += (long) this.skillXp[i];
 		}
 
-		return var1;
+		return xp;
 	}
 
 	private void f(int var1, int var2) {
@@ -12457,7 +12473,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						}
 					}
 
-					for (var4 = 0; var4 < this.bS; ++var4) {
+					for (var4 = 0; var4 < this.numFriends; ++var4) {
 						if (this.cG[var4] == var1) {
 							this.a("Please remove " + var3 + " from your friend list first", 0, "", true);
 							return;
@@ -12465,7 +12481,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					}
 
 					this.cf[this.aN++] = var1;
-					this.packet.writeCipheredByte(133);
+					this.packet.writeOpcode(133);
 					this.packet.writeLong(var1);
 				}
 			} catch (RuntimeException var5) {
@@ -12493,7 +12509,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	}
 
 	private void P() {
-		if (this.dH == 2) {
+		if (this.loadingStage == 2) {
 			for (Class15 var1 = (Class15) this.gf.getBack(); var1 != null; var1 = (Class15) this.gf.getPrevious()) {
 				if (var1.d > 0) {
 					--var1.d;
@@ -12525,75 +12541,75 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 	}
 
-	private void Q() {
-		int var1 = this.b12_full.getColoredTextWidth("Choose option");
+	private void openMenu() {
+		int menuWidth = this.bold.getColoredTextWidth("Choose option");
 
-		int var2;
-		int var3;
-		for (var2 = 0; var2 < this.numActions; ++var2) {
-			if ((var3 = this.b12_full.getColoredTextWidth(this.actions[var2])) > var1) {
-				var1 = var3;
+		int menuHeight;
+		int width;
+		for (menuHeight = 0; menuHeight < this.numActions; ++menuHeight) {
+			if ((width = this.bold.getColoredTextWidth(this.actions[menuHeight])) > menuWidth) {
+				menuWidth = width;
 			}
 		}
 
-		var1 += 8;
-		var2 = 15 * this.numActions + 21;
-		int var4;
-		if (super.U > 0 && super.V > 0 && super.U < 765 && super.V < 503) {
-			if ((var3 = super.U - var1 / 2) + var1 > 761) {
-				var3 = 761 - var1;
+		menuWidth += 8;
+		menuHeight = 15 * this.numActions + 21;
+		int menuY;
+		if (super.lastClickX > 0 && super.lastClickY > 0 && super.lastClickX < 765 && super.lastClickY < 503) {
+			if ((width = super.lastClickX - menuWidth / 2) + menuWidth > 761) {
+				width = 761 - menuWidth;
 			}
 
-			if (var3 < 0) {
-				var3 = 0;
+			if (width < 0) {
+				width = 0;
 			}
 
-			var4 = super.V;
-			if (super.V + var2 > 497) {
-				var4 = 497 - var2;
+			menuY = super.lastClickY;
+			if (super.lastClickY + menuHeight > 497) {
+				menuY = 497 - menuHeight;
 			}
 
-			if (var4 < 0) {
-				var4 = 0;
+			if (menuY < 0) {
+				menuY = 0;
 			}
 
 			this.menuShowing = true;
-			this.cA = var3;
-			this.cB = var4;
-			this.cC = var1;
-			this.cD = 15 * this.numActions + 22;
+			this.menuX = width;
+			this.menuY = menuY;
+			this.menuWidth = menuWidth;
+			this.menuHeight = 15 * this.numActions + 22;
 		}
 
-		if (resizeMode != 0 && super.U > 0 && super.V > 0 && super.U < clientWidth && super.V < clientHeight) {
-			if ((var3 = super.U - var1 / 2) + var1 > clientWidth) {
-				var3 = clientWidth - var1;
+		if (resizeMode != 0 && super.lastClickX > 0 && super.lastClickY > 0 && super.lastClickX < clientWidth && super.lastClickY < clientHeight) {
+			if ((width = super.lastClickX - menuWidth / 2) + menuWidth > clientWidth) {
+				width = clientWidth - menuWidth;
 			}
 
-			if (var3 < 0) {
-				var3 = 0;
+			if (width < 0) {
+				width = 0;
 			}
 
-			var4 = super.V;
-			if (super.V + var2 > clientHeight) {
-				var4 = clientHeight - var2;
+			menuY = super.lastClickY;
+			if (super.lastClickY + menuHeight > clientHeight) {
+				menuY = clientHeight - menuHeight;
 			}
 
-			if (var4 < 0) {
-				var4 = 0;
+			if (menuY < 0) {
+				menuY = 0;
 			}
 
 			this.menuShowing = true;
 			this.cz = 0;
-			this.cA = var3;
-			this.cB = var4;
-			this.cC = var1;
-			this.cD = 15 * this.numActions + 22;
+			this.menuX = width;
+			this.menuY = menuY;
+			this.menuWidth = menuWidth;
+			this.menuHeight = 15 * this.numActions + 22;
 		}
 
 	}
 
 	private void prepareRasterizerForLoginScreen() {
-		this.loginScreen = new ProducingGraphicsBuffer(clientWidth, clientHeight, this.getFrameComponent());
+		this.loginScreen = new ProducingGraphicsBuffer(clientWidth, clientHeight, this.getDrawComponent());
 		Rasterizer2D.reset();
 	}
 
@@ -12655,7 +12671,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					if (this.cf[var3] == var1) {
 						--this.aN;
 						System.arraycopy(this.cf, var3 + 1, this.cf, var3, this.aN - var3);
-						this.packet.writeCipheredByte(74);
+						this.packet.writeOpcode(74);
 						this.packet.writeLong(var1);
 						return;
 					}
@@ -12672,7 +12688,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		if (var1 != 0L) {
 			if (var3 >= 0) {
 				try {
-					this.packet.writeCipheredByte(61);
+					this.packet.writeOpcode(61);
 					this.packet.writeLong(var1);
 					this.packet.writeShort(var3);
 				} catch (RuntimeException var4) {
@@ -12712,7 +12728,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					}
 
 					if (var5 == 3) {
-						var6 = this.bt[var12[var3++]];
+						var6 = this.skillXp[var12[var3++]];
 					}
 
 					Widget var8;
@@ -12860,7 +12876,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				var1 = var1 + "@whi@ / " + (this.numActions - 2) + " more options";
 			}
 
-			this.b12_full.renderRandom(4, 16777215, var1, tick / 1000, 15);
+			this.bold.renderRandom(4, 16777215, var1, tick / 1000, 15);
 		}
 	}
 
@@ -12935,14 +12951,14 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					if (this.aR[this.plane][var1][var2] != null) {
 						var4 = (var1 << 2) + 2 - localPlayer.X / 32;
 						var5 = (var2 << 2) + 2 - localPlayer.Y / 32;
-						this.b(this.ev, var4, var5);
+						this.b(this.mapdotZero, var4, var5);
 					}
 				}
 			}
 
 			for (var1 = 0; var1 < this.aX; ++var1) {
 				Npc var12;
-				if ((var12 = this.aW[this.aY[var1]]) != null && var12.isVisible()) {
+				if ((var12 = this.npcs[this.aY[var1]]) != null && var12.isVisible()) {
 					ActorDefinition var13 = var12.npcDefinition;
 					if (var12.npcDefinition.morphisms != null) {
 						var13 = var13.morph();
@@ -12951,7 +12967,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					if (var13 != null && var13.drawMinimapDot && var13.clickable) {
 						var4 = var12.X / 32 - localPlayer.X / 32;
 						var5 = var12.Y / 32 - localPlayer.Y / 32;
-						this.b(this.ew, var4, var5);
+						this.b(this.mapdotOne, var4, var5);
 					}
 				}
 			}
@@ -12973,7 +12989,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 					long var9 = StringUtils.nameToLong(var14.name);
 
-					for (int var11 = 0; var11 < this.bS; ++var11) {
+					for (int var11 = 0; var11 < this.numFriends; ++var11) {
 						if (var9 == this.cG[var11] && this.aQ[var11] != 0) {
 							var17 = true;
 							break;
@@ -12986,44 +13002,44 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					}
 
 					if (var17) {
-						this.b(this.ey, var3, var4);
+						this.b(this.mapdotThree, var3, var4);
 					} else if (var6) {
 						this.b(this.clanChatSprite, var3, var4);
 					} else if (var18) {
-						this.b(this.ez, var3, var4);
+						this.b(this.mapdotFour, var3, var4);
 					} else {
-						this.b(this.ex, var3, var4);
+						this.b(this.mapdotTwo, var3, var4);
 					}
 				}
 			}
 
-			if (this.bm != 0 && tick % 20 < 10) {
+			if (this.hintIconType != 0 && tick % 20 < 10) {
 				Npc var15;
-				if (this.bm == 1 && this.gI >= 0 && this.gI < this.aW.length && (var15 = this.aW[this.gI]) != null) {
+				if (this.hintIconType == 1 && this.hintIconNpc >= 0 && this.hintIconNpc < this.npcs.length && (var15 = this.npcs[this.hintIconNpc]) != null) {
 					var2 = var15.X / 32 - localPlayer.X / 32;
 					var3 = var15.Y / 32 - localPlayer.Y / 32;
-					this.a(this.bv, var3, var2);
+					this.a(this.mapmarkerOne, var3, var2);
 				}
 
-				if (this.bm == 2) {
-					var1 = (this.cm - this.sceneX << 2) + 2 - localPlayer.X / 32;
-					var2 = (this.cn - this.sceneY << 2) + 2 - localPlayer.Y / 32;
-					this.a(this.bv, var2, var1);
+				if (this.hintIconType == 2) {
+					var1 = (this.hintIconX - this.sceneX << 2) + 2 - localPlayer.X / 32;
+					var2 = (this.hintIconY - this.sceneY << 2) + 2 - localPlayer.Y / 32;
+					this.a(this.mapmarkerOne, var2, var1);
 				}
 
 				Player var16;
-				if (this.bm == 10 && this.cl >= 0 && this.cl < this.players.length
-						&& (var16 = this.players[this.cl]) != null) {
+				if (this.hintIconType == 10 && this.hintIconPlayer >= 0 && this.hintIconPlayer < this.players.length
+						&& (var16 = this.players[this.hintIconPlayer]) != null) {
 					var2 = var16.X / 32 - localPlayer.X / 32;
 					var3 = var16.Y / 32 - localPlayer.Y / 32;
-					this.a(this.bv, var3, var2);
+					this.a(this.mapmarkerOne, var3, var2);
 				}
 			}
 
 			if (this.hl != 0) {
 				var1 = (this.hl << 2) + 2 - localPlayer.X / 32;
 				var2 = (this.hm << 2) + 2 - localPlayer.Y / 32;
-				this.b(this.bu, var1, var2);
+				this.b(this.mapmarkerZero, var1, var2);
 			}
 
 			if (resizeMode != 0) {
@@ -13042,35 +13058,35 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 			this.statOrbs();
 			if (this.menuShowing && resizeMode == 0) {
-				this.c(516, 0);
+				this.drawMenu(516, 0);
 			}
 
 			this.fW.initializeRasterizer();
 		}
 	}
 
-	private void a(Actor var1, int var2) {
-		this.d(var1.X, var2, var1.Y);
+	private void actorToScreen(Actor var1, int height) {
+		this.worldToScreen(var1.X, height, var1.Y);
 	}
 
-	private void d(int var1, int var2, int var3) {
-		if (var1 >= 128 && var3 >= 128 && var1 <= 13056 && var3 <= 13056) {
-			var2 = this.b(this.plane, var3, var1) - var2;
-			var1 -= this.bn;
-			var2 -= this.bo;
-			var3 -= this.bp;
-			int var4 = Model.SINE[this.bq];
-			int var5 = Model.COSINE[this.bq];
-			int var6 = Model.SINE[this.br];
-			int var7 = Model.COSINE[this.br];
-			int var8 = var3 * var6 + var1 * var7 >> 16;
-			var3 = var3 * var7 - var1 * var6 >> 16;
-			var1 = var8;
-			var8 = var2 * var5 - var3 * var4 >> 16;
-			var3 = var2 * var4 + var3 * var5 >> 16;
-			if (var3 >= 50) {
-				this.cP = Rasterizer3D.e + (var1 << d) / var3;
-				this.cQ = Rasterizer3D.f + (var8 << d) / var3;
+	private void worldToScreen(int x, int height, int y) {
+		if (x >= 128 && y >= 128 && x <= 13056 && y <= 13056) {
+			height = this.b(this.plane, y, x) - height;
+			x -= this.offsetX;
+			height -= this.offsetHeight;
+			y -= this.offsetY;
+			int var4 = Model.SINE[this.pitch];
+			int var5 = Model.COSINE[this.pitch];
+			int var6 = Model.SINE[this.yaw];
+			int var7 = Model.COSINE[this.yaw];
+			int var8 = y * var6 + x * var7 >> 16;
+			y = y * var7 - x * var6 >> 16;
+			x = var8;
+			var8 = height * var5 - y * var4 >> 16;
+			y = height * var4 + y * var5 >> 16;
+			if (y >= 50) {
+				this.cP = Rasterizer3D.originViewX + (x << d) / y;
+				this.cQ = Rasterizer3D.originViewY + (var8 << d) / y;
 			} else {
 				this.cP = -1;
 				this.cQ = -1;
@@ -13098,7 +13114,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			var7.height = var8;
 			Rasterizer2D/* Sprite */.height = var8;
 			var7.drawSprite(var5 + (resizeMode == 0 ? 3 : 27), var6 + 3);
-			var1.p11_full.a(u(var2), var5 + (resizeMode == 0 ? 41 : 14), String.valueOf(var2), var6 + 26, true);
+			var1.smallFont.a(u(var2), var5 + (resizeMode == 0 ? 41 : 14), String.valueOf(var2), var6 + 26, true);
 			Animation.spriteFromGroup("orbs", var1.ay ? 11 : 10).drawSprite(var5 + (resizeMode == 0 ? 9 : 32),
 					var6 + 7);
 		} catch (Exception var15) {
@@ -13124,7 +13140,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			var12.height = var5;
 			Rasterizer2D/* Sprite */.height = var5;
 			var12.drawSprite(var16 + (resizeMode == 0 ? 3 : 27), var8 + 3);
-			var1.p11_full.a(u(var9), var16 + (resizeMode == 0 ? 41 : 14), String.valueOf(var2), var8 + 26, true);
+			var1.smallFont.a(u(var9), var16 + (resizeMode == 0 ? 41 : 14), String.valueOf(var2), var8 + 26, true);
 			Animation.spriteFromGroup("orbs", 3).drawSprite(var16 + (resizeMode == 0 ? 7 : 30), var8 + 7);
 		} catch (Exception var14) {
 			;
@@ -13145,7 +13161,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			var12.height = var5;
 			Rasterizer2D/* Sprite */.height = var5;
 			var12.drawSprite(var16 + (resizeMode == 0 ? 3 : 27), var8 + 3);
-			var1.p11_full.a(u(var9), var16 + (resizeMode == 0 ? 41 : 14), String.valueOf(var2), var8 + 26, true);
+			var1.smallFont.a(u(var9), var16 + (resizeMode == 0 ? 41 : 14), String.valueOf(var2), var8 + 26, true);
 			Animation.spriteFromGroup("orbs", 2).drawSprite(var16 + (resizeMode == 0 ? 10 : 33), var8 + 10);
 		} catch (Exception var13) {
 			;
@@ -13211,7 +13227,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		}
 	}
 
-	private DataInputStream d(String var1) throws IOException {
+	private DataInputStream jaggrabInputStream(String var1) throws IOException {
 		if (this.aT != null) {
 			try {
 				this.aT.close();
@@ -13232,8 +13248,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	private void loginScreenFrame() {
 		this.prepareRasterizerForLoginScreen();
 		if (this.aU == 2) {
-			if (this.aI != null) {
-				this.aI.a(clientWidth / 2 - this.aI.width / 2, clientHeight / 2 - this.aI.height / 2);
+			if (this.background != null) {
+				this.background.a(clientWidth / 2 - this.background.width / 2, clientHeight / 2 - this.background.height / 2);
 			}
 
 			if (playLoginMusic) {
@@ -13255,17 +13271,17 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				Animation.spriteFromGroup("login", 2).drawSprite(this.centerX - 90, this.centerY + 39);
 			}
 
-			RSFont var1 = this.p12_full;
-			this.b12_full.shadow(true, this.centerX - 105, 15970623,
+			RSFont var1 = this.frameFont;
+			this.bold.shadow(true, this.centerX - 105, 15970623,
 					username + (this.gG == 0 & tick % 40 < 20 ? "|" : ""), this.centerY - 43);
-			this.b12_full.shadow(true, this.centerX - 105, 15970623,
+			this.bold.shadow(true, this.centerX - 105, 15970623,
 					StringUtils.d(password) + (this.gG == 1 & tick % 40 < 20 ? "|" : ""), this.centerY + 5);
-			this.b12_full.shadow(true,
+			this.bold.shadow(true,
 					this.centerX - var1.getColoredTextWidth(this.hq) / 2
 							- (this.hq.length() > 25 ? 16
 									: (this.hq.length() > 20 ? 14 : (this.hq.length() > 15 ? 12 : 10))),
 					15970623, this.hq, this.centerY + 90);
-			this.b12_full.shadow(true,
+			this.bold.shadow(true,
 					this.centerX - var1.getColoredTextWidth(this.hr) / 2
 							- (this.hr.length() > 25 ? 16
 									: (this.hr.length() > 20 ? 14 : (this.hr.length() > 15 ? 12 : 10))),
@@ -13280,14 +13296,14 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				}
 			}
 
-			this.b12_full.shadow(true, this.centerX - 92, 15970623, "Remember Me", this.centerY + 24);
+			this.bold.shadow(true, this.centerX - 92, 15970623, "Remember Me", this.centerY + 24);
 			if (this.clientOutOfDate) {
-				this.b12_full.shadow(true, this.centerX - 90, 16711680, "New Client Version available",
+				this.bold.shadow(true, this.centerX - 90, 16711680, "New Client Version available",
 						this.centerY - 90);
 			}
 		}
-
-		this.loginScreen.drawImage(0, super.frameGraphics, 0);
+		
+		this.loginScreen.drawImage(0, super.drawGraphics, 0);
 	}
 
 	public final void h() {
@@ -13397,10 +13413,10 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						var9 = this.gd[var7];
 						var3 = var1.z();
 						if (var4 >= 0 && var5 >= 0 && var4 < 103 && var5 < 103) {
-							var10 = this.gE[this.plane][var4][var5];
-							var11 = this.gE[this.plane][var4 + 1][var5];
-							var12 = this.gE[this.plane][var4 + 1][var5 + 1];
-							var13 = this.gE[this.plane][var4][var5 + 1];
+							var10 = this.tileHeights[this.plane][var4][var5];
+							var11 = this.tileHeights[this.plane][var4 + 1][var5];
+							var12 = this.tileHeights[this.plane][var4 + 1][var5 + 1];
+							var13 = this.tileHeights[this.plane][var4][var5 + 1];
 							Wall var34;
 							if (var9 == 0 && (var34 = this.scene.e(this.plane, var4, var5)) != null) {
 								var15 = var34.hash >> 14 & 32767;
@@ -13465,10 +13481,10 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 							if (var21 != null) {
 								ObjectDefinition var33 = ObjectDefinition.byId(var15);
-								int var16 = this.gE[this.plane][var4][var5];
-								int var17 = this.gE[this.plane][var4 + 1][var5];
-								int var18 = this.gE[this.plane][var4 + 1][var5 + 1];
-								int var19 = this.gE[this.plane][var4][var5 + 1];
+								int var16 = this.tileHeights[this.plane][var4][var5];
+								int var17 = this.tileHeights[this.plane][var4 + 1][var5];
+								int var18 = this.tileHeights[this.plane][var4 + 1][var5 + 1];
+								int var19 = this.tileHeights[this.plane][var4][var5 + 1];
 								Model var26;
 								if ((var26 = var33.modelAt(var11, var12, var16, var17, var18, var19, -1)) != null) {
 									this.a(var3 + 1, -1, 0, var13, var5, 0, this.plane, var4, var8 + 1);
@@ -13530,7 +13546,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 								var5 = (var5 << 7) + 64;
 								GameAnimableObject var25 = new GameAnimableObject(this.plane, tick, var8, var6,
 										this.b(this.plane, var5, var4) - var7, var5, var4);
-								this.eg.insertBack(var25);
+								this.animableObjects.insertBack(var25);
 							}
 
 						} else if (var2 == 44) {
@@ -13626,7 +13642,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				if (var6 == 0) {
 					this.scene.a(var5, var2, var1, (byte) -119);
 					if ((var11 = ObjectDefinition.byId(var8)).solid) {
-						this.gQ[var2].a(var9, var10, var11.impenetrable, var5, var1);
+						this.collisionMaps[var2].a(var9, var10, var11.impenetrable, var5, var1);
 					}
 				}
 
@@ -13643,14 +13659,14 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					}
 
 					if (var11.solid) {
-						this.gQ[var2].a(var9, var11.width, var5, var1, var11.length, var11.impenetrable);
+						this.collisionMaps[var2].a(var9, var11.width, var5, var1, var11.length, var11.impenetrable);
 					}
 				}
 
 				if (var6 == 3) {
 					this.scene.c(var2, var1, var5);
 					if ((var11 = ObjectDefinition.byId(var8)).solid && var11.interactive) {
-						CollisionMap var12 = this.gQ[var2];
+						CollisionMap var12 = this.collisionMaps[var2];
 						var12.adjacencies[var5][var1] &= 14680063;
 					}
 				}
@@ -13658,11 +13674,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 			if (var7 >= 0) {
 				var9 = var2;
-				if (var2 < 3 && (this.hj[1][var5][var1] & 2) == 2) {
+				if (var2 < 3 && (this.tileFlags[1][var5][var1] & 2) == 2) {
 					var9 = var2 + 1;
 				}
 
-				MapRegion.placeObject(this.scene, var3, var1, var4, var9, this.gQ[var2], this.gE, var5, var7, var2);
+				MapRegion.placeObject(this.scene, var3, var1, var4, var9, this.collisionMaps[var2], this.tileHeights, var5, var7, var2);
 			}
 		}
 
@@ -13791,7 +13807,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			this.settings[429] = var2;
 			this.j(429);
 			if (this.dU != -1) {
-				D = true;
+				redrawDialog = true;
 			}
 		}
 
@@ -13804,53 +13820,53 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			String var1;
 			int var2;
 			try {
-				int var62;
-				if ((var62 = this.bufferedConnection.available()) == 0) {
+				int available;
+				if ((available = this.bufferedConnection.available()) == 0) {
 					return false;
 				}
 
 				if (this.serverPacketOpcode == -1) {
-					this.bufferedConnection.read(this.eE.buf, 1);
-					this.serverPacketOpcode = this.eE.buf[0] & 255;
-					if (this.dp != null) {
-						this.serverPacketOpcode = this.serverPacketOpcode - this.dp.a() & 255;
+					this.bufferedConnection.read(this.incoming.buf, 1);
+					this.serverPacketOpcode = this.incoming.buf[0] & 255;
+					if (this.decryption != null) {
+						this.serverPacketOpcode = this.serverPacketOpcode - this.decryption.nextKey() & 255;
 					}
 
-					this.du = Class54.a[this.serverPacketOpcode];
-					--var62;
+					this.packetSize = PacketConstants.PACKET_LENGTHS[this.serverPacketOpcode];
+					--available;
 				}
 
-				if (this.du == -1) {
-					if (var62 <= 0) {
+				if (this.packetSize == -1) {
+					if (available <= 0) {
 						return false;
 					}
 
-					this.bufferedConnection.read(this.eE.buf, 1);
-					this.du = this.eE.buf[0] & 255;
-					--var62;
+					this.bufferedConnection.read(this.incoming.buf, 1);
+					this.packetSize = this.incoming.buf[0] & 255;
+					--available;
 				}
 
-				if (this.du == -2) {
-					if (var62 <= 1) {
+				if (this.packetSize == -2) {
+					if (available <= 1) {
 						return false;
 					}
 
-					this.bufferedConnection.read(this.eE.buf, 2);
-					this.eE.position = 0;
-					this.du = this.eE.readUShort();
-					var62 -= 2;
+					this.bufferedConnection.read(this.incoming.buf, 2);
+					this.incoming.position = 0;
+					this.packetSize = this.incoming.readUShort();
+					available -= 2;
 				}
 
-				if (var62 < this.du) {
+				if (available < this.packetSize) {
 					return false;
 				}
 
-				this.eE.position = 0;
-				this.bufferedConnection.read(this.eE.buf, this.du);
-				this.dw = 0;
-				this.bd = this.bc;
-				this.bc = this.bb;
-				this.bb = this.serverPacketOpcode;
+				this.incoming.position = 0;
+				this.bufferedConnection.read(this.incoming.buf, this.packetSize);
+				this.timeoutCounter = 0;
+				this.thirdLastOpcode = this.secondLastOpcode;
+				this.secondLastOpcode = this.lastOpcode;
+				this.lastOpcode = this.serverPacketOpcode;
 				int var3;
 				int var4;
 				int var8;
@@ -13882,9 +13898,9 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						}
 					}
 
-					for (var79 = 0; var79 < this.aW.length; ++var79) {
-						if (this.aW[var79] != null) {
-							this.aW[var79].animation = -1;
+					for (var79 = 0; var79 < this.npcs.length; ++var79) {
+						if (this.npcs[var79] != null) {
+							this.npcs[var79].animation = -1;
 						}
 					}
 
@@ -13901,23 +13917,23 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 				case 156:
 				case 160:
 				case 215:
-					this.c(this.eE, this.serverPacketOpcode);
+					this.c(this.incoming, this.serverPacketOpcode);
 					this.serverPacketOpcode = -1;
 					return true;
 				case 8:
-					int var85 = this.eE.A();
-					var29 = this.eE.readUShort();
+					int var85 = this.incoming.A();
+					var29 = this.incoming.readUShort();
 					Widget.widgets[var85].defaultMediaType = 1;
 					Widget.widgets[var85].defaultMedia = var29;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 24:
-					this.ee = this.eE.w();
-					if (this.ee == C) {
+					this.ee = this.incoming.w();
+					if (this.ee == selectedRedStoneId) {
 						if (this.ee == 3) {
-							C = 1;
+							selectedRedStoneId = 1;
 						} else {
-							C = 3;
+							selectedRedStoneId = 3;
 						}
 					}
 
@@ -13927,19 +13943,19 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.hi = false;
 					this.gJ = 1;
 					this.dr = "";
-					D = true;
+					redrawDialog = true;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 34:
-					int var51 = this.eE.readUShort();
+					int var51 = this.incoming.readUShort();
 					Widget var52 = Widget.widgets[var51];
 
-					while (this.eE.position < this.du) {
-						var53 = this.eE.s();
-						int var54 = this.eE.readUShort();
+					while (this.incoming.position < this.packetSize) {
+						var53 = this.incoming.s();
+						int var54 = this.incoming.readUShort();
 						int var55;
-						if ((var55 = this.eE.readUByte()) == 255) {
-							var55 = this.eE.readInt();
+						if ((var55 = this.incoming.readUByte()) == 255) {
+							var55 = this.incoming.readInt();
 						}
 
 						if (var53 >= 0 && var53 < var52.itemIds.length) {
@@ -13951,37 +13967,37 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 35:
-					var13 = this.eE.readUByte();
-					var14 = this.eE.readUByte();
-					var62 = this.eE.readUByte();
-					var2 = this.eE.readUByte();
+					var13 = this.incoming.readUByte();
+					var14 = this.incoming.readUByte();
+					available = this.incoming.readUByte();
+					var2 = this.incoming.readUByte();
 					this.by[var13] = true;
 					this.bx[var13] = var14;
-					this.gz[var13] = var62;
+					this.gz[var13] = available;
 					this.ch[var13] = var2;
 					this.dL[var13] = 0;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 36:
-					var46 = this.eE.y();
-					byte var86 = this.eE.readByte();
+					var46 = this.incoming.y();
+					byte var86 = this.incoming.readByte();
 					this.dW[var46] = var86;
 					if (this.settings[var46] != var86) {
 						this.settings[var46] = var86;
 						this.j(var46);
 						if (this.dU != -1) {
-							D = true;
+							redrawDialog = true;
 						}
 					}
 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 50:
-					long var19 = this.eE.readLong();
-					int var21 = this.eE.readUByte();
+					long var19 = this.incoming.readLong();
+					int var21 = this.incoming.readUByte();
 					var65 = StringUtils.formatName(StringUtils.longToName(var19));
 
-					for (var3 = 0; var3 < this.bS; ++var3) {
+					for (var3 = 0; var3 < this.numFriends; ++var3) {
 						if (var19 == this.cG[var3]) {
 							if (this.aQ[var3] != var21) {
 								this.aQ[var3] = var21;
@@ -13998,11 +14014,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						}
 					}
 
-					if (var65 != null && this.bS < 200) {
-						this.cG[this.bS] = var19;
-						this.eD[this.bS] = var65;
-						this.aQ[this.bS] = var21;
-						++this.bS;
+					if (var65 != null && this.numFriends < 200) {
+						this.cG[this.numFriends] = var19;
+						this.eD[this.numFriends] = var65;
+						this.aQ[this.numFriends] = var21;
+						++this.numFriends;
 					}
 
 					var71 = false;
@@ -14010,18 +14026,18 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					while (!var71) {
 						var71 = true;
 
-						for (var62 = 0; var62 < this.bS - 1; ++var62) {
-							if (this.aQ[var62] != cK && this.aQ[var62 + 1] == cK
-									|| this.aQ[var62] == 0 && this.aQ[var62 + 1] != 0) {
-								var2 = this.aQ[var62];
-								this.aQ[var62] = this.aQ[var62 + 1];
-								this.aQ[var62 + 1] = var2;
-								var64 = this.eD[var62];
-								this.eD[var62] = this.eD[var62 + 1];
-								this.eD[var62 + 1] = var64;
-								long var22 = this.cG[var62];
-								this.cG[var62] = this.cG[var62 + 1];
-								this.cG[var62 + 1] = var22;
+						for (available = 0; available < this.numFriends - 1; ++available) {
+							if (this.aQ[available] != cK && this.aQ[available + 1] == cK
+									|| this.aQ[available] == 0 && this.aQ[available + 1] != 0) {
+								var2 = this.aQ[available];
+								this.aQ[available] = this.aQ[available + 1];
+								this.aQ[available + 1] = var2;
+								var64 = this.eD[available];
+								this.eD[available] = this.eD[available + 1];
+								this.eD[available + 1] = var64;
+								long var22 = this.cG[available];
+								this.cG[available] = this.cG[available + 1];
+								this.cG[available + 1] = var22;
 								var71 = false;
 							}
 						}
@@ -14030,16 +14046,16 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 53:
-					int var35 = this.eE.readUShort();
+					int var35 = this.incoming.readUShort();
 					Widget var36 = Widget.widgets[var35];
-					int var37 = this.eE.readUShort();
+					int var37 = this.incoming.readUShort();
 
 					for (var38 = 0; var38 < var37; ++var38) {
-						if ((var39 = this.eE.readUByte()) == 255) {
-							var39 = this.eE.E();
+						if ((var39 = this.incoming.readUByte()) == 255) {
+							var39 = this.incoming.E();
 						}
 
-						var36.itemIds[var38] = this.eE.A();
+						var36.itemIds[var38] = this.incoming.A();
 						var36.itemAmounts[var38] = var39;
 					}
 
@@ -14051,29 +14067,29 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 60:
-					this.ht = this.eE.readUByte();
-					this.hs = this.eE.v();
+					this.ht = this.incoming.readUByte();
+					this.hs = this.incoming.v();
 
-					while (this.eE.position < this.du) {
-						var13 = this.eE.readUByte();
-						this.c(this.eE, var13);
+					while (this.incoming.position < this.packetSize) {
+						var13 = this.incoming.readUByte();
+						this.c(this.incoming, var13);
 					}
 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 61:
-					this.ef = this.eE.readUByte();
+					this.ef = this.incoming.readUByte();
 					this.serverPacketOpcode = -1;
 					return true;
 				case 64:
-					this.hs = this.eE.v();
-					this.ht = this.eE.w();
+					this.hs = this.incoming.v();
+					this.ht = this.incoming.w();
 
-					for (var62 = this.hs; var62 < this.hs + 8; ++var62) {
+					for (available = this.hs; available < this.hs + 8; ++available) {
 						for (var2 = this.ht; var2 < this.ht + 8; ++var2) {
-							if (this.aR[this.plane][var62][var2] != null) {
-								this.aR[this.plane][var62][var2] = null;
-								this.b(var62, var2);
+							if (this.aR[this.plane][available][var2] != null) {
+								this.aR[this.plane][available][var2] = null;
+								this.b(available, var2);
 							}
 						}
 					}
@@ -14089,7 +14105,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 65:
-					this.a(this.eE, this.du);
+					this.a(this.incoming, this.packetSize);
 					this.serverPacketOpcode = -1;
 					return true;
 				case 68:
@@ -14103,27 +14119,27 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 70:
-					var62 = this.eE.readShort();
-					var2 = this.eE.B();
-					var3 = this.eE.y();
+					available = this.incoming.readShort();
+					var2 = this.incoming.B();
+					var3 = this.incoming.y();
 					Widget var82;
-					(var82 = Widget.widgets[var3]).Y = var62;
-					var82.Z = var2;
+					(var82 = Widget.widgets[var3]).drawOffsetX = available;
+					var82.drawOffsetY = var2;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 71:
-					var9 = this.eE.readUShort();
-					var10 = this.eE.u();
+					var9 = this.incoming.readUShort();
+					var10 = this.incoming.u();
 					if (var9 == '\uffff') {
 						var9 = -1;
 					}
 
-					u[var10] = var9;
+					redStoneWidgetIds[var10] = var9;
 					fh = true;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 72:
-					var2 = this.eE.y();
+					var2 = this.incoming.y();
 					Widget var83 = Widget.widgets[var2];
 
 					for (var3 = 0; var3 < var83.itemIds.length; ++var3) {
@@ -14135,47 +14151,47 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					return true;
 				case 73:
 				case 241:
-					var62 = this.eq;
+					available = this.eq;
 					var2 = this.er;
 					if (this.serverPacketOpcode == 73) {
-						var62 = this.eE.z();
-						var2 = this.eE.readUShort();
+						available = this.incoming.z();
+						var2 = this.incoming.readUShort();
 						this.fS = false;
 					}
 
 					if (this.serverPacketOpcode == 241) {
-						var2 = this.eE.z();
-						this.eE.p();
-						var62 = 0;
+						var2 = this.incoming.z();
+						this.incoming.p();
+						available = 0;
 
 						while (true) {
-							if (var62 >= 4) {
-								this.eE.q();
-								var62 = this.eE.readUShort();
+							if (available >= 4) {
+								this.incoming.q();
+								available = this.incoming.readUShort();
 								this.fS = true;
 								break;
 							}
 
 							for (var3 = 0; var3 < 13; ++var3) {
 								for (var4 = 0; var4 < 13; ++var4) {
-									if (this.eE.i(1) == 1) {
-										this.fz[var62][var3][var4] = this.eE.i(26);
+									if (this.incoming.i(1) == 1) {
+										this.fz[available][var3][var4] = this.incoming.i(26);
 									} else {
-										this.fz[var62][var3][var4] = -1;
+										this.fz[available][var3][var4] = -1;
 									}
 								}
 							}
 
-							++var62;
+							++available;
 						}
 					}
 
-					if (this.eq == var62 && this.er == var2 && this.dH == 2) {
+					if (this.eq == available && this.er == var2 && this.loadingStage == 2) {
 						this.serverPacketOpcode = -1;
 						return true;
 					}
 
-					this.eq = var62;
+					this.eq = available;
 					this.er = var2;
 					this.sceneX = this.eq - 6 << 3;
 					this.sceneY = this.er - 6 << 3;
@@ -14184,16 +14200,16 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						this.fI = true;
 					}
 
-					this.dH = 1;
-					this.aO = System.currentTimeMillis();
+					this.loadingStage = 1;
+					this.loadingStartTime = System.currentTimeMillis();
 					this.fW.initializeRasterizer();
-					var62 = resizeMode == 0 ? 200 : clientWidth / 2 - 55;
+					available = resizeMode == 0 ? 200 : clientWidth / 2 - 55;
 					var3 = resizeMode == 0 ? 150 : clientHeight / 2 - 45;
-					Rasterizer2D.drawRectangle(var62, 130, 22, 16777215, var3);
-					Rasterizer2D.fillRectangle(20, var3 + 1, var62 + 1, 0, 128);
-					this.p12_full.a(0, "Loading - please wait.", var3 + 18, var62 + 68);
-					this.p12_full.a(16777215, "Loading - please wait.", var3 + 17, var62 + 67);
-					this.fW.drawImage(resizeMode == 0 ? 4 : 0, super.frameGraphics, resizeMode == 0 ? 4 : 0);
+					Rasterizer2D.drawRectangle(available, 130, 22, 16777215, var3);
+					Rasterizer2D.fillRectangle(20, var3 + 1, available + 1, 0, 128);
+					this.frameFont.a(0, "Loading - please wait.", var3 + 18, available + 68);
+					this.frameFont.a(16777215, "Loading - please wait.", var3 + 17, available + 67);
+					this.fW.drawImage(resizeMode == 0 ? 4 : 0, super.drawGraphics, resizeMode == 0 ? 4 : 0);
 					if (this.serverPacketOpcode == 73) {
 						var4 = 0;
 						var67 = (this.eq - 6) / 8;
@@ -14213,19 +14229,19 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 										break label1193;
 									}
 
-									for (var62 = (this.er - 6) / 8; var62 <= (this.er + 6) / 8; ++var62) {
-										this.gR[var4] = (var67 << 8) + var62;
-										if (this.fI && (var62 == 49 || var62 == 149 || var62 == 147 || var67 == 50
-												|| var67 == 49 && var62 == 47)) {
+									for (available = (this.er - 6) / 8; available <= (this.er + 6) / 8; ++available) {
+										this.gR[var4] = (var67 << 8) + available;
+										if (this.fI && (available == 49 || available == 149 || available == 147 || var67 == 50
+												|| var67 == 49 && available == 47)) {
 											this.gS[var4] = -1;
 											this.gT[var4] = -1;
 										} else {
-											if ((var2 = this.gS[var4] = this.resourceProvider.a(0, var62,
+											if ((var2 = this.gS[var4] = this.resourceProvider.a(0, available,
 													var67)) != -1) {
 												this.resourceProvider.provide(3, var2);
 											}
 
-											if ((var3 = this.gT[var4] = this.resourceProvider.a(1, var62,
+											if ((var3 = this.gT[var4] = this.resourceProvider.a(1, available,
 													var67)) != -1) {
 												this.resourceProvider.provide(3, var3);
 											}
@@ -14238,7 +14254,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 								}
 							}
 
-							for (var62 = (this.er - 6) / 8; var62 <= (this.er + 6) / 8; ++var62) {
+							for (available = (this.er - 6) / 8; available <= (this.er + 6) / 8; ++available) {
 								++var4;
 							}
 
@@ -14249,40 +14265,40 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					if (this.serverPacketOpcode == 241) {
 						var4 = 0;
 						int[] var70 = new int[676];
-						var62 = 0;
+						available = 0;
 
 						label1154: while (true) {
 							int var11;
-							if (var62 >= 4) {
+							if (available >= 4) {
 								this.gj = new byte[var4][];
 								this.ha = new byte[var4][];
 								this.gR = new int[var4];
 								this.gS = new int[var4];
 								this.gT = new int[var4];
-								var62 = 0;
+								available = 0;
 
 								while (true) {
-									if (var62 >= var4) {
+									if (available >= var4) {
 										break label1154;
 									}
 
-									var3 = (var2 = this.gR[var62] = var70[var62]) >> 8 & 255;
+									var3 = (var2 = this.gR[available] = var70[available]) >> 8 & 255;
 									var8 = var2 & 255;
-									if ((var11 = this.gS[var62] = this.resourceProvider.a(0, var8, var3)) != -1) {
+									if ((var11 = this.gS[available] = this.resourceProvider.a(0, var8, var3)) != -1) {
 										this.resourceProvider.provide(3, var11);
 									}
 
-									if ((var9 = this.gT[var62] = this.resourceProvider.a(1, var8, var3)) != -1) {
+									if ((var9 = this.gT[available] = this.resourceProvider.a(1, var8, var3)) != -1) {
 										this.resourceProvider.provide(3, var9);
 									}
 
-									++var62;
+									++available;
 								}
 							}
 
 							for (var2 = 0; var2 < 13; ++var2) {
 								for (var3 = 0; var3 < 13; ++var3) {
-									if ((var8 = this.fz[var62][var2][var3]) != -1) {
+									if ((var8 = this.fz[available][var2][var3]) != -1) {
 										var11 = var8 >> 14 & 1023;
 										var9 = var8 >> 3 & 2047;
 										var10 = (var11 / 8 << 8) + var9 / 8;
@@ -14300,7 +14316,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 								}
 							}
 
-							++var62;
+							++available;
 						}
 					}
 
@@ -14309,9 +14325,9 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.dQ = this.sceneX;
 					this.dR = this.sceneY;
 
-					for (var62 = 0; var62 < 16384; ++var62) {
+					for (available = 0; available < 16384; ++available) {
 						Npc var74;
-						if ((var74 = this.aW[var62]) != null) {
+						if ((var74 = this.npcs[available]) != null) {
 							for (var3 = 0; var3 < 10; ++var3) {
 								var74.pathX[var3] -= var4;
 								var74.pathY[var3] -= var67;
@@ -14322,9 +14338,9 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						}
 					}
 
-					for (var62 = 0; var62 < 2048; ++var62) {
+					for (available = 0; available < 2048; ++available) {
 						Player var75;
-						if ((var75 = this.players[var62]) != null) {
+						if ((var75 = this.players[available]) != null) {
 							for (var3 = 0; var3 < 10; ++var3) {
 								var75.pathX[var3] -= var4;
 								var75.pathY[var3] -= var67;
@@ -14356,12 +14372,12 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 					for (var10 = var80; var10 != var78; var10 += var81) {
 						for (var12 = var72; var12 != var76; var12 += var73) {
-							var62 = var10 + var4;
+							available = var10 + var4;
 							var13 = var12 + var67;
 
 							for (var14 = 0; var14 < 4; ++var14) {
-								if (var62 >= 0 && var13 >= 0 && var62 < 104 && var13 < 104) {
-									this.aR[var14][var10][var12] = this.aR[var14][var62][var13];
+								if (available >= 0 && var13 >= 0 && available < 104 && var13 < 104) {
+									this.aR[var14][var10][var12] = this.aR[var14][available][var13];
 								} else {
 									this.aR[var14][var10][var12] = null;
 								}
@@ -14383,28 +14399,28 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 						this.hm -= var67;
 					}
 
-					this.fT = false;
+					this.oriented = false;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 74:
-					if ((var8 = this.eE.y()) == '\uffff') {
+					if ((var8 = this.incoming.y()) == '\uffff') {
 						var8 = -1;
 					}
 
 					if (var8 != this.cJ && playMusic && this.loopMusic == 0) {
-						this.requestedSong = var8;
-						this.gM = true;
-						this.resourceProvider.provide(2, this.requestedSong);
+						this.musicId = var8;
+						this.fadeMusic = true;
+						this.resourceProvider.provide(2, this.musicId);
 					}
 
 					this.cJ = var8;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 75:
-					var12 = this.eE.A();
-					var62 = this.eE.A();
-					Widget.widgets[var62].defaultMediaType = 2;
-					Widget.widgets[var62].defaultMedia = var12;
+					var12 = this.incoming.A();
+					available = this.incoming.A();
+					Widget.widgets[available].defaultMediaType = 2;
+					Widget.widgets[available].defaultMedia = var12;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 78:
@@ -14412,8 +14428,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 79:
-					var2 = this.eE.y();
-					var3 = this.eE.z();
+					var2 = this.incoming.y();
+					var3 = this.incoming.z();
 					Widget var24;
 					if ((var24 = Widget.widgets[var2]) != null && var24.group == 0) {
 						if (var3 < 0) {
@@ -14430,45 +14446,45 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 81:
-					this.b(this.du, this.eE);
+					this.b(this.packetSize, this.incoming);
 					this.eC = false;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 85:
-					this.ht = this.eE.v();
-					this.hs = this.eE.v();
+					this.ht = this.incoming.v();
+					this.hs = this.incoming.v();
 					this.serverPacketOpcode = -1;
 					return true;
 				case 87:
-					var44 = this.eE.y();
-					var45 = this.eE.D();
+					var44 = this.incoming.y();
+					var45 = this.incoming.D();
 					this.dW[var44] = var45;
 					if (this.settings[var44] != var45) {
 						this.settings[var44] = var45;
 						this.j(var44);
 						if (this.dU != -1) {
-							D = true;
+							redrawDialog = true;
 						}
 					}
 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 97:
-					var42 = this.eE.readUShort();
+					var42 = this.incoming.readUShort();
 					this.m(var42);
-					if (this.gp != -1) {
-						this.gp = -1;
+					if (this.altInterfaceWidget != -1) {
+						this.altInterfaceWidget = -1;
 						fh = true;
 					}
 
 					if (this.hA != -1) {
 						this.hA = -1;
-						D = true;
+						redrawDialog = true;
 					}
 
 					if (this.gJ != 0) {
 						this.gJ = 0;
-						D = true;
+						redrawDialog = true;
 					}
 
 					j = var42;
@@ -14478,31 +14494,31 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 99:
-					this.dG = this.eE.readUByte();
+					this.dG = this.incoming.readUByte();
 					this.serverPacketOpcode = -1;
 					return true;
 				case 104:
-					var62 = this.eE.v();
-					var2 = this.eE.u();
-					var64 = this.eE.readString();
-					if (var62 > 0 && var62 <= 5) {
+					available = this.incoming.v();
+					var2 = this.incoming.u();
+					var64 = this.incoming.readString();
+					if (available > 0 && available <= 5) {
 						if (var64.equalsIgnoreCase("null")) {
 							var64 = null;
 						}
 
-						this.fx[var62 - 1] = var64;
-						this.fy[var62 - 1] = var2 == 0;
+						this.fx[available - 1] = var64;
+						this.fy[available - 1] = var2 == 0;
 					}
 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 106:
-					C = this.eE.v();
+					selectedRedStoneId = this.incoming.v();
 					fh = true;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 107:
-					this.fT = false;
+					this.oriented = false;
 
 					for (var2 = 0; var2 < 5; ++var2) {
 						this.by[var2] = false;
@@ -14515,29 +14531,29 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.serverPacketOpcode = -1;
 					return false;
 				case 110:
-					this.fJ = this.eE.readUByte();
+					this.fJ = this.incoming.readUByte();
 					this.serverPacketOpcode = -1;
 					return true;
 				case 114:
-					this.fi = this.eE.y() * 30;
+					this.systemUpdateTime = this.incoming.y() * 30;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 121:
-					var62 = this.eE.A();
-					var2 = this.eE.z();
+					available = this.incoming.A();
+					var2 = this.incoming.z();
 					if (playMusic) {
-						this.requestedSong = var62;
-						this.gM = false;
-						this.resourceProvider.provide(2, this.requestedSong);
+						this.musicId = available;
+						this.fadeMusic = false;
+						this.resourceProvider.provide(2, this.musicId);
 						this.loopMusic = var2;
 					}
 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 122:
-					int var30 = this.eE.A();
+					int var30 = this.incoming.A();
 					int var31;
-					int var32 = (var31 = this.eE.A()) >> 10 & 31;
+					int var32 = (var31 = this.incoming.A()) >> 10 & 31;
 					int var33 = var31 >> 5 & 31;
 					int var34 = var31 & 31;
 					Widget.widgets[var30].defaultColor = (var32 << 19) + (var33 << 11) + (var34 << 3);
@@ -14545,8 +14561,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					return true;
 				case 126:
 					try {
-						String var28 = this.eE.readString();
-						var29 = this.eE.z();
+						String var28 = this.incoming.readString();
+						var29 = this.incoming.z();
 						a(var28, var29);
 					} catch (Exception var56) {
 						;
@@ -14555,15 +14571,15 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 134:
-					var3 = this.eE.readUByte();
-					var4 = this.eE.D();
-					var67 = this.eE.readUByte();
-					if (this.xpDrops && var3 >= 0 && this.bt[var3] >= 0 && var4 > this.bt[var3]
-							&& (var9 = Math.abs(var4 - this.bt[var3])) > 0) {
+					var3 = this.incoming.readUByte();
+					var4 = this.incoming.D();
+					var67 = this.incoming.readUByte();
+					if (this.xpDrops && var3 >= 0 && this.skillXp[var3] >= 0 && var4 > this.skillXp[var3]
+							&& (var9 = Math.abs(var4 - this.skillXp[var3])) > 0) {
 						this.f(var3, var9);
 					}
 
-					this.bt[var3] = var4;
+					this.skillXp[var3] = var4;
 					this.cd[var3] = var67;
 					this.dV[var3] = 1;
 
@@ -14576,78 +14592,78 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 142:
-					var62 = this.eE.y();
-					this.m(var62);
+					available = this.incoming.y();
+					this.m(available);
 					if (this.hA != -1) {
 						this.hA = -1;
-						D = true;
+						redrawDialog = true;
 					}
 
 					if (this.gJ != 0) {
 						this.gJ = 0;
-						D = true;
+						redrawDialog = true;
 					}
 
-					this.gp = var62;
+					this.altInterfaceWidget = available;
 					fh = true;
 					j = -1;
 					this.fK = false;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 164:
-					var53 = this.eE.y();
+					var53 = this.incoming.y();
 					this.m(var53);
-					if (this.gp != -1) {
-						this.gp = -1;
+					if (this.altInterfaceWidget != -1) {
+						this.altInterfaceWidget = -1;
 						fh = true;
 					}
 
 					this.hA = var53;
-					D = true;
+					redrawDialog = true;
 					j = -1;
 					this.fK = false;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 166:
-					this.fT = true;
-					this.fc = this.eE.readUByte();
-					this.fd = this.eE.readUByte();
-					this.fe = this.eE.readUShort();
-					this.ff = this.eE.readUByte();
-					this.fg = this.eE.readUByte();
+					this.oriented = true;
+					this.fc = this.incoming.readUByte();
+					this.fd = this.incoming.readUByte();
+					this.fe = this.incoming.readUShort();
+					this.ff = this.incoming.readUByte();
+					this.fg = this.incoming.readUByte();
 					if (this.fg >= 100) {
-						this.bn = (this.fc << 7) + 64;
-						this.bp = (this.fd << 7) + 64;
-						this.bo = this.b(this.plane, this.bp, this.bn) - this.fe;
+						this.offsetX = (this.fc << 7) + 64;
+						this.offsetY = (this.fd << 7) + 64;
+						this.offsetHeight = this.b(this.plane, this.offsetY, this.offsetX) - this.fe;
 					}
 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 171:
-					var71 = this.eE.readUByte() == 1;
-					var62 = this.eE.readUShort();
-					Widget.widgets[var62].aa = var71;
+					var71 = this.incoming.readUByte() == 1;
+					available = this.incoming.readUShort();
+					Widget.widgets[available].aa = var71;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 174:
-					var62 = this.eE.readUShort();
-					var2 = this.eE.readUByte();
-					var3 = this.eE.readUShort();
+					available = this.incoming.readUShort();
+					var2 = this.incoming.readUByte();
+					var3 = this.incoming.readUShort();
 					if (this.bg && this.ek < 50) {
-						this.gA[this.ek] = var62;
+						this.gA[this.ek] = available;
 						this.gU[this.ek] = var2;
-						this.hc[this.ek] = var3 + Track.a[var62];
+						this.hc[this.ek] = var3 + Track.a[available];
 						++this.ek;
 					}
 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 176:
-					this.fY = this.eE.v();
-					this.fO = this.eE.z();
-					this.ft = this.eE.readUByte();
-					this.gt = this.eE.E();
-					this.dt = this.eE.readUShort();
+					this.fY = this.incoming.v();
+					this.fO = this.incoming.z();
+					this.ft = this.incoming.readUByte();
+					this.gt = this.incoming.E();
+					this.dt = this.incoming.readUShort();
 					if (this.gt != 0 && j == -1) {
 						SignLink.a(StringUtils.a(this.gt));
 						this.widgetClose();
@@ -14669,43 +14685,43 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 177:
-					this.fT = true;
-					this.dk = this.eE.readUByte();
-					this.dl = this.eE.readUByte();
-					this.dm = this.eE.readUShort();
-					this.dn = this.eE.readUByte();
-					this.do_ = this.eE.readUByte();
+					this.oriented = true;
+					this.dk = this.incoming.readUByte();
+					this.dl = this.incoming.readUByte();
+					this.dm = this.incoming.readUShort();
+					this.dn = this.incoming.readUByte();
+					this.do_ = this.incoming.readUByte();
 					if (this.do_ >= 100) {
 						var42 = (this.dk << 7) + 64;
 						var43 = (this.dl << 7) + 64;
 						var44 = this.b(this.plane, var43, var42) - this.dm;
-						var45 = var42 - this.bn;
-						var46 = var44 - this.bo;
-						int var47 = var43 - this.bp;
+						var45 = var42 - this.offsetX;
+						var46 = var44 - this.offsetHeight;
+						int var47 = var43 - this.offsetY;
 						var48 = (int) Math.sqrt((double) (var45 * var45 + var47 * var47));
-						this.bq = (int) (Math.atan2((double) var46, (double) var48) * 325.949D) & 2047;
-						this.br = (int) (Math.atan2((double) var45, (double) var47) * -325.949D) & 2047;
-						if (this.bq < 128) {
-							this.bq = 128;
+						this.pitch = (int) (Math.atan2((double) var46, (double) var48) * 325.949D) & 2047;
+						this.yaw = (int) (Math.atan2((double) var45, (double) var47) * -325.949D) & 2047;
+						if (this.pitch < 128) {
+							this.pitch = 128;
 						}
 
-						if (this.bq > 383) {
-							this.bq = 383;
+						if (this.pitch > 383) {
+							this.pitch = 383;
 						}
 					}
 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 185:
-					var62 = this.eE.A();
-					Widget.widgets[var62].defaultMediaType = 3;
-					if (localPlayer.al == null) {
-						Widget.widgets[var62].defaultMedia = (localPlayer.appearanceColors[0] << 25)
+					available = this.incoming.A();
+					Widget.widgets[available].defaultMediaType = 3;
+					if (localPlayer.playerDefinition == null) {
+						Widget.widgets[available].defaultMedia = (localPlayer.appearanceColors[0] << 25)
 								+ (localPlayer.appearanceColors[4] << 20) + (localPlayer.appearance[0] << 15)
 								+ (localPlayer.appearance[8] << 10) + (localPlayer.appearance[11] << 5)
 								+ localPlayer.appearance[1];
 					} else {
-						Widget.widgets[var62].defaultMedia = (int) (305419896L + localPlayer.al.id);
+						Widget.widgets[available].defaultMedia = (int) (305419896L + localPlayer.playerDefinition.id);
 					}
 
 					this.serverPacketOpcode = -1;
@@ -14714,16 +14730,16 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.hi = false;
 					this.gJ = 2;
 					this.dr = "";
-					D = true;
+					redrawDialog = true;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 196:
-					long var26 = this.eE.readLong();
-					this.eE.readInt();
-					var62 = this.eE.readUByte();
-					var2 = this.eE.readUByte();
+					long var26 = this.incoming.readLong();
+					this.incoming.readInt();
+					available = this.incoming.readUByte();
+					var2 = this.incoming.readUByte();
 					var71 = false;
-					if (var62 <= 1) {
+					if (available <= 1) {
 						for (var4 = 0; var4 < this.aN; ++var4) {
 							if (this.cf[var4] == var26) {
 								var71 = true;
@@ -14733,12 +14749,12 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 
 					if (!var71 && this.he == 0) {
 						try {
-							String var66 = ChatMessageCodec.a(this.du - 14, this.eE);
+							String var66 = ChatMessageCodec.a(this.packetSize - 14, this.incoming);
 							var65 = var2 > 0 ? h(var2) : "";
-							if (var62 > 0 && var62 <= 3) {
-								this.a(var66, 7, var65 + StringUtils.formatName(StringUtils.longToName(var26)), var62);
+							if (available > 0 && available <= 3) {
+								this.a(var66, 7, var65 + StringUtils.formatName(StringUtils.longToName(var26)), available);
 							} else {
-								this.a(var66, 3, var65 + StringUtils.formatName(StringUtils.longToName(var26)), var62);
+								this.a(var66, 3, var65 + StringUtils.formatName(StringUtils.longToName(var26)), available);
 							}
 						} catch (Exception var58) {
 							SignLink.reportError("cde1");
@@ -14748,8 +14764,8 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 200:
-					var48 = this.eE.readUShort();
-					int var49 = this.eE.readShort();
+					var48 = this.incoming.readUShort();
+					int var49 = this.incoming.readShort();
 					Widget var50;
 					(var50 = Widget.widgets[var48]).defaultAnimationId = var49;
 					if (var49 == -1) {
@@ -14760,14 +14776,14 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 206:
-					this.G = this.eE.readUByte();
-					this.i = this.eE.readUByte();
-					this.F = this.eE.readUByte();
-					D = true;
+					this.G = this.incoming.readUByte();
+					this.i = this.incoming.readUByte();
+					this.F = this.incoming.readUByte();
+					redrawDialog = true;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 208:
-					if ((var10 = this.eE.B()) >= 0) {
+					if ((var10 = this.incoming.B()) >= 0) {
 						this.m(var10);
 					}
 
@@ -14777,21 +14793,21 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 213:
-					this.bT = this.eE.readUByte();
+					this.bT = this.incoming.readUByte();
 					if (this.bT > 0) {
 						for (var3 = 0; var3 < this.bT; ++var3) {
-							this.cH[var3] = this.eE.readLong();
-							this.cI[var3] = this.eE.readUByte();
+							this.cH[var3] = this.incoming.readLong();
+							this.cI[var3] = this.incoming.readUByte();
 						}
 					}
 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 214:
-					this.aN = this.du / 8;
+					this.aN = this.packetSize / 8;
 					if (this.aN > 0) {
 						for (var3 = 0; var3 < this.aN; ++var3) {
-							this.cf[var3] = this.eE.readLong();
+							this.cf[var3] = this.incoming.readLong();
 						}
 					}
 
@@ -14799,11 +14815,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					return true;
 				case 216:
 					try {
-						this.aC = this.eE.readString();
-						var65 = this.eE.readString();
-						var1 = this.eE.readString();
-						var3 = this.eE.readUByte();
-						if ((var4 = this.eE.readUByte()) > 0) {
+						this.aC = this.incoming.readString();
+						var65 = this.incoming.readString();
+						var1 = this.incoming.readString();
+						var3 = this.incoming.readUByte();
+						if ((var4 = this.incoming.readUByte()) > 0) {
 							this.a(var1, 16, h(var4) + StringUtils.formatName(var65), var3);
 						} else {
 							this.a(var1, 16, StringUtils.formatName(var65), var3);
@@ -14816,11 +14832,11 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					return true;
 				case 217:
 					try {
-						this.aD = this.eE.readString();
-						var65 = this.eE.readString();
-						var1 = this.eE.readString();
-						var3 = this.eE.readUByte();
-						var4 = this.eE.readUByte();
+						this.aD = this.incoming.readString();
+						var65 = this.incoming.readString();
+						var1 = this.incoming.readString();
+						var3 = this.incoming.readUByte();
+						var4 = this.incoming.readUByte();
 						boolean var5 = false;
 						long var6 = StringUtils.nameToLong(var65);
 
@@ -14844,25 +14860,25 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 218:
-					var43 = this.eE.C();
+					var43 = this.incoming.C();
 					this.dU = var43;
-					D = true;
+					redrawDialog = true;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 219:
-					if (this.gp != -1) {
-						this.gp = -1;
+					if (this.altInterfaceWidget != -1) {
+						this.altInterfaceWidget = -1;
 						fh = true;
 					}
 
 					if (this.hA != -1) {
 						this.hA = -1;
-						D = true;
+						redrawDialog = true;
 					}
 
 					if (this.gJ != 0) {
 						this.gJ = 0;
-						D = true;
+						redrawDialog = true;
 					}
 
 					j = -1;
@@ -14872,51 +14888,51 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 221:
-					this.bU = this.eE.readUByte();
+					this.bU = this.incoming.readUByte();
 					this.serverPacketOpcode = -1;
 					return true;
 				case 230:
-					var38 = this.eE.z();
-					var39 = this.eE.readUShort();
-					int var40 = this.eE.readUShort();
-					int var41 = this.eE.A();
+					var38 = this.incoming.z();
+					var39 = this.incoming.readUShort();
+					int var40 = this.incoming.readUShort();
+					int var41 = this.incoming.A();
 					Widget.widgets[var39].spritePitch = var40;
 					Widget.widgets[var39].spriteRoll = var41;
 					Widget.widgets[var39].spriteScale = var38;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 240:
-					this.bB = this.eE.readShort();
+					this.bB = this.incoming.readShort();
 					this.serverPacketOpcode = -1;
 					return true;
 				case 246:
-					var4 = this.eE.y();
-					var2 = this.eE.readUShort();
-					if ((var62 = this.eE.readUShort()) == '\uffff') {
+					var4 = this.incoming.y();
+					var2 = this.incoming.readUShort();
+					if ((available = this.incoming.readUShort()) == '\uffff') {
 						Widget.widgets[var4].defaultMediaType = 0;
 						this.serverPacketOpcode = -1;
 						return true;
 					}
 
-					ItemDefinition var68 = ItemDefinition.fromID(var62);
+					ItemDefinition var68 = ItemDefinition.fromID(available);
 					Widget.widgets[var4].defaultMediaType = 4;
-					Widget.widgets[var4].defaultMedia = var62;
+					Widget.widgets[var4].defaultMedia = available;
 					Widget.widgets[var4].spritePitch = var68.spritePitch;
 					Widget.widgets[var4].spriteRoll = var68.spriteCameraRoll;
 					Widget.widgets[var4].spriteScale = var68.spriteScale * 100 / var2;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 248:
-					var3 = this.eE.z();
-					var62 = this.eE.readUShort();
+					var3 = this.incoming.z();
+					available = this.incoming.readUShort();
 					if (this.hA != -1) {
 						this.hA = -1;
-						D = true;
+						redrawDialog = true;
 					}
 
 					if (this.gJ != 0) {
 						this.gJ = 0;
-						D = true;
+						redrawDialog = true;
 					}
 
 					if (!this.eP) {
@@ -14924,19 +14940,19 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					}
 
 					j = var3;
-					this.gp = var62;
+					this.altInterfaceWidget = available;
 					fh = true;
 					this.fK = false;
 					this.serverPacketOpcode = -1;
 					return true;
 				case 249:
-					this.dX = this.eE.u();
-					this.bF = this.eE.A();
+					this.dX = this.incoming.u();
+					this.bF = this.incoming.A();
 					this.serverPacketOpcode = -1;
 					return true;
 				case 253:
-					var1 = this.eE.readString();
-					boolean var63 = this.eE.readUByte() == 1;
+					var1 = this.incoming.readString();
+					boolean var63 = this.incoming.readUByte() == 1;
 					String var15;
 					long var16;
 					if (var1.endsWith(":tradereq:")) {
@@ -14999,60 +15015,60 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 					this.serverPacketOpcode = -1;
 					return true;
 				case 254:
-					this.bm = this.eE.readUByte();
-					if (this.bm == 1) {
-						this.gI = this.eE.readUShort();
+					this.hintIconType = this.incoming.readUByte();
+					if (this.hintIconType == 1) {
+						this.hintIconNpc = this.incoming.readUShort();
 					}
 
-					if (this.bm >= 2 && this.bm <= 6) {
-						if (this.bm == 2) {
+					if (this.hintIconType >= 2 && this.hintIconType <= 6) {
+						if (this.hintIconType == 2) {
 							this.cp = 64;
 							this.cq = 64;
 						}
 
-						if (this.bm == 3) {
+						if (this.hintIconType == 3) {
 							this.cp = 0;
 							this.cq = 64;
 						}
 
-						if (this.bm == 4) {
+						if (this.hintIconType == 4) {
 							this.cp = 128;
 							this.cq = 64;
 						}
 
-						if (this.bm == 5) {
+						if (this.hintIconType == 5) {
 							this.cp = 64;
 							this.cq = 0;
 						}
 
-						if (this.bm == 6) {
+						if (this.hintIconType == 6) {
 							this.cp = 64;
 							this.cq = 128;
 						}
 
-						this.bm = 2;
-						this.cm = this.eE.readUShort();
-						this.cn = this.eE.readUShort();
-						this.co = this.eE.readUByte();
+						this.hintIconType = 2;
+						this.hintIconX = this.incoming.readUShort();
+						this.hintIconY = this.incoming.readUShort();
+						this.hintIconHeight = this.incoming.readUByte();
 					}
 
-					if (this.bm == 10) {
-						this.cl = this.eE.readUShort();
+					if (this.hintIconType == 10) {
+						this.hintIconPlayer = this.incoming.readUShort();
 					}
 
 					this.serverPacketOpcode = -1;
 					return true;
 				default:
-					SignLink.reportError("T1 - " + this.serverPacketOpcode + "," + this.du + " - " + this.bc + "," + this.bd);
+					SignLink.reportError("T1 - " + this.serverPacketOpcode + "," + this.packetSize + " - " + this.secondLastOpcode + "," + this.thirdLastOpcode);
 				}
 			} catch (IOException var60) {
 				this.A();
 			} catch (Exception var61) {
-				var1 = "T2 - " + this.serverPacketOpcode + "," + this.bc + "," + this.bd + " - " + this.du + ","
+				var1 = "T2 - " + this.serverPacketOpcode + "," + this.secondLastOpcode + "," + this.thirdLastOpcode + " - " + this.packetSize + ","
 						+ (this.sceneX + localPlayer.pathX[0]) + "," + (this.sceneY + localPlayer.pathY[0]) + " - ";
 
-				for (var2 = 0; var2 < this.du && var2 < 50; ++var2) {
-					var1 = var1 + this.eE.buf[var2] + ",";
+				for (var2 = 0; var2 < this.packetSize && var2 < 50; ++var2) {
+					var1 = var1 + this.incoming.buf[var2] + ",";
 				}
 
 				SignLink.reportError(var1);
@@ -15064,16 +15080,16 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 	}
 
 	private void widgetClose() {
-		this.packet.writeCipheredByte(130);
-		if (this.gp != -1) {
-			this.gp = -1;
+		this.packet.writeOpcode(130);
+		if (this.altInterfaceWidget != -1) {
+			this.altInterfaceWidget = -1;
 			this.fK = false;
 			fh = true;
 		}
 
 		if (this.hA != -1) {
 			this.hA = -1;
-			D = true;
+			redrawDialog = true;
 			this.fK = false;
 		}
 
@@ -15132,13 +15148,13 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		this.aR = new LinkedList[4][104][104];
 		this.aS = false;
 		this.aV = new Buffer(new byte[5000]);
-		this.aW = new Npc[16384];
+		this.npcs = new Npc[16384];
 		this.aY = new int[16384];
 		this.ba = new int[1000];
 		this.bf = Buffer.a();
 		this.bg = true;
 		j = -1;
-		this.bt = new int[25];
+		this.skillXp = new int[25];
 		this.bw = false;
 		this.bx = new int[5];
 		this.by = new boolean[5];
@@ -15166,9 +15182,9 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		this.cs = new String[500];
 		this.ct = new String[500];
 		this.cu = new String[500];
-		this.cx = new Sprite[15];
-		this.cy = new Sprite[22];
-		this.cF = true;
+		this.sideicon = new Sprite[15];
+		this.staticons = new Sprite[22];
+		this.wasFocused = true;
 		this.cG = new long[200];
 		this.cJ = -1;
 		this.cO = false;
@@ -15197,7 +15213,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		this.dE = -1;
 		this.dL = new int[5];
 		this.dM = false;
-		this.dN = new Sprite[100];
+		this.mapFunctionSprites = new Sprite[100];
 		this.dU = -1;
 		this.dV = new int[25];
 		this.dW = new int[2000];
@@ -15205,17 +15221,17 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		this.ec = new int[152];
 		this.gP = new int[152];
 		this.ee = -1;
-		this.eg = new LinkedList();
+		this.animableObjects = new LinkedList();
 		this.eh = new int[33];
-		this.ei = new Widget();
-		this.ej = new IndexedImage[100];
+		this.widget = new Widget();
+		this.mapsceneImages = new IndexedImage[100];
 		this.el = 5063219;
 		this.en = new int[7];
 		this.et = new int[1000];
 		this.eu = new int[1000];
 		this.eC = false;
 		this.eD = new String[200];
-		this.eE = Buffer.a();
+		this.incoming = Buffer.a();
 		this.eS = new int[9];
 		this.actionParam1 = new int[500];
 		this.actionParam2 = new int[500];
@@ -15223,7 +15239,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		this.actionItemId = new int[500];
 		this.headiconsPrayer = new Sprite[20];
 		this.headiconsPk = new Sprite[20];
-		this.fa = new Sprite[20];
+		this.headiconHintSprites = new Sprite[20];
 		fh = false;
 		this.fu = "";
 		this.fx = new String[5];
@@ -15237,23 +15253,23 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		this.loggedIn = false;
 		this.fR = false;
 		this.fS = false;
-		this.fT = false;
+		this.oriented = false;
 		this.gc = false;
 		this.ge = -1;
 		this.gf = new LinkedList();
 		this.camPitch = 128;
-		this.gp = -1;
+		this.altInterfaceWidget = -1;
 		this.packet = Buffer.a();
 		this.actions = new String[500];
 		this.gz = new int[5];
 		this.gA = new int[50];
 		B = 78;
 		this.gC = "";
-		this.gH = new IndexedImage[2];
-		C = 3;
-		D = false;
-		this.gM = true;
-		this.gQ = new CollisionMap[4];
+		this.modIcons = new IndexedImage[2];
+		selectedRedStoneId = 3;
+		redrawDialog = false;
+		this.fadeMusic = true;
+		this.collisionMaps = new CollisionMap[4];
 		this.gU = new int[50];
 		this.gV = false;
 		this.hc = new int[50];
@@ -15284,7 +15300,7 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 			this.fp = null;
 			this.fq = null;
 			this.fr = null;
-			super.mainImageProducer = new ProducingGraphicsBuffer(clientWidth, clientHeight, this.getFrameComponent());
+			super.mainImageProducer = new ProducingGraphicsBuffer(clientWidth, clientHeight, this.getDrawComponent());
 			this.hh = true;
 		}
 	}
@@ -15320,33 +15336,131 @@ public class Client extends ScapeApplet implements ItemListener, ActionListener 
 		}
 	}
 
-	@Override
-	public void itemStateChanged(ItemEvent e) {
-		MenuItem item = (MenuItem)e.getSource();
-
-		if(item.getName().equals("jmod")) {
-			if(e.getStateChange() == ItemEvent.SELECTED) {
-				clientSideJMod = true;
-				this.accountType = 2;
-			}
-			if(e.getStateChange() == ItemEvent.DESELECTED) {
-				clientSideJMod = false;
-				this.accountType = 0;
-			}
-		}
-		
-		if(item.getName().equals("multilog")) {
-			if(e.getStateChange() == ItemEvent.SELECTED) {
-				allowMultilog = true;
-			}
-			if(e.getStateChange() == ItemEvent.DESELECTED) {
-				allowMultilog = false;
-			}
-		}
-	}
+	public bot.Bot bot;
 	
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public int getCenterX() {
+		return centerX;
+	}
 
+	@Override
+	public int getCenterY() {
+		return centerY;
+	}
+
+	@Override
+	public bot.iface.Npc[] getNpcs() {
+		return npcs;
+	}
+
+	@Override
+	public bot.iface.Player[] getPlayers() {
+		return players;
+	}
+
+	@Override
+	public bot.iface.Player getLocalPlayer() {
+		return localPlayer;
+	}
+
+	@Override
+	public boolean isMenuShowing() {
+		return menuShowing;
+	}
+
+	@Override
+	public int getNumActions() {
+		return numActions;
+	}
+
+	@Override
+	public String[] getActions() {
+		return actions;
+	}
+
+	@Override
+	public bot.iface.SceneGraph getScene() {
+		return scene;
+	}
+
+	@Override
+	public int[] getSettings() {
+		return settings;
+	}
+
+	@Override
+	public int getClientWidth() {
+		return clientWidth;
+	}
+
+	@Override
+	public int getClientHeight() {
+		return clientHeight;
+	}
+
+	@Override
+	public boolean isLoggedIn() {
+		return loggedIn;
+	}
+
+	@Override
+	public int getTick() {
+		return tick;
+	}
+
+	@Override
+	public String getUsername() {
+		return username;
+	}
+
+	@Override
+	public String getPassword() {
+		return password;
+	}
+
+	@Override
+	public int getItemClicked() {
+		return itemClicked;
+	}
+
+	@Override
+	public String getClickedItemName() {
+		return clickedItemName;
+	}
+
+	@Override
+	public boolean isGameCrashed() {
+		return gameCrashed;
+	}
+
+	@Override
+	public bot.iface.Buffer getPacket() {
+		return packet;
+	}
+
+	@Override
+	public int[] getRedStoneWidgetIds() {
+		return redStoneWidgetIds;
+	}
+
+	@Override
+	public int getSelectedRedStoneId() {
+		return selectedRedStoneId;
+	}
+
+	@Override
+	public bot.iface.Widget getWidget() {
+		return widget;
+	}
+
+	@Override
+	public int getSceneX() {
+		return sceneX;
+	}
+
+	@Override
+	public int getSceneY() {
+		// TODO Auto-generated method stub
+		return sceneY;
 	}
 }

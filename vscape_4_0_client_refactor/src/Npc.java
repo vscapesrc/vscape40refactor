@@ -1,4 +1,4 @@
-public final class Npc extends Actor {
+public final class Npc extends Actor implements bot.iface.Npc {
 	public ActorDefinition npcDefinition;
 
 	public final Model getRotatedModel() {
@@ -60,5 +60,10 @@ public final class Npc extends Actor {
 
 	public final boolean isVisible() {
 		return this.npcDefinition != null;
+	}
+
+	@Override
+	public bot.iface.ActorDefinition getNpcDefinition() {
+		return npcDefinition;
 	}
 }

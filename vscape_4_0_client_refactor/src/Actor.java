@@ -1,4 +1,4 @@
-public class Actor extends Renderable {
+public class Actor extends Renderable implements bot.iface.Actor {
 	public final int[] pathX = new int[10];
 	public final int[] pathY = new int[10];
 	public int interactingEntity = -1;
@@ -167,5 +167,30 @@ public class Actor extends Renderable {
 
 	public boolean isVisible() {
 		return false;
+	}
+
+	@Override
+	public int[] getPathX() {
+		return pathX;
+	}
+
+	@Override
+	public int[] getPathY() {
+		return pathY;
+	}
+
+	@Override
+	public int getInteractingEntity() {
+		return interactingEntity;
+	}
+
+	@Override
+	public int getRunAnimationId() {
+		return runAnimationId;
+	}
+
+	@Override
+	public int getAnimation() {
+		return animation;
 	}
 }

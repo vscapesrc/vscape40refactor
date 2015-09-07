@@ -1,7 +1,7 @@
-public final class Player extends Actor {
+public final class Player extends Actor implements bot.iface.Player {
 	public int af;
 	private long cachedModel = -1L;
-	public ActorDefinition al;
+	public ActorDefinition playerDefinition;
 	boolean am = false;
 	final int[] appearanceColors = new int[5];
 	public int ao;
@@ -111,7 +111,7 @@ public final class Player extends Actor {
 		this.gender = var1.readUByte();
 		this.headIcon = var1.readUByte();
 		this.at = var1.readUByte();
-		this.al = null;
+		this.playerDefinition = null;
 		this.ao = 0;
 
 		int var2;
@@ -123,7 +123,7 @@ public final class Player extends Actor {
 				int var4 = var1.readUByte();
 				this.appearance[var2] = (var3 << 8) + var4;
 				if (var2 == 0 && this.appearance[0] == '\uffff') {
-					this.al = ActorDefinition.lookup(var1.readUShort());
+					this.playerDefinition = ActorDefinition.lookup(var1.readUShort());
 					break;
 				}
 
@@ -209,7 +209,7 @@ public final class Player extends Actor {
 	}
 
 	public final Model getAnimatedModel() {
-		if (this.al != null) {
+		if (this.playerDefinition != null) {
 			int var1 = -1;
 			if (super.animation >= 0 && super.D == 0) {
 				var1 = Animation.animations[super.animation].primaryFrames[super.B];
@@ -217,7 +217,7 @@ public final class Player extends Actor {
 				var1 = Animation.animations[super.r].primaryFrames[super.s];
 			}
 
-			return this.al.getAnimatedModel(-1, var1, (int[]) null);
+			return this.playerDefinition.getAnimatedModel(-1, var1, (int[]) null);
 		} else {
 			long var3 = this.appearanceOffset;
 			int var5 = -1;
@@ -437,8 +437,8 @@ public final class Player extends Actor {
 	public final Model getHeadModel() {
 		if (!this.visible) {
 			return null;
-		} else if (this.al != null) {
-			return this.al.model();
+		} else if (this.playerDefinition != null) {
+			return this.playerDefinition.model();
 		} else {
 			boolean var1 = false;
 
@@ -552,5 +552,45 @@ public final class Player extends Actor {
 				return var10;
 			}
 		}
+	}
+
+	@Override
+	public bot.iface.ActorDefinition getPlayerDefinition() {
+		return playerDefinition;
+	}
+
+	@Override
+	public long getCachedModel() {
+		return cachedModel;
+	}
+
+	@Override
+	public int getGender() {
+		return gender;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public int getCombatLevel() {
+		return combatLevel;
+	}
+
+	@Override
+	public int getHeadIcon() {
+		return headIcon;
+	}
+
+	@Override
+	public bot.iface.Model getPlayerModel() {
+		return playerModel;
+	}
+
+	@Override
+	public int getTotalLevel() {
+		return totalLevel;
 	}
 }

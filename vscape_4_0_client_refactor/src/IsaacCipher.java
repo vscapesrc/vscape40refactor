@@ -1,49 +1,48 @@
-public final class IsaacCipher {
-	private int a;
-	private final int[] b = new int[256];
-	private final int[] c = new int[256];
-	private int d;
-	private int e;
-	private int f;
+public final class IsaacCipher implements bot.iface.IsaacCipher {
+	private int count;
+	private final int[] results = new int[256];
+	private final int[] memory = new int[256];
+	private int accumulator;
+	private int last;
+	private int counter;
 
-	public IsaacCipher(int[] var1) {
-		System.arraycopy(var1, 0, this.b, 0, 4);
-		this.c();
+	public IsaacCipher(int[] seed) {
+		System.arraycopy(seed, 0, this.results, 0, 4);
+		this.init();
 	}
 
-	public final int a() {
-		if (this.a-- == 0) {
-			this.b();
-			this.a = 255;
+	public final int nextKey() {
+		if (this.count-- == 0) {
+			this.isaac();
+			this.count = 255;
 		}
 
-		return this.b[this.a];
+		return this.results[this.count];
 	}
 
-	private void b() {
-		this.e += ++this.f;
+	private void isaac() {
+		this.last += ++this.counter;
 
 		for (int var1 = 0; var1 < 256; ++var1) {
-			int var2 = this.c[var1];
+			int var2 = this.memory[var1];
 			if ((var1 & 3) == 0) {
-				this.d ^= this.d << 13;
+				this.accumulator ^= this.accumulator << 13;
 			} else if ((var1 & 3) == 1) {
-				this.d ^= this.d >>> 6;
+				this.accumulator ^= this.accumulator >>> 6;
 			} else if ((var1 & 3) == 2) {
-				this.d ^= this.d << 2;
+				this.accumulator ^= this.accumulator << 2;
 			} else if ((var1 & 3) == 3) {
-				this.d ^= this.d >>> 16;
+				this.accumulator ^= this.accumulator >>> 16;
 			}
 
-			this.d += this.c[var1 + 128 & 255];
+			this.accumulator += this.memory[var1 + 128 & 255];
 			int var3;
-			this.c[var1] = var3 = this.c[(var2 & 1020) >> 2] + this.d + this.e;
-			this.b[var1] = this.e = this.c[(var3 >> 8 & 1020) >> 2] + var2;
+			this.memory[var1] = var3 = this.memory[(var2 & 1020) >> 2] + this.accumulator + this.last;
+			this.results[var1] = this.last = this.memory[(var3 >> 8 & 1020) >> 2] + var2;
 		}
-
 	}
 
-	private void c() {
+	private void init() {
 		int var1 = -1640531527;
 		int var2 = -1640531527;
 		int var3 = -1640531527;
@@ -75,14 +74,14 @@ public final class IsaacCipher {
 		}
 
 		for (var9 = 0; var9 < 256; var9 += 8) {
-			var8 += this.b[var9];
-			var7 += this.b[var9 + 1];
-			var6 += this.b[var9 + 2];
-			var5 += this.b[var9 + 3];
-			var4 += this.b[var9 + 4];
-			var3 += this.b[var9 + 5];
-			var2 += this.b[var9 + 6];
-			var1 += this.b[var9 + 7];
+			var8 += this.results[var9];
+			var7 += this.results[var9 + 1];
+			var6 += this.results[var9 + 2];
+			var5 += this.results[var9 + 3];
+			var4 += this.results[var9 + 4];
+			var3 += this.results[var9 + 5];
+			var2 += this.results[var9 + 6];
+			var1 += this.results[var9 + 7];
 			var8 ^= var7 << 11;
 			var5 += var8;
 			var7 = var7 + var6 ^ var6 >>> 2;
@@ -100,25 +99,25 @@ public final class IsaacCipher {
 			var1 = var1 + var8 ^ var8 >>> 9;
 			var6 += var1;
 			var8 += var7;
-			this.c[var9] = var8;
-			this.c[var9 + 1] = var7;
-			this.c[var9 + 2] = var6;
-			this.c[var9 + 3] = var5;
-			this.c[var9 + 4] = var4;
-			this.c[var9 + 5] = var3;
-			this.c[var9 + 6] = var2;
-			this.c[var9 + 7] = var1;
+			this.memory[var9] = var8;
+			this.memory[var9 + 1] = var7;
+			this.memory[var9 + 2] = var6;
+			this.memory[var9 + 3] = var5;
+			this.memory[var9 + 4] = var4;
+			this.memory[var9 + 5] = var3;
+			this.memory[var9 + 6] = var2;
+			this.memory[var9 + 7] = var1;
 		}
 
 		for (var9 = 0; var9 < 256; var9 += 8) {
-			var8 += this.c[var9];
-			var7 += this.c[var9 + 1];
-			var6 += this.c[var9 + 2];
-			var5 += this.c[var9 + 3];
-			var4 += this.c[var9 + 4];
-			var3 += this.c[var9 + 5];
-			var2 += this.c[var9 + 6];
-			var1 += this.c[var9 + 7];
+			var8 += this.memory[var9];
+			var7 += this.memory[var9 + 1];
+			var6 += this.memory[var9 + 2];
+			var5 += this.memory[var9 + 3];
+			var4 += this.memory[var9 + 4];
+			var3 += this.memory[var9 + 5];
+			var2 += this.memory[var9 + 6];
+			var1 += this.memory[var9 + 7];
 			var8 ^= var7 << 11;
 			var5 += var8;
 			var7 = var7 + var6 ^ var6 >>> 2;
@@ -136,17 +135,67 @@ public final class IsaacCipher {
 			var1 = var1 + var8 ^ var8 >>> 9;
 			var6 += var1;
 			var8 += var7;
-			this.c[var9] = var8;
-			this.c[var9 + 1] = var7;
-			this.c[var9 + 2] = var6;
-			this.c[var9 + 3] = var5;
-			this.c[var9 + 4] = var4;
-			this.c[var9 + 5] = var3;
-			this.c[var9 + 6] = var2;
-			this.c[var9 + 7] = var1;
+			this.memory[var9] = var8;
+			this.memory[var9 + 1] = var7;
+			this.memory[var9 + 2] = var6;
+			this.memory[var9 + 3] = var5;
+			this.memory[var9 + 4] = var4;
+			this.memory[var9 + 5] = var3;
+			this.memory[var9 + 6] = var2;
+			this.memory[var9 + 7] = var1;
 		}
 
-		this.b();
-		this.a = 256;
+		this.isaac();
+		this.count = 256;
+	}
+
+	@Override
+	public int getCount() {
+		return count;
+	}
+
+	@Override
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	@Override
+	public int[] getResults() {
+		return results;
+	}
+
+	@Override
+	public int[] getMemory() {
+		return memory;
+	}
+
+	@Override
+	public int getAccumulator() {
+		return accumulator;
+	}
+
+	@Override
+	public void setAccumulator(int accumulator) {
+		this.accumulator = accumulator;
+	}
+
+	@Override
+	public int getLast() {
+		return last;
+	}
+
+	@Override
+	public void setLast(int last) {
+		this.last = last;
+	}
+
+	@Override
+	public int getCounter() {
+		return counter;
+	}
+
+	@Override
+	public void setCounter(int counter) {
+		this.counter = counter;
 	}
 }

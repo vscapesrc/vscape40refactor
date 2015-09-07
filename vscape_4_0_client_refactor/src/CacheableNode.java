@@ -1,4 +1,4 @@
-public class CacheableNode extends Node {
+public class CacheableNode extends Node implements bot.iface.CacheableNode {
 	public CacheableNode previousNode;
 	CacheableNode nextNode;
 
@@ -10,5 +10,16 @@ public class CacheableNode extends Node {
 			this.nextNode = null;
 		}
 
+	}
+
+	@Override
+	public bot.iface.CacheableNode getPreviousNode() {
+		return previousNode;
+	}
+
+	@Override
+	public bot.iface.CacheableNode getNextNode() {
+		// TODO Auto-generated method stub
+		return nextNode;
 	}
 }

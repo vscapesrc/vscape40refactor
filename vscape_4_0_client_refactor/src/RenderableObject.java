@@ -1,4 +1,4 @@
-final class RenderableObject extends Renderable {
+final class RenderableObject extends Renderable implements bot.iface.RenderableObject {
 	private int currentFrameId;
 	private final int[] morphisms;
 	private final int morphVarbitIndex;
@@ -102,5 +102,70 @@ final class RenderableObject extends Renderable {
 		this.morphVarbitIndex = definition.morphVarbitIndex;
 		this.morphVariableIndex = definition.morphVariableIndex;
 		this.morphisms = definition.morphisms;
+	}
+
+	@Override
+	public int getCurrentFrameId() {
+		return currentFrameId;
+	}
+
+	@Override
+	public int[] getMorphisms() {
+		return morphisms;
+	}
+
+	@Override
+	public int getMorphVariableIndex() {
+		return morphVariableIndex;
+	}
+
+	@Override
+	public int getMorphVarbitIndex() {
+		return morphVarbitIndex;
+	}
+
+	@Override
+	public int getCentre() {
+		return centre;
+	}
+
+	@Override
+	public int getHeightEast() {
+		return heightEast;
+	}
+
+	@Override
+	public int getHeightNorthEast() {
+		return heightNorthEast;
+	}
+
+	@Override
+	public int getHeightNorth() {
+		return heightNorth;
+	}
+
+	@Override
+	public bot.iface.Animation getAnimation() {
+		return animation;
+	}
+
+	@Override
+	public int getCurrentFrameDuration() {
+		return currentFrameDuration;
+	}
+
+	@Override
+	public int getId() {
+		return id;
+	}
+
+	@Override
+	public int getType() {
+		return type;
+	}
+
+	@Override
+	public int getOrientation() {
+		return orientation;
 	}
 }

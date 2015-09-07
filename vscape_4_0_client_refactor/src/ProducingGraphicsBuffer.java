@@ -8,7 +8,7 @@ import java.awt.image.ImageObserver;
 import java.awt.image.ImageProducer;
 import java.util.Hashtable;
 
-final class ProducingGraphicsBuffer implements ImageObserver, ImageProducer {
+final class ProducingGraphicsBuffer implements ImageObserver, ImageProducer, bot.iface.ProducingGraphicsBuffer {
 	public final int[] pixels;
 	final int width;
 	final int height;
@@ -77,5 +77,20 @@ final class ProducingGraphicsBuffer implements ImageObserver, ImageProducer {
 
 	public final boolean imageUpdate(Image var1, int var2, int var3, int var4, int var5, int var6) {
 		return true;
+	}
+
+	@Override
+	public int[] getPixels() {
+		return pixels;
+	}
+
+	@Override
+	public int getWidth() {
+		return width;
+	}
+
+	@Override
+	public int getHeight() {
+		return height;
 	}
 }

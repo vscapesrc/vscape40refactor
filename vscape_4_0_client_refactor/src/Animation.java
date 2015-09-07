@@ -5,7 +5,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel.MapMode;
 import java.util.zip.GZIPInputStream;
 
-public class Animation {
+public class Animation implements bot.iface.Animation {
 	public static Animation[] animations;
 	public int frameCount;
 	public int[] primaryFrames;

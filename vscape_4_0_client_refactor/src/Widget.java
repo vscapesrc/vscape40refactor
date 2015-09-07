@@ -1,4 +1,4 @@
-public final class Widget {
+public final class Widget implements bot.iface.Widget {
 
 	public static final int OPTION_OK = 1;
 	public static final int OPTION_USABLE = 2;
@@ -69,9 +69,9 @@ public final class Widget {
 	public Sprite secondarySprite;
 	public int W;
 	public int group;
-	public int Y;
+	public int drawOffsetX;
 	private static final Cache models = new Cache(30);
-	public int Z;
+	public int drawOffsetY;
 	public boolean aa;
 	public int height;
 	public boolean shadowedText;
@@ -951,5 +951,240 @@ public final class Widget {
 		Widget var3;
 		(var3 = widgets[var0]).spritePaddingX = 68;
 		var3.spritePaddingY = 24;
+	}
+
+	@Override
+	public Widget[] getWidgets() {
+		return Widget.widgets;
+	}
+
+	@Override
+	public int getContentType() {
+		return contentType;
+	}
+
+	@Override
+	public int[] getSpriteX() {
+		return spriteX;
+	}
+
+	@Override
+	public int getDefaultHoverColor() {
+		return defaultHoverColor;
+	}
+
+	@Override
+	public int getOptionType() {
+		return optionType;
+	}
+
+	@Override
+	public String getOptionText() {
+		return optionText;
+	}
+
+	@Override
+	public int getSecondaryColor() {
+		return secondaryColor;
+	}
+
+	@Override
+	public int getWidth() {
+		return width;
+	}
+
+	@Override
+	public String getHover() {
+		return hover;
+	}
+
+	@Override
+	public String getOptionCircumfix() {
+		return optionCircumfix;
+	}
+
+	@Override
+	public boolean isCenteredText() {
+		return centeredText;
+	}
+
+	@Override
+	public String[] getActions() {
+		return actions;
+	}
+
+	@Override
+	public String getSecondaryText() {
+		return secondaryText;
+	}
+
+	@Override
+	public int getHoverId() {
+		return hoverId;
+	}
+
+	@Override
+	public int getSpritePaddingX() {
+		return spritePaddingX;
+	}
+
+	@Override
+	public int getDefaultColor() {
+		return defaultColor;
+	}
+
+	@Override
+	public int getDefaultMediaType() {
+		return defaultMediaType;
+	}
+
+	@Override
+	public int getDefaultMedia() {
+		return defaultMedia;
+	}
+
+	@Override
+	public boolean isReplaceItems() {
+		return replaceItems;
+	}
+
+	@Override
+	public int getParent() {
+		return parent;
+	}
+
+	@Override
+	public int getOptionAttributes() {
+		return optionAttributes;
+	}
+
+	@Override
+	public int getSecondaryHoverColor() {
+		return secondaryHoverColor;
+	}
+
+	@Override
+	public int[] getChildren() {
+		return children;
+	}
+
+	@Override
+	public int[] getChildX() {
+		return childX;
+	}
+
+	@Override
+	public boolean isUsableItems() {
+		return usableItems;
+	}
+
+	@Override
+	public int getSpritePaddingY() {
+		return spritePaddingY;
+	}
+
+	@Override
+	public int[] getSpriteY() {
+		return spriteY;
+	}
+
+	@Override
+	public String getDefaultText() {
+		return defaultText;
+	}
+
+	@Override
+	public boolean isHasActions() {
+		return hasActions;
+	}
+
+	@Override
+	public int getId() {
+		return id;
+	}
+
+	@Override
+	public int[] getItemAmounts() {
+		return itemAmounts;
+	}
+
+	@Override
+	public int[] getItemIds() {
+		return itemIds;
+	}
+
+	@Override
+	public byte getAlpha() {
+		return alpha;
+	}
+
+	@Override
+	public int getSecondaryMediaType() {
+		return secondaryMediaType;
+	}
+
+	@Override
+	public int getSecondaryMedia() {
+		return secondaryMedia;
+	}
+
+	@Override
+	public int getDefaultAnimationId() {
+		return defaultAnimationId;
+	}
+
+	@Override
+	public int getSecondaryAnimationId() {
+		return secondaryAnimationId;
+	}
+
+	@Override
+	public boolean isSwappableItems() {
+		return swappableItems;
+	}
+
+	@Override
+	public int getGroup() {
+		return group;
+	}
+	
+	@Override
+	public int getDrawOffsetX() {
+		return drawOffsetX;
+	}
+	
+	@Override
+	public int getDrawOffsetY() {
+		return drawOffsetY;
+	}
+
+	@Override
+	public int getHeight() {
+		return height;
+	}
+
+	@Override
+	public boolean isShadowedText() {
+		return shadowedText;
+	}
+
+	@Override
+	public int getSpriteScale() {
+		return spriteScale;
+	}
+
+	@Override
+	public int getSpritePitch() {
+		return spritePitch;
+	}
+
+	@Override
+	public int getSpriteRoll() {
+		return spriteRoll;
+	}
+
+	@Override
+	public int[] getChildY() {
+		return childY;
 	}
 }

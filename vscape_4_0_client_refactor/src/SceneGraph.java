@@ -1,4 +1,4 @@
-final class SceneGraph {
+final class SceneGraph implements bot.iface.SceneGraph {
 	private boolean d = true;
 	public static boolean lowMemory = true;
 	private final int e = 4;
@@ -372,6 +372,7 @@ final class SceneGraph {
 	private boolean addRenderable(int plane, int minX, int minY, int deltaX, int deltaY, int centreX, int centreY,
 			int renderHeight, Renderable renderable, int yaw, boolean flag, int key, byte config) {
 		int var15;
+		
 		for (int var14 = minX; var14 < minX + deltaX; ++var14) {
 			for (var15 = minY; var15 < minY + deltaY; ++var15) {
 				if (var14 < 0 || var15 < 0 || var14 >= 104 || var15 >= 104) {
@@ -439,7 +440,7 @@ final class SceneGraph {
 		return true;
 	}
 
-	public final void c() {
+	public final void removeTemporaryEntities() {
 		for (int var1 = 0; var1 < this.k; ++var1) {
 			GameObject var2 = this.l[var1];
 			this.a(var2);
@@ -968,7 +969,7 @@ final class SceneGraph {
 		c = -1;
 	}
 
-	public final void a(int var1, int var2, int var3, int var4, int var5, int var6) {
+	public final void positionCamera(int var1, int var2, int var3, int var4, int var5, int var6) {
 		if (var1 < 0) {
 			var1 = 0;
 		} else if (var1 >= 13312) {
@@ -1286,7 +1287,7 @@ final class SceneGraph {
 											var3 = var1.positionX;
 											var4 = var1.positionY;
 											var5 = var1.a;
-											var6 = var1.d;
+											var6 = var1.plane;
 											var7 = this.tiles[var5];
 											if (!var1.p) {
 												break;
@@ -1835,14 +1836,14 @@ final class SceneGraph {
 					var15 = var2 * var3 + var15 * var4 >> 16;
 					var2 = var20;
 					if (var15 >= 50) {
-						var3 = Rasterizer3D.e + (var10 << Client.d) / var12;
-						var4 = Rasterizer3D.f + (var17 << Client.d) / var12;
-						var5 = Rasterizer3D.e + (var14 << Client.d) / var11;
-						var6 = Rasterizer3D.f + (var18 << Client.d) / var11;
-						var20 = Rasterizer3D.e + (var13 << Client.d) / var16;
-						int var21 = Rasterizer3D.f + (var19 << Client.d) / var16;
-						int var22 = Rasterizer3D.e + (var9 << Client.d) / var15;
-						int var23 = Rasterizer3D.f + (var2 << Client.d) / var15;
+						var3 = Rasterizer3D.originViewX + (var10 << Client.d) / var12;
+						var4 = Rasterizer3D.originViewY + (var17 << Client.d) / var12;
+						var5 = Rasterizer3D.originViewX + (var14 << Client.d) / var11;
+						var6 = Rasterizer3D.originViewY + (var18 << Client.d) / var11;
+						var20 = Rasterizer3D.originViewX + (var13 << Client.d) / var16;
+						int var21 = Rasterizer3D.originViewY + (var19 << Client.d) / var16;
+						int var22 = Rasterizer3D.originViewX + (var9 << Client.d) / var15;
+						int var23 = Rasterizer3D.originViewY + (var2 << Client.d) / var15;
 						Rasterizer3D.d = 0;
 						if ((var20 - var22) * (var6 - var23) - (var21 - var23) * (var5 - var22) > 0) {
 							Rasterizer3D.b = var20 < 0 || var22 < 0 || var5 < 0 || var20 > Rasterizer2D.o
@@ -1934,8 +1935,8 @@ final class SceneGraph {
 				ShapedTile.t[var9] = var12;
 			}
 
-			ShapedTile.p[var9] = Rasterizer3D.e + (var10 << Client.d) / var12;
-			ShapedTile.q[var9] = Rasterizer3D.f + (var13 << Client.d) / var12;
+			ShapedTile.p[var9] = Rasterizer3D.originViewX + (var10 << Client.d) / var12;
+			ShapedTile.q[var9] = Rasterizer3D.originViewY + (var13 << Client.d) / var12;
 		}
 
 		Rasterizer3D.d = 0;
@@ -2248,5 +2249,15 @@ final class SceneGraph {
 		}
 
 		return false;
+	}
+
+	@Override
+	public int[][][] getTileHeights() {
+		return tileHeights;
+	}
+
+	@Override
+	public bot.iface.SceneTile[][][] getTiles() {
+		return tiles;
 	}
 }

@@ -21,7 +21,7 @@ public final class ResourceProvider extends Provider implements Runnable {
 	private int read;
 	private int remainingData;
 	private int[] musicPriorities;
-	public int a;
+	public int errors;
 	private int[] mapFiles;
 	private int p;
 	private boolean running = true;
@@ -222,7 +222,7 @@ public final class ResourceProvider extends Provider implements Runnable {
 		this.client.startThread((Runnable) this, 2);
 	}
 
-	public final int b() {
+	public final int remaining() {
 		Queue var1 = this.requests;
 		synchronized (this.requests) {
 			return this.requests.getNodeCount();
@@ -268,7 +268,7 @@ public final class ResourceProvider extends Provider implements Runnable {
 
 			this.outputStream.write(this.payload, 0, 4);
 			this.d = 0;
-			this.a = -10000;
+			this.errors = -10000;
 		} catch (IOException var6) {
 			try {
 				this.socket.close();
@@ -280,7 +280,7 @@ public final class ResourceProvider extends Provider implements Runnable {
 			this.inputStream = null;
 			this.outputStream = null;
 			this.remainingData = 0;
-			++this.a;
+			++this.errors;
 		}
 	}
 

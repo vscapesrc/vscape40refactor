@@ -1,4 +1,4 @@
-public final class GameObject {
+public final class GameObject implements bot.iface.GameObject {
 	int a;
 	int b;
 	int c;

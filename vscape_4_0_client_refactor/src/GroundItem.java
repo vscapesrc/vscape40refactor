@@ -1,4 +1,4 @@
-final class GroundItem {
+final class GroundItem implements bot.iface.GroundItem {
 	int a;
 	int b;
 	int c;

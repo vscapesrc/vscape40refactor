@@ -12,30 +12,30 @@ public final class RSFont extends Rasterizer2D {
 	private boolean strikethrough = false;
 
 	public RSFont(boolean wideSpace, String name, Archive archive) {
-		Buffer var9 = new Buffer(archive.getEntry(name + ".dat"));
-		Buffer var10;
-		(var10 = new Buffer(archive.getEntry("index.dat"))).position = var9.readUShort() + 4;
+		Buffer buf = new Buffer(archive.getEntry(name + ".dat"));
+		Buffer indexBuf;
+		(indexBuf = new Buffer(archive.getEntry("index.dat"))).position = buf.readUShort() + 4;
 		int var4;
-		if ((var4 = var10.readUByte()) > 0) {
-			var10.position += 3 * (var4 - 1);
+		if ((var4 = indexBuf.readUByte()) > 0) {
+			indexBuf.position += 3 * (var4 - 1);
 		}
 
 		for (var4 = 0; var4 < 256; ++var4) {
-			this.horizonalOffsets[var4] = var10.readUByte();
-			this.verticalOffsets[var4] = var10.readUByte();
-			int var5 = this.glyphWidths[var4] = var10.readUShort();
-			int var6 = this.glyphHeights[var4] = var10.readUShort();
-			int var7 = var10.readUByte();
+			this.horizonalOffsets[var4] = indexBuf.readUByte();
+			this.verticalOffsets[var4] = indexBuf.readUByte();
+			int var5 = this.glyphWidths[var4] = indexBuf.readUShort();
+			int var6 = this.glyphHeights[var4] = indexBuf.readUShort();
+			int var7 = indexBuf.readUByte();
 			int var8 = var5 * var6;
 			this.glyphs[var4] = new byte[var8];
 			if (var7 == 0) {
 				for (var7 = 0; var7 < var8; ++var7) {
-					this.glyphs[var4][var7] = var9.readByte();
+					this.glyphs[var4][var7] = buf.readByte();
 				}
 			} else if (var7 == 1) {
 				for (var7 = 0; var7 < var5; ++var7) {
 					for (var8 = 0; var8 < var6; ++var8) {
-						this.glyphs[var4][var7 + var8 * var5] = var9.readByte();
+						this.glyphs[var4][var7 + var8 * var5] = buf.readByte();
 					}
 				}
 			}

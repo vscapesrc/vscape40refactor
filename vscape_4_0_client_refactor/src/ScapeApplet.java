@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -22,7 +23,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 public class ScapeApplet extends Applet implements FocusListener, KeyListener, MouseListener, MouseMotionListener,
-		MouseWheelListener, WindowListener, Runnable, ItemListener, ActionListener {
+		MouseWheelListener, WindowListener, Runnable, bot.iface.ScapeApplet {
 	private int a;
 	private int b = 20;
 	int H = 1;
@@ -31,23 +32,23 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 	private boolean d = false;
 	int width;
 	int height;
-	Graphics frameGraphics;
+	Graphics drawGraphics;
 	ProducingGraphicsBuffer mainImageProducer;
 	ScapeFrame scapeFrame;
 	private boolean e = true;
-	boolean O = true;
+	boolean hasFocus = true;
 	int P;
 	int Q;
 	public int mouseX;
 	public int mouseY;
 	private int f;
-	private int g;
-	private int h;
-	private long i;
-	public int T;
-	public int U;
-	public int V;
-	final int[] W = new int[128];
+	private int clickX;
+	private int clickY;
+	private long clickTimeStamp;
+	public int lastMetaModifier;
+	public int lastClickX;
+	public int lastClickY;
+	final int[] keyStatuses = new int[128];
 	private final int[] j = new int[128];
 	private int k;
 	private int l;
@@ -58,11 +59,11 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 	public boolean Z = false;
 
 	public void run() {
-		this.getFrameComponent().addMouseListener(this);
-		this.getFrameComponent().addMouseMotionListener(this);
-		this.getFrameComponent().addKeyListener(this);
-		this.getFrameComponent().addFocusListener(this);
-		this.getFrameComponent().addMouseWheelListener(this);
+		this.getDrawComponent().addMouseListener(this);
+		this.getDrawComponent().addMouseMotionListener(this);
+		this.getDrawComponent().addKeyListener(this);
+		this.getDrawComponent().addFocusListener(this);
+		this.getDrawComponent().addMouseWheelListener(this);
 		if (this.scapeFrame != null) {
 			this.scapeFrame.addWindowListener(this);
 		}
@@ -74,7 +75,7 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 			e.printStackTrace();
 		}
 		try {
-			this.f();
+			this.loadAssets();
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -144,12 +145,12 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 			}
 
 			while (var4 < 256) {
-				this.T = this.f;
-				this.U = this.g;
-				this.V = this.h;
+				this.lastMetaModifier = this.f;
+				this.lastClickX = this.clickX;
+				this.lastClickY = this.clickY;
 				this.f = 0;
 				try {
-					this.gameLogic();
+					this.tickUpdate();
 				} catch (Throwable e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -224,8 +225,8 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 	}
 
 	public final void update(Graphics var1) {
-		if (this.frameGraphics == null) {
-			this.frameGraphics = var1;
+		if (this.drawGraphics == null) {
+			this.drawGraphics = var1;
 		}
 
 		this.e = true;
@@ -233,8 +234,8 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 	}
 
 	public final void paint(Graphics var1) {
-		if (this.frameGraphics == null) {
-			this.frameGraphics = var1;
+		if (this.drawGraphics == null) {
+			this.drawGraphics = var1;
 		}
 
 		this.e = true;
@@ -255,7 +256,7 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 			Widget var10;
 			int var11;
 			int var12;
-			if ((var9 = Client.u[Client.C]) != -1) {
+			if ((var9 = Client.redStoneWidgetIds[Client.selectedRedStoneId]) != -1) {
 				var10 = Widget.widgets[var9];
 				var9 = Client.resizeMode == 0 ? Client.clientWidth - 218
 						: (Client.resizeMode == 0 ? 28 : Client.clientWidth - 197);
@@ -331,7 +332,7 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 
 			if (Client.p != var13) {
 				Client.p = var13;
-				Client.D = true;
+				Client.redrawDialog = true;
 			}
 		}
 
@@ -339,18 +340,18 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 
 	public final void mousePressed(MouseEvent var1) {
 		int var2 = var1.getButton();
-		int var3 = var1.getX();
-		int var4 = var1.getY();
+		int clickX = var1.getX();
+		int clickY = var1.getY();
 		if (this.scapeFrame != null) {
 			Insets var5 = this.scapeFrame.getInsets();
-			var3 -= var5.left;
-			var4 -= var5.top;
+			clickX -= var5.left;
+			clickY -= var5.top;
 		}
 
 		this.P = 0;
-		this.g = var3;
-		this.h = var4;
-		this.i = System.currentTimeMillis();
+		this.clickX = clickX;
+		this.clickY = clickY;
+		this.clickTimeStamp = System.currentTimeMillis();
 		if (var2 != 2 && (!this.Z || var2 != 1 && var2 != 3)) {
 			if (var1.isMetaDown()) {
 				this.mouseState = 1;
@@ -363,8 +364,8 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 			}
 		} else {
 			this.mouseState = 5;
-			this.m = var3;
-			this.n = var4;
+			this.m = clickX;
+			this.n = clickY;
 		}
 	}
 
@@ -528,7 +529,7 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 		}
 
 		if (var3 > 0 && var3 < 128) {
-			this.W[var3] = 1;
+			this.keyStatuses[var3] = 1;
 		}
 
 		if (var3 > 4) {
@@ -587,7 +588,7 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 		}
 
 		if (var3 > 0 && var3 < 128) {
-			this.W[var3] = 0;
+			this.keyStatuses[var3] = 0;
 		}
 
 	}
@@ -606,16 +607,16 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 	}
 
 	public final void focusGained(FocusEvent var1) {
-		this.O = true;
+		this.hasFocus = true;
 		this.e = true;
 		this.h();
 	}
 
 	public final void focusLost(FocusEvent var1) {
-		this.O = false;
+		this.hasFocus = false;
 
 		for (int var2 = 0; var2 < 128; ++var2) {
-			this.W[var2] = 0;
+			this.keyStatuses[var2] = 0;
 		}
 
 		this.Z = false;
@@ -643,10 +644,10 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 	public final void windowOpened(WindowEvent var1) {
 	}
 
-	void f() throws Throwable {
+	void loadAssets() throws Throwable {
 	}
 
-	void gameLogic() throws Throwable {
+	void tickUpdate() throws Throwable {
 	}
 
 	void d() {
@@ -658,7 +659,7 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 	void h() {
 	}
 
-	Component getFrameComponent() {
+	Component getDrawComponent() {
 		return (Component) (this.scapeFrame != null ? this.scapeFrame : this);
 	}
 
@@ -671,11 +672,11 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 	void statusText(int var1, String text) throws Throwable {
 		Client.getActiveClient().a();
 
-		while (this.frameGraphics == null) {
-			this.frameGraphics = this.scapeFrame.getGraphics();
+		while (this.drawGraphics == null) {
+			this.drawGraphics = this.scapeFrame.getGraphics();
 
 			try {
-				this.getFrameComponent().repaint();
+				this.getDrawComponent().repaint();
 			} catch (Exception var9) {
 				;
 			}
@@ -688,37 +689,70 @@ public class ScapeApplet extends Applet implements FocusListener, KeyListener, M
 		}
 
 		Font var3 = new Font("Helvetica", 1, 13);
-		FontMetrics var4 = this.getFrameComponent().getFontMetrics(var3);
+		FontMetrics var4 = this.getDrawComponent().getFontMetrics(var3);
 		Font var5 = new Font("Helvetica", 0, 13);
-		FontMetrics var10 = this.getFrameComponent().getFontMetrics(var5);
+		FontMetrics var10 = this.getDrawComponent().getFontMetrics(var5);
 		if (this.e) {
-			this.frameGraphics.setColor(Color.black);
-			this.frameGraphics.fillRect(0, 0, Client.clientWidth, Client.clientHeight);
+			this.drawGraphics.setColor(Color.black);
+			this.drawGraphics.fillRect(0, 0, Client.clientWidth, Client.clientHeight);
 			this.e = false;
 		}
 
 		Color var6 = new Color(140, 17, 17);
 		int var7 = Client.clientHeight / 2 - 18;
-		this.frameGraphics.setColor(var6);
-		this.frameGraphics.drawRect(Client.clientWidth / 2 - 152, var7, 304, 34);
-		this.frameGraphics.fillRect(Client.clientWidth / 2 - 150, var7 + 2, var1 * 3, 30);
-		this.frameGraphics.setColor(Color.black);
-		this.frameGraphics.fillRect(Client.clientWidth / 2 - 150 + var1 * 3, var7 + 2, 300 - var1 * 3, 30);
-		this.frameGraphics.setFont(var3);
-		this.frameGraphics.setColor(Color.white);
-		this.frameGraphics.drawString(text, (Client.clientWidth - var4.stringWidth(text)) / 2, var7 + 22);
-		this.frameGraphics.drawString("", (Client.clientWidth - var10.stringWidth("")) / 2, var7 - 8);
+		this.drawGraphics.setColor(var6);
+		this.drawGraphics.drawRect(Client.clientWidth / 2 - 152, var7, 304, 34);
+		this.drawGraphics.fillRect(Client.clientWidth / 2 - 150, var7 + 2, var1 * 3, 30);
+		this.drawGraphics.setColor(Color.black);
+		this.drawGraphics.fillRect(Client.clientWidth / 2 - 150 + var1 * 3, var7 + 2, 300 - var1 * 3, 30);
+		this.drawGraphics.setFont(var3);
+		this.drawGraphics.setColor(Color.white);
+		this.drawGraphics.drawString(text, (Client.clientWidth - var4.stringWidth(text)) / 2, var7 + 22);
+		this.drawGraphics.drawString("", (Client.clientWidth - var10.stringWidth("")) / 2, var7 - 8);
+	}
+	
+	@Override
+	public int getWidth() {
+		return width;
+	}
+	
+	@Override
+	public int getHeight() {
+		return height;
 	}
 
 	@Override
-	public void itemStateChanged(ItemEvent e) {
-		// TODO Auto-generated method stub
-		
+	public bot.iface.ProducingGraphicsBuffer getMainImageProducer() {
+		return mainImageProducer;
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public int getMouseX() {
+		return mouseX;
+	}
+
+	@Override
+	public int getMouseY() {
+		return mouseY;
+	}
+
+	@Override
+	public int getMouseState() {
+		return mouseState;
+	}
+
+	@Override
+	public bot.iface.ScapeFrame getScapeFrame() {
+		return this.scapeFrame;
+	}
+
+	@Override
+	public Graphics getDrawGraphics() {
+		return drawGraphics;
+	}
+
+	@Override
+	public void setDrawGraphics(Graphics g) {
+		drawGraphics = g;
 	}
 }

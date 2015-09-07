@@ -1,13 +1,13 @@
 import java.awt.Color;
 
-public final class Class71 extends Rasterizer2D {
-	private int a = 0;
-	private int[] b = new int[256];
-	private int[] c = new int[256];
-	private int[] d = new int[256];
-	private int[] e = new int[256];
-	private byte[][] f = new byte[256][];
-	private int[] g = new int[256];
+public final class VScapeFont extends Rasterizer2D {
+	private int verticalSpace = 0;
+	private int[] verticalOffsets = new int[256];
+	private int[] glyphHeights = new int[256];
+	private int[] horizonalOffsets = new int[256];
+	private int[] glyphWidths = new int[256];
+	private byte[][] glyphs = new byte[256][];
+	private int[] glyphSpacings = new int[256];
 	private static String r = "nbsp";
 	private static String s = "trans=";
 	private static String t = "shad";
@@ -42,72 +42,72 @@ public final class Class71 extends Rasterizer2D {
 	private static int W = 256;
 	private static int X = 0;
 
-	public Class71(boolean var1, String var2, Archive var3) {
-		Buffer var9 = new Buffer(var3.getEntry(var2 + ".dat"));
-		Buffer var10;
-		(var10 = new Buffer(var3.getEntry("index.dat"))).position = var9.readUShort() + 4;
-		int var4;
-		if ((var4 = var10.readUByte()) > 0) {
-			var10.position += 3 * (var4 - 1);
+	public VScapeFont(boolean wideSpace, String name, Archive archive) {
+		Buffer buf = new Buffer(archive.getEntry(name + ".dat"));
+		Buffer indexBuf;
+		(indexBuf = new Buffer(archive.getEntry("index.dat"))).position = buf.readUShort() + 4;
+		int read;
+		if ((read = indexBuf.readUByte()) > 0) {
+			indexBuf.position += 3 * (read - 1);
 		}
 
-		for (var4 = 0; var4 < 256; ++var4) {
-			this.d[var4] = var10.readUByte();
-			this.b[var4] = var10.readUByte();
-			int var5 = this.e[var4] = var10.readUShort();
-			int var6 = this.c[var4] = var10.readUShort();
-			int var7 = var10.readUByte();
+		for (read = 0; read < 256; ++read) {
+			this.horizonalOffsets[read] = indexBuf.readUByte();
+			this.verticalOffsets[read] = indexBuf.readUByte();
+			int var5 = this.glyphWidths[read] = indexBuf.readUShort();
+			int var6 = this.glyphHeights[read] = indexBuf.readUShort();
+			int var7 = indexBuf.readUByte();
 			int var8 = var5 * var6;
-			this.f[var4] = new byte[var8];
+			this.glyphs[read] = new byte[var8];
 			if (var7 == 0) {
 				for (var7 = 0; var7 < var8; ++var7) {
-					this.f[var4][var7] = var9.readByte();
+					this.glyphs[read][var7] = buf.readByte();
 				}
 			} else if (var7 == 1) {
 				for (var7 = 0; var7 < var5; ++var7) {
 					for (var8 = 0; var8 < var6; ++var8) {
-						this.f[var4][var7 + var8 * var5] = var9.readByte();
+						this.glyphs[read][var7 + var8 * var5] = buf.readByte();
 					}
 				}
 			}
 
-			if (var6 > this.a && var4 < 128) {
-				this.a = var6;
+			if (var6 > this.verticalSpace && read < 128) {
+				this.verticalSpace = var6;
 			}
 
-			this.d[var4] = 1;
-			this.g[var4] = var5 + 2;
+			this.horizonalOffsets[read] = 1;
+			this.glyphSpacings[read] = var5 + 2;
 			var7 = 0;
 
 			for (var8 = var6 / 7; var8 < var6; ++var8) {
-				var7 += this.f[var4][var8 * var5];
+				var7 += this.glyphs[read][var8 * var5];
 			}
 
 			if (var7 <= var6 / 7) {
-				--this.g[var4];
-				this.d[var4] = 0;
+				--this.glyphSpacings[read];
+				this.horizonalOffsets[read] = 0;
 			}
 
 			var7 = 0;
 
 			for (var8 = var6 / 7; var8 < var6; ++var8) {
-				var7 += this.f[var4][var5 - 1 + var8 * var5];
+				var7 += this.glyphs[read][var5 - 1 + var8 * var5];
 			}
 
 			if (var7 <= var6 / 7) {
-				--this.g[var4];
+				--this.glyphSpacings[read];
 			}
 		}
 
-		if (var1) {
-			this.g[32] = this.g[73];
+		if (wideSpace) {
+			this.glyphSpacings[32] = this.glyphSpacings[73];
 		} else {
-			this.g[32] = this.g[105];
+			this.glyphSpacings[32] = this.glyphSpacings[105];
 		}
 	}
 
 	private void a(String var1, int var2, int var3) {
-		var3 -= this.a;
+		var3 -= this.verticalSpace;
 		int var4 = -1;
 
 		for (int var5 = 0; var5 < var1.length(); ++var5) {
@@ -214,31 +214,31 @@ public final class Class71 extends Rasterizer2D {
 				}
 
 				if (var4 == -1) {
-					var11 = this.e[var6];
-					var8 = this.c[var6];
+					var11 = this.glyphWidths[var6];
+					var8 = this.glyphHeights[var6];
 					if (var6 != 32) {
 						if (W == 256) {
 							if (P != -1) {
-								this.c(var6, var2 + this.d[var6] + 1, var3 + this.b[var6] + 1, var11, var8, P);
+								this.c(var6, var2 + this.horizonalOffsets[var6] + 1, var3 + this.verticalOffsets[var6] + 1, var11, var8, P);
 							}
 
-							this.c(var6, var2 + this.d[var6], var3 + this.b[var6], var11, var8, X);
+							this.c(var6, var2 + this.horizonalOffsets[var6], var3 + this.verticalOffsets[var6], var11, var8, X);
 						} else {
 							if (P != -1) {
-								this.a(var6, var2 + this.d[var6] + 1, var3 + this.b[var6] + 1, var11, var8, P, W);
+								this.a(var6, var2 + this.horizonalOffsets[var6] + 1, var3 + this.verticalOffsets[var6] + 1, var11, var8, P, W);
 							}
 
-							this.a(var6, var2 + this.d[var6], var3 + this.b[var6], var11, var8, X, W);
+							this.a(var6, var2 + this.horizonalOffsets[var6], var3 + this.verticalOffsets[var6], var11, var8, X, W);
 						}
 					}
 
-					var12 = this.g[var6];
+					var12 = this.glyphSpacings[var6];
 					if (Q != -1) {
-						Class2.drawHorizontal_(var2, var3 + (int) ((double) this.a * 0.7D), var12, Q);
+						Class2.drawHorizontal_(var2, var3 + (int) ((double) this.verticalSpace * 0.7D), var12, Q);
 					}
 
 					if (T != -1) {
-						Class2.drawHorizontal_(var2, var3 + this.a, var12, T);
+						Class2.drawHorizontal_(var2, var3 + this.verticalSpace, var12, T);
 					}
 
 					var2 += var12;
@@ -311,7 +311,7 @@ public final class Class71 extends Rasterizer2D {
 					}
 
 					if (var2 == -1) {
-						var3 += this.g[var5];
+						var3 += this.glyphSpacings[var5];
 					}
 				}
 			}
@@ -372,7 +372,7 @@ public final class Class71 extends Rasterizer2D {
 		}
 
 		if (var4 > 0 && var5 > 0) {
-			byte[] var10001 = this.f[var1];
+			byte[] var10001 = this.glyphs[var1];
 			int var10002 = var6;
 			int var10004 = var8;
 			int var10007 = var9;
@@ -444,7 +444,7 @@ public final class Class71 extends Rasterizer2D {
 		}
 
 		if (var4 > 0 && var5 > 0) {
-			byte[] var10001 = this.f[var1];
+			byte[] var10001 = this.glyphs[var1];
 			int var10002 = var6;
 			int var10004 = var7;
 			var9 = var9;

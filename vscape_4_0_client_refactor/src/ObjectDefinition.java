@@ -1,4 +1,4 @@
-public final class ObjectDefinition {
+public final class ObjectDefinition implements bot.iface.ObjectDefinition {
 	private static int B;
 	public boolean obstructsGround;
 	private byte ambientLighting;
@@ -476,5 +476,100 @@ public final class ObjectDefinition {
 
 			return var15;
 		}
+	}
+
+	@Override
+	public boolean isObstructsGround() {
+		return obstructsGround;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public int getWidth() {
+		return width;
+	}
+
+	@Override
+	public int getLength() {
+		return length;
+	}
+
+	@Override
+	public int getId() {
+		return id;
+	}
+
+	@Override
+	public boolean isImpenetrable() {
+		return impenetrable;
+	}
+
+	@Override
+	public int getMapscene() {
+		return mapscene;
+	}
+
+	@Override
+	public int[] getMorphisms() {
+		return morphisms;
+	}
+
+	@Override
+	public int getMorphVariableIndex() {
+		return morphVariableIndex;
+	}
+
+	@Override
+	public int getSupportItems() {
+		return supportItems;
+	}
+
+	@Override
+	public boolean isOccludes() {
+		return occludes;
+	}
+
+	@Override
+	public boolean isHollow() {
+		return hollow;
+	}
+
+	@Override
+	public boolean isSolid() {
+		return solid;
+	}
+
+	@Override
+	public int getSurroundings() {
+		return surroundings;
+	}
+
+	@Override
+	public int[] getModelTypes() {
+		return modelTypes;
+	}
+
+	@Override
+	public byte[] getDescription() {
+		return description;
+	}
+
+	@Override
+	public boolean isInteractive() {
+		return interactive;
+	}
+
+	@Override
+	public int getAnimation() {
+		return animation;
+	}
+
+	@Override
+	public String[] getInteractions() {
+		return interactions;
 	}
 }

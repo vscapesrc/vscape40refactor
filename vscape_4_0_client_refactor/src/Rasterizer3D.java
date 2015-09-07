@@ -4,13 +4,13 @@ final class Rasterizer3D extends Rasterizer2D {
 	private static boolean y;
 	public static boolean approximateAlphaBlending = true;
 	public static int d;
-	public static int e;
-	public static int f;
+	public static int originViewX;
+	public static int originViewY;
 	private static int[] shadowDecay = new int[512];
 	public static final int[] g = new int[2048];
 	public static int[] SINE = new int[2048];
 	public static int[] COSINE = new int[2048];
-	public static int[] t;
+	public static int[] scanOffsets;
 	private static int A;
 	public static IndexedImage[] u = new IndexedImage[51];
 	private static boolean[] B = new boolean[51];
@@ -45,7 +45,7 @@ final class Rasterizer3D extends Rasterizer2D {
 		shadowDecay = null;
 		SINE = null;
 		COSINE = null;
-		t = null;
+		scanOffsets = null;
 		u = null;
 		B = null;
 		C = null;
@@ -57,25 +57,25 @@ final class Rasterizer3D extends Rasterizer2D {
 	}
 
 	public static void useViewport() {
-		t = new int[Rasterizer2D.height];
+		scanOffsets = new int[Rasterizer2D.height];
 
 		for (int var0 = 0; var0 < Rasterizer2D.height; ++var0) {
-			t[var0] = Rasterizer2D.width * var0;
+			scanOffsets[var0] = Rasterizer2D.width * var0;
 		}
 
-		e = Rasterizer2D.width / 2;
-		f = Rasterizer2D.height / 2;
+		originViewX = Rasterizer2D.width / 2;
+		originViewY = Rasterizer2D.height / 2;
 	}
 
-	public static void a(int var0, int var1) {
-		t = new int[var1];
+	public static void reposition(int length, int width) {
+		scanOffsets = new int[width];
 
-		for (int var2 = 0; var2 < var1; ++var2) {
-			t[var2] = var0 * var2;
+		for (int x = 0; x < width; ++x) {
+			scanOffsets[x] = length * x;
 		}
 
-		e = var0 / 2;
-		f = var1 / 2;
+		originViewX = length / 2;
+		originViewY = width / 2;
 	}
 
 	public static void e() {
@@ -322,7 +322,7 @@ final class Rasterizer3D extends Rasterizer2D {
 					if (var0 != var1 && var13 < var9 || var0 == var1 && var13 > var11) {
 						var2 -= var1;
 						var1 -= var0;
-						var0 = t[var0];
+						var0 = scanOffsets[var0];
 
 						while (true) {
 							--var1;
@@ -354,7 +354,7 @@ final class Rasterizer3D extends Rasterizer2D {
 
 					var2 -= var1;
 					var1 -= var0;
-					var0 = t[var0];
+					var0 = scanOffsets[var0];
 
 					while (true) {
 						--var1;
@@ -404,7 +404,7 @@ final class Rasterizer3D extends Rasterizer2D {
 				if ((var0 == var2 || var13 >= var9) && (var0 != var2 || var11 <= var9)) {
 					var1 -= var2;
 					var2 -= var0;
-					var0 = t[var0];
+					var0 = scanOffsets[var0];
 
 					while (true) {
 						--var2;
@@ -435,7 +435,7 @@ final class Rasterizer3D extends Rasterizer2D {
 
 				var1 -= var2;
 				var2 -= var0;
-				var0 = t[var0];
+				var0 = scanOffsets[var0];
 
 				while (true) {
 					--var2;
@@ -495,7 +495,7 @@ final class Rasterizer3D extends Rasterizer2D {
 					if (var1 != var2 && var9 < var11 || var1 == var2 && var9 > var13) {
 						var0 -= var2;
 						var2 -= var1;
-						var1 = t[var1];
+						var1 = scanOffsets[var1];
 
 						while (true) {
 							--var2;
@@ -527,7 +527,7 @@ final class Rasterizer3D extends Rasterizer2D {
 
 					var0 -= var2;
 					var2 -= var1;
-					var1 = t[var1];
+					var1 = scanOffsets[var1];
 
 					while (true) {
 						--var2;
@@ -577,7 +577,7 @@ final class Rasterizer3D extends Rasterizer2D {
 				if (var9 < var11) {
 					var2 -= var0;
 					var0 -= var1;
-					var1 = t[var1];
+					var1 = scanOffsets[var1];
 
 					while (true) {
 						--var0;
@@ -608,7 +608,7 @@ final class Rasterizer3D extends Rasterizer2D {
 
 				var2 -= var0;
 				var0 -= var1;
-				var1 = t[var1];
+				var1 = scanOffsets[var1];
 
 				while (true) {
 					--var0;
@@ -667,7 +667,7 @@ final class Rasterizer3D extends Rasterizer2D {
 				if (var11 < var13) {
 					var1 -= var0;
 					var0 -= var2;
-					var2 = t[var2];
+					var2 = scanOffsets[var2];
 
 					while (true) {
 						--var0;
@@ -698,7 +698,7 @@ final class Rasterizer3D extends Rasterizer2D {
 
 				var1 -= var0;
 				var0 -= var2;
-				var2 = t[var2];
+				var2 = scanOffsets[var2];
 
 				while (true) {
 					--var0;
@@ -748,7 +748,7 @@ final class Rasterizer3D extends Rasterizer2D {
 			if (var11 < var13) {
 				var0 -= var1;
 				var1 -= var2;
-				var2 = t[var2];
+				var2 = scanOffsets[var2];
 
 				while (true) {
 					--var1;
@@ -779,7 +779,7 @@ final class Rasterizer3D extends Rasterizer2D {
 
 			var0 -= var1;
 			var1 -= var2;
-			var2 = t[var2];
+			var2 = scanOffsets[var2];
 
 			while (true) {
 				--var1;
@@ -996,7 +996,7 @@ final class Rasterizer3D extends Rasterizer2D {
 					if (var0 != var1 && var9 < var7 || var0 == var1 && var9 > var8) {
 						var2 -= var1;
 						var1 -= var0;
-						var0 = t[var0];
+						var0 = scanOffsets[var0];
 
 						while (true) {
 							--var1;
@@ -1022,7 +1022,7 @@ final class Rasterizer3D extends Rasterizer2D {
 					} else {
 						var2 -= var1;
 						var1 -= var0;
-						var0 = t[var0];
+						var0 = scanOffsets[var0];
 
 						while (true) {
 							--var1;
@@ -1063,7 +1063,7 @@ final class Rasterizer3D extends Rasterizer2D {
 					if ((var0 == var2 || var9 >= var7) && (var0 != var2 || var8 <= var7)) {
 						var1 -= var2;
 						var2 -= var0;
-						var0 = t[var0];
+						var0 = scanOffsets[var0];
 
 						while (true) {
 							--var2;
@@ -1089,7 +1089,7 @@ final class Rasterizer3D extends Rasterizer2D {
 					} else {
 						var1 -= var2;
 						var2 -= var0;
-						var0 = t[var0];
+						var0 = scanOffsets[var0];
 
 						while (true) {
 							--var2;
@@ -1142,7 +1142,7 @@ final class Rasterizer3D extends Rasterizer2D {
 					if ((var1 == var2 || var7 >= var8) && (var1 != var2 || var7 <= var9)) {
 						var0 -= var2;
 						var2 -= var1;
-						var1 = t[var1];
+						var1 = scanOffsets[var1];
 
 						while (true) {
 							--var2;
@@ -1168,7 +1168,7 @@ final class Rasterizer3D extends Rasterizer2D {
 					} else {
 						var0 -= var2;
 						var2 -= var1;
-						var1 = t[var1];
+						var1 = scanOffsets[var1];
 
 						while (true) {
 							--var2;
@@ -1209,7 +1209,7 @@ final class Rasterizer3D extends Rasterizer2D {
 					if (var7 < var8) {
 						var2 -= var0;
 						var0 -= var1;
-						var1 = t[var1];
+						var1 = scanOffsets[var1];
 
 						while (true) {
 							--var0;
@@ -1235,7 +1235,7 @@ final class Rasterizer3D extends Rasterizer2D {
 					} else {
 						var2 -= var0;
 						var0 -= var1;
-						var1 = t[var1];
+						var1 = scanOffsets[var1];
 
 						while (true) {
 							--var0;
@@ -1287,7 +1287,7 @@ final class Rasterizer3D extends Rasterizer2D {
 				if (var8 < var9) {
 					var1 -= var0;
 					var0 -= var2;
-					var2 = t[var2];
+					var2 = scanOffsets[var2];
 
 					while (true) {
 						--var0;
@@ -1313,7 +1313,7 @@ final class Rasterizer3D extends Rasterizer2D {
 				} else {
 					var1 -= var0;
 					var0 -= var2;
-					var2 = t[var2];
+					var2 = scanOffsets[var2];
 
 					while (true) {
 						--var0;
@@ -1354,7 +1354,7 @@ final class Rasterizer3D extends Rasterizer2D {
 				if (var8 < var9) {
 					var0 -= var1;
 					var1 -= var2;
-					var2 = t[var2];
+					var2 = scanOffsets[var2];
 
 					while (true) {
 						--var1;
@@ -1380,7 +1380,7 @@ final class Rasterizer3D extends Rasterizer2D {
 				} else {
 					var0 -= var1;
 					var1 -= var2;
-					var2 = t[var2];
+					var2 = scanOffsets[var2];
 
 					while (true) {
 						--var1;
@@ -1525,7 +1525,7 @@ final class Rasterizer3D extends Rasterizer2D {
 				B[var18] = false;
 
 				for (var23 = 0; var23 < 4096; ++var23) {
-					if ((var24 = var20[var23] = var27[var29.a[var23]] & 16316671) == 0) {
+					if ((var24 = var20[var23] = var27[var29.raster[var23]] & 16316671) == 0) {
 						B[var19] = true;
 					}
 
@@ -1537,12 +1537,12 @@ final class Rasterizer3D extends Rasterizer2D {
 				if (var29.c == 64) {
 					for (var23 = 0; var23 < 128; ++var23) {
 						for (var24 = 0; var24 < 128; ++var24) {
-							var20[var24 + (var23 << 7)] = var27[var29.a[(var24 >> 1) + (var23 >> 1 << 6)]];
+							var20[var24 + (var23 << 7)] = var27[var29.raster[(var24 >> 1) + (var23 >> 1 << 6)]];
 						}
 					}
 				} else {
 					for (var23 = 0; var23 < 16384; ++var23) {
-						var20[var23] = var27[var29.a[var23]];
+						var20[var23] = var27[var29.raster[var23]];
 					}
 				}
 
@@ -1631,14 +1631,14 @@ final class Rasterizer3D extends Rasterizer2D {
 						var1 = 0;
 					}
 
-					var25 = var0 - f;
+					var25 = var0 - originViewY;
 					var18 += var21 * var25;
 					var22 += var9 * var25;
 					var15 += var10 * var25;
 					if ((var0 == var1 || var23 >= var11) && (var0 != var1 || var23 <= var16)) {
 						var2 -= var1;
 						var1 -= var0;
-						var0 = t[var0];
+						var0 = scanOffsets[var0];
 
 						while (true) {
 							--var1;
@@ -1677,7 +1677,7 @@ final class Rasterizer3D extends Rasterizer2D {
 
 					var2 -= var1;
 					var1 -= var0;
-					var0 = t[var0];
+					var0 = scanOffsets[var0];
 
 					while (true) {
 						--var1;
@@ -1732,14 +1732,14 @@ final class Rasterizer3D extends Rasterizer2D {
 					var2 = 0;
 				}
 
-				var25 = var0 - f;
+				var25 = var0 - originViewY;
 				var18 += var21 * var25;
 				var22 += var9 * var25;
 				var15 += var10 * var25;
 				if (var0 != var2 && var23 < var11 || var0 == var2 && var16 > var11) {
 					var1 -= var2;
 					var2 -= var0;
-					var0 = t[var0];
+					var0 = scanOffsets[var0];
 
 					while (true) {
 						--var2;
@@ -1778,7 +1778,7 @@ final class Rasterizer3D extends Rasterizer2D {
 
 				var1 -= var2;
 				var2 -= var0;
-				var0 = t[var0];
+				var0 = scanOffsets[var0];
 
 				while (true) {
 					--var2;
@@ -1843,14 +1843,14 @@ final class Rasterizer3D extends Rasterizer2D {
 						var2 = 0;
 					}
 
-					var25 = var1 - f;
+					var25 = var1 - originViewY;
 					var18 += var21 * var25;
 					var22 += var9 * var25;
 					var15 += var10 * var25;
 					if (var1 != var2 && var11 < var16 || var1 == var2 && var11 > var23) {
 						var0 -= var2;
 						var2 -= var1;
-						var1 = t[var1];
+						var1 = scanOffsets[var1];
 
 						while (true) {
 							--var2;
@@ -1889,7 +1889,7 @@ final class Rasterizer3D extends Rasterizer2D {
 
 					var0 -= var2;
 					var2 -= var1;
-					var1 = t[var1];
+					var1 = scanOffsets[var1];
 
 					while (true) {
 						--var2;
@@ -1944,14 +1944,14 @@ final class Rasterizer3D extends Rasterizer2D {
 					var0 = 0;
 				}
 
-				var25 = var1 - f;
+				var25 = var1 - originViewY;
 				var18 += var21 * var25;
 				var22 += var9 * var25;
 				var15 += var10 * var25;
 				if (var11 < var16) {
 					var2 -= var0;
 					var0 -= var1;
-					var1 = t[var1];
+					var1 = scanOffsets[var1];
 
 					while (true) {
 						--var0;
@@ -1990,7 +1990,7 @@ final class Rasterizer3D extends Rasterizer2D {
 
 				var2 -= var0;
 				var0 -= var1;
-				var1 = t[var1];
+				var1 = scanOffsets[var1];
 
 				while (true) {
 					--var0;
@@ -2054,14 +2054,14 @@ final class Rasterizer3D extends Rasterizer2D {
 					var0 = 0;
 				}
 
-				var25 = var2 - f;
+				var25 = var2 - originViewY;
 				var18 += var21 * var25;
 				var22 += var9 * var25;
 				var15 += var10 * var25;
 				if (var16 < var23) {
 					var1 -= var0;
 					var0 -= var2;
-					var2 = t[var2];
+					var2 = scanOffsets[var2];
 
 					while (true) {
 						--var0;
@@ -2100,7 +2100,7 @@ final class Rasterizer3D extends Rasterizer2D {
 
 				var1 -= var0;
 				var0 -= var2;
-				var2 = t[var2];
+				var2 = scanOffsets[var2];
 
 				while (true) {
 					--var0;
@@ -2155,14 +2155,14 @@ final class Rasterizer3D extends Rasterizer2D {
 				var1 = 0;
 			}
 
-			var25 = var2 - f;
+			var25 = var2 - originViewY;
 			var18 += var21 * var25;
 			var22 += var9 * var25;
 			var15 += var10 * var25;
 			if (var16 < var23) {
 				var0 -= var1;
 				var1 -= var2;
-				var2 = t[var2];
+				var2 = scanOffsets[var2];
 
 				while (true) {
 					--var1;
@@ -2201,7 +2201,7 @@ final class Rasterizer3D extends Rasterizer2D {
 
 			var0 -= var1;
 			var1 -= var2;
-			var2 = t[var2];
+			var2 = scanOffsets[var2];
 
 			while (true) {
 				--var1;
@@ -2283,7 +2283,7 @@ final class Rasterizer3D extends Rasterizer2D {
 			if (lowMemory) {
 				var16 = 0;
 				var17 = 0;
-				var18 = var3 - e;
+				var18 = var3 - originViewX;
 				var7 += (var10 >> 3) * var18;
 				var8 += (var11 >> 3) * var18;
 				if ((var18 = (var9 += (var12 >> 3) * var18) >> 12) != 0) {
@@ -2452,7 +2452,7 @@ final class Rasterizer3D extends Rasterizer2D {
 			} else {
 				var16 = 0;
 				var17 = 0;
-				var18 = var3 - e;
+				var18 = var3 - originViewX;
 				var7 += (var10 >> 3) * var18;
 				var8 += (var11 >> 3) * var18;
 				if ((var18 = (var9 += (var12 >> 3) * var18) >> 14) != 0) {

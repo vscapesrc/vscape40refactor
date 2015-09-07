@@ -12,7 +12,7 @@ import java.awt.Toolkit;
 
 import javax.swing.JMenuBar;
 
-final class ScapeFrame extends Frame {
+final class ScapeFrame extends Frame implements bot.iface.ScapeFrame {
 	private final ScapeApplet applet;
 	private Toolkit b = Toolkit.getDefaultToolkit();
 	private Dimension c;
@@ -35,26 +35,7 @@ final class ScapeFrame extends Frame {
 		this.setFocusTraversalKeysEnabled(false);
 		this.toFront();
 		
-		bar = new MenuBar();
 		
-		Menu clientMenu = new Menu("Client");
-		bar.add(clientMenu);
-		
-		CheckboxMenuItem multilog = new CheckboxMenuItem("Allow MultiLogging");
-		multilog.addItemListener(this.applet);
-		multilog.setName("multilog");
-		clientMenu.add(multilog);
-		
-		Menu hacksMenu = new Menu("Hacks");
-		Menu playerHacks = new Menu("Player");
-		CheckboxMenuItem jmod = new CheckboxMenuItem("Clientside JMod");
-		jmod.addItemListener(this.applet);
-		jmod.setName("jmod");
-		playerHacks.add(jmod);
-		hacksMenu.add(playerHacks);
-		bar.add(hacksMenu);
-		
-		this.setMenuBar(bar);
 		
 		Insets var5 = this.getInsets();
 
@@ -77,12 +58,12 @@ final class ScapeFrame extends Frame {
 		return var1;
 	}
 
-	public final int a() {
+	public final int getRealWidth() {
 		Insets var1 = this.getInsets();
 		return this.getWidth() - (var1.left + var1.right);
 	}
 
-	public final int b() {
+	public final int getRealHeight() {
 		Insets var1 = this.getInsets();
 		return this.getHeight() - (var1.top + var1.bottom);
 	}

@@ -1,6 +1,6 @@
 import java.math.BigInteger;
 
-public final class Buffer extends CacheableNode {
+public final class Buffer extends CacheableNode implements bot.iface.Buffer {
 	public byte[] buf;
 	public int position;
 	public int c;
@@ -69,8 +69,8 @@ public final class Buffer extends CacheableNode {
 		return new String(this.buf, var1, this.position - var1 - 1);
 	}
 
-	public final void writeCipheredByte(int var1) {
-		this.buf[this.position++] = (byte) (var1 + this.cipher.a());
+	public final void writeOpcode(int var1) {
+		this.buf[this.position++] = (byte) (var1 + this.cipher.nextKey());
 	}
 
 	public final void writeByte(int var1) {
@@ -100,7 +100,7 @@ public final class Buffer extends CacheableNode {
 		this.buf[this.position++] = (byte) var1;
 	}
 
-	public final void writeIntLE(int var1) {
+	public final void writeLEInt(int var1) {
 		this.buf[this.position++] = (byte) var1;
 		this.buf[this.position++] = (byte) (var1 >> 8);
 		this.buf[this.position++] = (byte) (var1 >> 16);
@@ -251,7 +251,7 @@ public final class Buffer extends CacheableNode {
 		this.writeBytes(var3, var3.length, 0);
 	}
 
-	public final void writeLowByteAfterNegation(int var1) {
+	public final void writeNegatedByte(int var1) {
 		this.buf[this.position++] = (byte) (-var1);
 	}
 
@@ -275,17 +275,17 @@ public final class Buffer extends CacheableNode {
 		return (byte) (-this.buf[this.position++]);
 	}
 
-	public final void l(int var1) {
+	public final void writeLEShort(int var1) {
 		this.buf[this.position++] = (byte) var1;
 		this.buf[this.position++] = (byte) (var1 >> 8);
 	}
 
-	public final void m(int var1) {
+	public final void writeShortA(int var1) {
 		this.buf[this.position++] = (byte) (var1 >> 8);
 		this.buf[this.position++] = (byte) (var1 + 128);
 	}
 
-	public final void n(int var1) {
+	public final void writeLEShortA(int var1) {
 		this.buf[this.position++] = (byte) (var1 + 128);
 		this.buf[this.position++] = (byte) (var1 >> 8);
 	}
@@ -342,5 +342,25 @@ public final class Buffer extends CacheableNode {
 			this.buf[this.position++] = (byte) (var2[var1] + 128);
 		}
 
+	}
+
+	@Override
+	public byte[] getBuf() {
+		return buf;
+	}
+
+	@Override
+	public int getPosition() {
+		return position;
+	}
+
+	@Override
+	public void setPosition(int position) {
+		this.position = position;
+	}
+
+	@Override
+	public bot.iface.IsaacCipher getCipher() {
+		return cipher;
 	}
 }

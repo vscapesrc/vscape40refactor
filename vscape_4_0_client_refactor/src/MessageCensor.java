@@ -11,7 +11,7 @@ final class MessageCensor {
 				"noobs" };
 	}
 
-	public static void a(Archive var0) {
+	public static void init(Archive var0) {
 		Buffer var1 = new Buffer(var0.getEntry("fragmentsenc.txt"));
 		Buffer var2 = new Buffer(var0.getEntry("badenc.txt"));
 		Buffer var3 = new Buffer(var0.getEntry("domainenc.txt"));

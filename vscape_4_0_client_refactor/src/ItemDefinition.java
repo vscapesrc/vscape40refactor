@@ -1,4 +1,4 @@
-public final class ItemDefinition {
+public final class ItemDefinition implements bot.iface.ItemDefinition {
 	public byte femaleTranslation;
 	public int value;
 	public int[] replacementColors;
@@ -33,7 +33,7 @@ public final class ItemDefinition {
 	public String[] widgetActions;
 	public String[] y;
 	public int spritePitch;
-	private int groudScaleZ;
+	private int groundScaleZ;
 	private int groundScaleY;
 	private int[] stackIds;
 	private int spriteTranslateY;
@@ -235,7 +235,7 @@ public final class ItemDefinition {
 			} else if (var3 == 111) {
 				groundScaleY = var2.readUShort();
 			} else if (var3 == 112) {
-				groudScaleZ = var2.readUShort();
+				groundScaleZ = var2.readUShort();
 			} else if (var3 == 113) {
 				ambience = var2.readByte();
 			} else if (var3 == 114) {
@@ -282,7 +282,7 @@ public final class ItemDefinition {
 		notedTemplateId = -1;
 		groundScaleX = 128;
 		groundScaleY = 128;
-		groudScaleZ = 128;
+		groundScaleZ = 128;
 		ambience = 0;
 		diffusion = 0;
 		team = 0;
@@ -331,9 +331,9 @@ public final class ItemDefinition {
 				return null;
 			} else {
 				Sprite var6 = new Sprite(32, 32);
-				int var7 = Rasterizer3D.e;
-				int var8 = Rasterizer3D.f;
-				int[] var9 = Rasterizer3D.t;
+				int var7 = Rasterizer3D.originViewX;
+				int var8 = Rasterizer3D.originViewY;
+				int[] var9 = Rasterizer3D.scanOffsets;
 				int[] var10 = Rasterizer2D.pixels;
 				int var11 = Rasterizer2D.width;
 				int var12 = Rasterizer2D.height;
@@ -419,9 +419,9 @@ public final class ItemDefinition {
 
 				Rasterizer2D.init(var12, var11, var10);
 				Rasterizer2D.setBounds(var16, var13, var14, var15);
-				Rasterizer3D.e = var7;
-				Rasterizer3D.f = var8;
-				Rasterizer3D.t = var9;
+				Rasterizer3D.originViewX = var7;
+				Rasterizer3D.originViewY = var8;
+				Rasterizer3D.scanOffsets = var9;
 				Rasterizer3D.approximateAlphaBlending = true;
 				if (definition.stackable) {
 					var6.resizeWidth = 33;
@@ -465,8 +465,8 @@ public final class ItemDefinition {
 			return null;
 		}
 
-		if (this.groundScaleX != 128 || this.groundScaleY != 128 || this.groudScaleZ != 128) {
-			var4.scale(this.groundScaleX, this.groudScaleZ, this.groundScaleY);
+		if (this.groundScaleX != 128 || this.groundScaleY != 128 || this.groundScaleZ != 128) {
+			var4.scale(this.groundScaleX, this.groundScaleZ, this.groundScaleY);
 		}
 
 		if (this.originalColors != null) {
@@ -517,4 +517,64 @@ public final class ItemDefinition {
 		return var4;
 	}
 	// }
+
+	@Override
+	public int getValue() {
+		return value;
+	}
+
+	@Override
+	public int getId() {
+		return id;
+	}
+
+	@Override
+	public boolean isMembersObject() {
+		return membersObject;
+	}
+
+	@Override
+	public String[] getGroundActions() {
+		return groundActions;
+	}
+
+	@Override
+	public String getItemName() {
+		return itemName;
+	}
+
+	@Override
+	public int getModelId() {
+		return modelId;
+	}
+
+	@Override
+	public boolean isStackable() {
+		return stackable;
+	}
+
+	@Override
+	public byte[] getDescription() {
+		return description;
+	}
+
+	@Override
+	public boolean isMembersServer() {
+		return membersServer;
+	}
+
+	@Override
+	public String[] getWidgetActions() {
+		return widgetActions;
+	}
+
+	@Override
+	public int[] getStackIds() {
+		return stackIds;
+	}
+
+	@Override
+	public int getCount() {
+		return count;
+	}
 }

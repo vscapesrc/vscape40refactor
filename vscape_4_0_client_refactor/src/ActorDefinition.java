@@ -1,4 +1,4 @@
-public final class ActorDefinition {
+public final class ActorDefinition implements bot.iface.ActorDefinition {
 	public static int count;
 	public int b;
 	public int rotateAntiClockwiseAnimation = -1;
@@ -347,5 +347,65 @@ public final class ActorDefinition {
 		}
 
 		return empty;
+	}
+
+	@Override
+	public int getCount() {
+		return count;
+	}
+
+	@Override
+	public int getVarbit() {
+		return varbit;
+	}
+
+	@Override
+	public int getVarp() {
+		return varp;
+	}
+
+	@Override
+	public int getCombatLevel() {
+		return combatLevel;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public String[] getActions() {
+		return actions;
+	}
+
+	@Override
+	public int getWalkingAnimation() {
+		return walkingAnimation;
+	}
+
+	@Override
+	public int getHeadIcon() {
+		return headIcon;
+	}
+
+	@Override
+	public int getIdleAnimation() {
+		return idleAnimation;
+	}
+
+	@Override
+	public long getId() {
+		return id;
+	}
+
+	@Override
+	public int getRotation() {
+		return rotation;
+	}
+
+	@Override
+	public boolean isClickable() {
+		return clickable;
 	}
 }

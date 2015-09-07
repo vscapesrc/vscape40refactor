@@ -1,8 +1,8 @@
-public final class SceneTile extends Node {
+public final class SceneTile extends Node implements bot.iface.SceneTile {
 	int a;
 	final int positionX;
 	final int positionY;
-	final int d;
+	final int plane;
 	public SimpleTile simpleTile;
 	public ShapedTile shapedTile;
 	public Wall wall;
@@ -24,8 +24,43 @@ public final class SceneTile extends Node {
 	public SceneTile sceneTile;
 
 	public SceneTile(int z, int x, int y) {
-		this.d = this.a = z;
+		this.plane = this.a = z;
 		this.positionX = x;
 		this.positionY = y;
+	}
+
+	@Override
+	public int getPositionX() {
+		return positionX;
+	}
+
+	@Override
+	public int getPositionY() {
+		return positionY;
+	}
+	
+	@Override
+	public int getPlane() {
+		return plane;
+	}
+
+	@Override
+	public bot.iface.GroundItem getGroundItem() {
+		return groundItem;
+	}
+
+	@Override
+	public bot.iface.GameObject[] getGameObjects() {
+		return gameObjects;
+	}
+
+	@Override
+	public int[] getObjectAttributes() {
+		return objectAttributes;
+	}
+
+	@Override
+	public bot.iface.SceneTile getSceneTile() {
+		return sceneTile;
 	}
 }

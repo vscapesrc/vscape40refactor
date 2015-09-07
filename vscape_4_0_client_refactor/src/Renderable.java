@@ -1,4 +1,4 @@
-public class Renderable extends CacheableNode {
+public class Renderable extends CacheableNode implements bot.iface.Renderable {
 	VertexNormal[] normals;
 	public int modelHeight = 1000;
 
@@ -14,5 +14,10 @@ public class Renderable extends CacheableNode {
 
 	Model getRotatedModel() {
 		return null;
+	}
+
+	@Override
+	public int getModelHeight() {
+		return modelHeight;
 	}
 }

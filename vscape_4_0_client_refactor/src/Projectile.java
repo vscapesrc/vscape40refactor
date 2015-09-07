@@ -1,4 +1,4 @@
-final class Projectile extends Renderable {
+final class Projectile extends Renderable implements bot.iface.Projectile {
 	public final int delay;
 	public final int endCycle;
 	private double l;
@@ -120,5 +120,60 @@ final class Projectile extends Renderable {
 			}
 		}
 
+	}
+
+	@Override
+	public int getDelay() {
+		return delay;
+	}
+
+	@Override
+	public int getEndCycle() {
+		return endCycle;
+	}
+
+	@Override
+	public boolean isMoving() {
+		return moving;
+	}
+
+	@Override
+	public int getStartX() {
+		return startX;
+	}
+
+	@Override
+	public int getStartY() {
+		return startY;
+	}
+
+	@Override
+	public int getStartHeight() {
+		return startHeight;
+	}
+
+	@Override
+	public int getEndHeight() {
+		return endHeight;
+	}
+
+	@Override
+	public int getStartSlope() {
+		return startSlope;
+	}
+
+	@Override
+	public int getStartDistanceFromTarget() {
+		return startDistanceFromTarget;
+	}
+
+	@Override
+	public int getTargetedEntityId() {
+		return targetedEntityId;
+	}
+
+	@Override
+	public int getSceneId() {
+		return sceneId;
 	}
 }
